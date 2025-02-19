@@ -1,3 +1,9 @@
+import Sidebar from '@/components/layout/sidebar';
+
 export default async function Home() {
-  return <div>Home</div>;
+  return (
+    <div className="flex">
+      <Sidebar />
+    </div>
+  );
 }
