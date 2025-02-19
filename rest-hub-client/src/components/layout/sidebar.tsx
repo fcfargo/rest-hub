@@ -1,75 +1,59 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import styles from '@/styles/sidebar.module.css';
 
+const menuElements = [
+  { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home' },
+  { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search' },
+  {
+    src: '/layout/sidebar/notification.svg',
+    alt: 'Notification',
+    label: 'Notification',
+  },
+  {
+    src: '/layout/sidebar/communities.svg',
+    alt: 'Communities',
+    label: 'Communities',
+  },
+  { src: '/layout/sidebar/post.svg', alt: 'Post', label: 'Post' },
+  {
+    src: '/layout/sidebar/settings.svg',
+    alt: 'Settings',
+    label: 'Settings',
+  },
+];
+
 export default function Sidebar() {
+  const [expanded, setExpanded] = useState(true);
+
   return (
-    <div className={styles.sidebar}>
-      <div className={styles.titleWrapper}>Rest Hub</div>
+    <div
+      className={`${styles.sidebar} ${
+        expanded ? styles.expanded : styles.collapsed
+      }`}
+    >
+      <div className={styles.titleWrapper}>{expanded && 'Rest Hub'}</div>
 
       <nav className={styles.menu}>
-        <div className={styles.menuItem}>
-          <Image
-            src="/layout/sidebar/home.svg"
-            width={0}
-            height={0}
-            alt="Home"
-            className={styles.homeIcon}
-          />
-          <span className={styles.textWrapper}>Home</span>
-        </div>
-        <div className={styles.menuItem}>
-          <Image
-            src="/layout/sidebar/search.svg"
-            width={0}
-            height={0}
-            alt="Search"
-            className={styles.icon}
-          />
-          <span className={styles.textWrapper}>Search</span>
-        </div>
-        <div className={styles.menuItem}>
-          <Image
-            src="/layout/sidebar/notification.svg"
-            width={0}
-            height={0}
-            alt="Notification"
-            className={styles.icon}
-          />
-          <span className={styles.textWrapper}>Notification</span>
-        </div>
-        <div className={styles.menuItem}>
-          <Image
-            src="/layout/sidebar/communities.svg"
-            width={0}
-            height={0}
-            alt="Communities"
-            className={styles.icon}
-          />
-          <span className={styles.textWrapper}>Communities</span>
-        </div>
-        <div className={styles.menuItem}>
-          <Image
-            src="/layout/sidebar/post.svg"
-            width={0}
-            height={0}
-            alt="Post"
-            className={styles.icon}
-          />
-          <span className={styles.textWrapper}>Post</span>
-        </div>
-        <div className={styles.menuItem}>
-          <Image
-            src="/layout/sidebar/settings.svg"
-            width={0}
-            height={0}
-            alt="Settings"
-            className={styles.icon}
-          />
-          <span className={styles.textWrapper}>Settings</span>
-        </div>
+        {menuElements.map((item, index) => (
+          <div key={index} className={styles.menuItem}>
+            <Image
+              src={item.src}
+              width={0}
+              height={0}
+              alt={item.alt}
+              className={styles.icon}
+            />
+            {expanded && (
+              <span className={styles.textWrapper}>{item.label}</span>
+            )}
+          </div>
+        ))}
       </nav>
 
-      <div>
+      {expanded && (
         <div className={styles.footer}>
           <Image
             src="/layout/sidebar/logout.svg"
@@ -78,27 +62,40 @@ export default function Sidebar() {
             alt="Logout"
             className={styles.icon}
           />
-          <span className={styles.textWrapper}>Logout</span>
+          <span className={styles.textWrapper}> Logout</span>
         </div>
+      )}
+      <button
+        className={`${styles.chevronsButton} ${
+          expanded ? styles.expandedChevrons : styles.collapsedChevrons
+        }`}
+        onClick={() => setExpanded(!expanded)}
+      >
         <Image
-          src="/layout/sidebar/chevrons-left.svg"
-          width={0}
-          height={0}
-          alt="ChevronsLeft"
-          className={styles.chevronsLeft}
+          src={
+            expanded
+              ? '/layout/sidebar/chevrons-left.svg'
+              : '/layout/sidebar/chevrons-right.svg'
+          }
+          width={25}
+          height={25}
+          alt="Toggle Sidebar"
         />
-        <div className={styles.user}>
-          <div className={styles.profileWrapper}>
-            <Image
-              src="/layout/sidebar/profile-default.svg"
-              width={0}
-              height={0}
-              alt="ProfileDefault"
-              className={styles.profileDefault}
-            />
-          </div>
-          <span className={styles.textWrapper}>fcfargo</span>
+      </button>
+
+      <div
+        className={`${styles.user} ${!expanded ? styles.userCollapsed : ''}`}
+      >
+        <div className={styles.profileWrapper}>
+          <Image
+            src="/layout/sidebar/profile-default.svg"
+            width={0}
+            height={0}
+            alt="ProfileDefault"
+            className={styles.profileDefault}
+          />
         </div>
+        {expanded && <span className={styles.textWrapper}>fcfargo</span>}
       </div>
     </div>
   );

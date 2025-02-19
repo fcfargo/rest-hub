@@ -6,6 +6,16 @@
   border-right-width: 1px;
   border-right-style: solid;
   border-color: #00000033;
+  transition: width 0.3s ease-in-out;
+}
+
+.expanded {
+  width: 260px;
+}
+
+.collapsed {
+  width: 88px;
+  align-items: center;
 }
 
 .titleWrapper {
@@ -79,12 +89,19 @@
   border-color: #00000033;
 }
 
-.chevronsLeft {
+.chevronsButton {
   position: absolute;
-  width: 25px;
-  height: 25px;
   top: 46px;
+  transform: translateY(-2px);
+  transition: 0.3s ease-in-out;
+}
+
+.expandedChevrons {
   left: 215px;
+}
+
+.collapsedChevrons {
+  left: 30.5px;
 }
 
 .user {
@@ -94,6 +111,12 @@
   position: absolute;
   top: 874px;
   left: 32px;
+  transition: 0.3s ease-in-out;
+}
+
+.userCollapsed {
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .profileWrapper {
