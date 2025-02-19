@@ -28,6 +28,7 @@
   font-size: 24px;
   letter-spacing: 0;
   line-height: normal;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .menu {
@@ -49,12 +50,6 @@
   flex: 0 0 auto;
 }
 
-.homeIcon {
-  position: relative;
-  width: 23px;
-  height: 24px;
-}
-
 .textWrapper {
   position: relative;
   width: fit-content;
@@ -64,12 +59,6 @@
   font-size: 18px;
   letter-spacing: 0;
   line-height: normal;
-}
-
-.icon {
-  position: relative;
-  width: 24px;
-  height: 24px;
 }
 
 .footer {
@@ -87,13 +76,14 @@
   overflow: hidden;
   border: 1px solid;
   border-color: #00000033;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .chevronsButton {
   position: absolute;
   top: 46px;
   transform: translateY(-2px);
-  transition: 0.3s ease-in-out;
+  transition: left 0.3s ease-in-out;
 }
 
 .expandedChevrons {
@@ -111,28 +101,32 @@
   position: absolute;
   top: 874px;
   left: 32px;
-  transition: 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 }
 
 .userCollapsed {
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-20%);
 }
 
 .profileWrapper {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  overflow: hidden; /* 이미지가 원형을 벗어나지 않도록 */
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ddd; /* 기본 배경색 */
+  background-color: #ddd;
 }
 
 .profileDefault {
-  position: relative;
   width: 48px;
   height: 48px;
   object-fit: cover;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
 }

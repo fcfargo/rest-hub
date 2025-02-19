@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import classNames from 'classnames';
 import styles from '@/styles/sidebar.module.css';
 
-const menuElements = [
+const MENU_ITEMS = [
   { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home' },
   { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search' },
   {
@@ -29,42 +30,35 @@ export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div
-      className={`${styles.sidebar} ${
-        expanded ? styles.expanded : styles.collapsed
-      }`}
-    >
-      <div className={styles.titleWrapper}>{expanded && 'Rest Hub'}</div>
+    <div className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed}`}>
+      <div
+        className={classNames(styles.titleWrapper, {
+          [styles.hidden]: !expanded,
+        })}
+      >
+        Rest Hub
+      </div>
 
       <nav className={styles.menu}>
-        {menuElements.map((item, index) => (
+        {MENU_ITEMS.map((item, index) => (
           <div key={index} className={styles.menuItem}>
-            <Image
-              src={item.src}
-              width={0}
-              height={0}
-              alt={item.alt}
-              className={styles.icon}
-            />
-            {expanded && (
-              <span className={styles.textWrapper}>{item.label}</span>
-            )}
+            <Image src={item.src} width={24} height={24} alt={item.alt} />
+            <span
+              className={classNames(styles.textWrapper, {
+                [styles.hidden]: !expanded,
+              })}
+            >
+              {item.label}
+            </span>
           </div>
         ))}
       </nav>
 
-      {expanded && (
-        <div className={styles.footer}>
-          <Image
-            src="/layout/sidebar/logout.svg"
-            width={0}
-            height={0}
-            alt="Logout"
-            className={styles.icon}
-          />
-          <span className={styles.textWrapper}> Logout</span>
-        </div>
-      )}
+      <div className={classNames(styles.footer, { [styles.hidden]: !expanded })}>
+        <Image src="/layout/sidebar/logout.svg" width={24} height={24} alt="Logout" />
+        <span className={styles.textWrapper}>Logout</span>
+      </div>
+
       <button
         className={`${styles.chevronsButton} ${
           expanded ? styles.expandedChevrons : styles.collapsedChevrons
@@ -73,9 +67,7 @@ export default function Sidebar() {
       >
         <Image
           src={
-            expanded
-              ? '/layout/sidebar/chevrons-left.svg'
-              : '/layout/sidebar/chevrons-right.svg'
+            expanded ? '/layout/sidebar/chevrons-left.svg' : '/layout/sidebar/chevrons-right.svg'
           }
           width={25}
           height={25}
@@ -83,19 +75,23 @@ export default function Sidebar() {
         />
       </button>
 
-      <div
-        className={`${styles.user} ${!expanded ? styles.userCollapsed : ''}`}
-      >
+      <div className={`${styles.user} ${!expanded ? styles.userCollapsed : ''}`}>
         <div className={styles.profileWrapper}>
           <Image
             src="/layout/sidebar/profile-default.svg"
-            width={0}
-            height={0}
+            width={48}
+            height={48}
             alt="ProfileDefault"
             className={styles.profileDefault}
           />
         </div>
-        {expanded && <span className={styles.textWrapper}>fcfargo</span>}
+        <span
+          className={classNames(styles.textWrapper, {
+            [styles.hidden]: !expanded,
+          })}
+        >
+          fcfargo
+        </span>
       </div>
     </div>
   );
