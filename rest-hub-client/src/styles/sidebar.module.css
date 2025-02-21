@@ -50,6 +50,11 @@
   flex: 0 0 auto;
 }
 
+.menuIcon {
+  width: 24;
+  height: 24;
+}
+
 .textWrapper {
   position: relative;
   width: fit-content;

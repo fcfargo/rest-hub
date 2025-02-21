@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
 import styles from '@/styles/sidebar.module.css';
+import { useAuth } from '@/context/authContext';
 
 const MENU_ITEMS = [
   { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home' },
@@ -28,6 +29,13 @@ const MENU_ITEMS = [
 
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
+  const { user, logout } = useAuth();
+
+  if (!user) {
+    return null;
+  }
+
+  const { username, profileImage } = user;
 
   return (
     <div className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed}`}>
@@ -42,7 +50,7 @@ export default function Sidebar() {
       <nav className={styles.menu}>
         {MENU_ITEMS.map((item, index) => (
           <div key={index} className={styles.menuItem}>
-            <Image src={item.src} width={24} height={24} alt={item.alt} />
+            <Image src={item.src} width={0} height={0} alt={item.alt} className={styles.menuIcon} />
             <span
               className={classNames(styles.textWrapper, {
                 [styles.hidden]: !expanded,
@@ -54,10 +62,13 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className={classNames(styles.footer, { [styles.hidden]: !expanded })}>
+      <button
+        className={classNames(styles.footer, { [styles.hidden]: !expanded })}
+        onClick={() => logout()}
+      >
         <Image src="/layout/sidebar/logout.svg" width={24} height={24} alt="Logout" />
         <span className={styles.textWrapper}>Logout</span>
-      </div>
+      </button>
 
       <button
         className={`${styles.chevronsButton} ${
@@ -78,7 +89,7 @@ export default function Sidebar() {
       <div className={`${styles.user} ${!expanded ? styles.userCollapsed : ''}`}>
         <div className={styles.profileWrapper}>
           <Image
-            src="/layout/sidebar/profile-default.svg"
+            src={profileImage}
             width={48}
             height={48}
             alt="ProfileDefault"
@@ -90,7 +101,7 @@ export default function Sidebar() {
             [styles.hidden]: !expanded,
           })}
         >
-          fcfargo
+          {username}
         </span>
       </div>
     </div>
