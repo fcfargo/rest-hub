@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // const token = localStorage.getItem('token');
         // if (!token) {
         //   setUser(null);
-        //   router.push('/login');
+        //   router.push('/auth/login');
         //   return;
         // }
 
@@ -69,13 +69,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } else {
           setUser(null);
           localStorage.removeItem('token'); // 인증 실패 시 토큰 제거
-          router.push('/login');
+          router.push('/auth/login');
         }
       } catch (error) {
         console.error('Failed to fetch user:', error);
         setUser(null);
         localStorage.removeItem('token');
-        router.push('/login');
+        router.push('/auth/login');
       }
     };
 
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    router.push('/login');
+    router.push('/auth/login');
   };
 
   return (
