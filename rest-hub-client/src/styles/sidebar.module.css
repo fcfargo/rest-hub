@@ -130,8 +130,3 @@
   height: 48px;
   object-fit: cover;
 }
-
-.hidden {
-  opacity: 0;
-  pointer-events: none;
-}

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
 import styles from '@/styles/sidebar.module.css';
+import globalStyles from '@/styles/utils.module.css';
 import { useAuth } from '@/context/authContext';
 
 const MENU_ITEMS = [
@@ -40,7 +41,7 @@ export default function Sidebar() {
     <div className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed}`}>
       <div
         className={classNames(styles.titleWrapper, {
-          [styles.hidden]: !expanded,
+          [globalStyles.hidden]: !expanded,
         })}
       >
         Rest Hub
@@ -52,7 +53,7 @@ export default function Sidebar() {
             <Image src={item.src} width={0} height={0} alt={item.alt} className={styles.menuIcon} />
             <span
               className={classNames(styles.textWrapper, {
-                [styles.hidden]: !expanded,
+                [globalStyles.hidden]: !expanded,
               })}
             >
               {item.label}
@@ -62,7 +63,7 @@ export default function Sidebar() {
       </nav>
 
       <button
-        className={classNames(styles.footer, { [styles.hidden]: !expanded })}
+        className={classNames(styles.footer, { [globalStyles.hidden]: !expanded })}
         onClick={() => logout()}
       >
         <Image src="/layout/sidebar/logout.svg" width={24} height={24} alt="Logout" />
@@ -97,7 +98,7 @@ export default function Sidebar() {
         </div>
         <span
           className={classNames(styles.textWrapper, {
-            [styles.hidden]: !expanded,
+            [globalStyles.hidden]: !expanded,
           })}
         >
           {username}
