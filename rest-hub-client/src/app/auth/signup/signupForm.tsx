@@ -1,9 +1,10 @@
 'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import styles from '@/styles/signup.module.css';
+
 import InputField from '@/components/forms/inputField';
+import styles from '@/styles/signup.module.css';
 
 const signUpSchema = z
   .object({
@@ -27,7 +28,8 @@ export default function SignUpForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    setError,
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     mode: 'onChange',

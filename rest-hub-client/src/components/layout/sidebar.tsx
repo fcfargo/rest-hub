@@ -1,10 +1,11 @@
 'use client';
-import { useState } from 'react';
-import Image from 'next/image';
 import classNames from 'classnames';
+import Image from 'next/image';
+import { useState } from 'react';
+
+import { useAuth } from '@/context/authContext';
 import styles from '@/styles/sidebar.module.css';
 import globalStyles from '@/styles/utils.module.css';
-import { useAuth } from '@/context/authContext';
 
 const MENU_ITEMS = [
   { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home' },
