@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import styles from '@/styles/login.module.css';
+import styles from '@/styles/authButton.module.css';
+import classNames from 'classnames';
 
 interface AuthButtonProps {
   text: string;
@@ -17,8 +18,8 @@ export default function AuthButton({
   className,
 }: AuthButtonProps) {
   return (
-    <button className={`${styles.authButton} ${className}`} onClick={onClick}>
-      <Image src={iconSrc} width={0} height={0} alt={altText} className={styles.loginIcon} />
+    <button className={classNames(styles.authButton, className)} onClick={onClick}>
+      <Image src={iconSrc} width={0} height={0} alt={altText} className={styles.authIcon} />
       {text}
     </button>
   );

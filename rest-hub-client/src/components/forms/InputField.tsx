@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import styles from '@/styles/login.module.css';
+import styles from '@/styles/input.module.css';
 
 interface InputFieldProps {
   type: string;
@@ -20,7 +20,7 @@ export default function InputField({
 }: InputFieldProps) {
   return (
     <div className={styles.inputContainer}>
-      <Image src={iconSrc} width={0} height={0} alt={altText} className={styles.loginIcon} />
+      <Image src={iconSrc} width={0} height={0} alt={altText} className={styles.icon} />
       <input
         type={type}
         className={styles.input}

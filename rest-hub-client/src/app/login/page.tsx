@@ -1,10 +1,10 @@
 'use client';
 import { useState } from 'react';
 import styles from '@/styles/login.module.css';
-import InputField from '@/components/forms/InputField';
-import AuthButton from '@/components/auth/AuthButton';
-import Divider from '@/components/ui/Divider';
-import Brand from '@/components/ui/Brand';
+import InputField from '@/components/forms/inputField';
+import AuthButton from '@/components/auth/authButton';
+import Divider from '@/components/ui/divider';
+import Brand from '@/components/ui/brand';
 
 export default function Login() {
   const [email, setEmail] = useState('');
