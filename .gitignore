@@ -1,0 +1,23 @@
+# 🌟 common
+*.log
+.DS_Store
+
+# 🌟 server
+rest-hub-server/node_modules
+rest-hub-server/dist/
+rest-hub-server/.env
+rest-hub-server/logs/
+rest-hub-server/.cache/
+rest-hub-server/build
+rest-hub-server/coverage
+
+# 🌟 client
+rest-hub-client/node_modules
+rest-hub-client/.next/
+rest-hub-client/.out/
+rest-hub-client/.env
+rest-hub-client/.cache/
+rest-hub-client/build
+rest-hub-client/coverage
+rest-hub-client/.vercel
+rest-hub-client/next-env.d.ts
