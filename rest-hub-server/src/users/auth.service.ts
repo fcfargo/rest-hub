@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { plainToInstance } from 'class-transformer';
 
 import { CreateUserDto } from './dtos/users.dto';
 import { SignupResponseDto } from './dtos/users.response.dto';
@@ -47,10 +46,6 @@ export class AuthService {
       }),
     ]);
 
-    return plainToInstance(
-      SignupResponseDto,
-      { user, token: { accessToken, refreshToken } },
-      { excludeExtraneousValues: true },
-    );
+    return { user, token: { accessToken, refreshToken } };
   }
 }
