@@ -1,7 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
 import { AppModule } from './app.module';
+import { processEnv } from './common/constants';
+import { ErrorExceptionFilter } from './common/filters/error.exception';
 import { SuccessInterceptor } from './common/interceptors/success.interceptor';
 
 async function bootstrap() {
@@ -10,6 +13,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalInterceptors(new SuccessInterceptor());
 
-  await app.listen(process.env.PORT ?? 3000);
+  const logger = app.get(WINSTON_MODULE_PROVIDER);
+  app.useGlobalFilters(new ErrorExceptionFilter(logger));
+
+  await app.listen(processEnv.PORT ?? 3000);
 }
 bootstrap();
