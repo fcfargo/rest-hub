@@ -1,15 +1,18 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
-import { CreateUserRequestDto, SignInUserRequestDto } from './dtos/users.dto';
-import { AuthResponseDto, UserResponseDto } from './dtos/users.response.dto';
+import {
+  CreateUserRequestDto,
+  RefreshAccesTokenRequestDto,
+  SignInUserRequestDto,
+} from './dtos/users.dto';
+import { AuthResponseDto, TokenResponseDto, UserResponseDto } from './dtos/users.response.dto';
 import { JwtAuthGuard } from './jwt/guards/jwt.guard';
 import { jwtPayLoad } from './jwt/guards/jwt.payload';
 import { UsersService } from './users.service';
 
 import { Serialize } from '@/common/decorators/serialize.decorator';
 import { CurrentUser } from '@/common/decorators/user.decorator';
-import { User } from '@/model/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -17,13 +20,6 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
   ) {}
-
-  @UseGuards(JwtAuthGuard)
-  @Serialize(UserResponseDto)
-  @Get('auth/me')
-  async getUser(@CurrentUser() currentUser: jwtPayLoad): Promise<User | null> {
-    return this.usersService.findOneUserById(currentUser.sub);
-  }
 
   @Serialize(AuthResponseDto)
   @Post('auth/signup')
@@ -35,5 +31,18 @@ export class UsersController {
   @Post('auth/signin')
   async signin(@Body() body: SignInUserRequestDto) {
     return this.authService.signin(body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Serialize(UserResponseDto)
+  @Get('auth/me')
+  async getUser(@CurrentUser() currentUser: jwtPayLoad) {
+    return this.usersService.findOneUserById(currentUser.sub);
+  }
+
+  @Serialize(TokenResponseDto)
+  @Post('auth/refresh')
+  async refreshAccessToken(@Body() body: RefreshAccesTokenRequestDto) {
+    return this.authService.refreshAccessToken(body);
   }
 }

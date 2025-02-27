@@ -38,5 +38,5 @@ export class AuthResponseDto {
 
   @Expose()
   @Type(() => TokenResponseDto)
-  token: TokenResponseDto;
+  tokens: TokenResponseDto;
 }

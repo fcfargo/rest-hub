@@ -2,6 +2,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -34,7 +35,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         case 'invalid signature':
           throw new UnauthorizedException(err.message);
         default:
-          throw new UnauthorizedException('Invalid authentication token');
+          throw new InternalServerErrorException('Jwt Validation Failed');
       }
     }
   };

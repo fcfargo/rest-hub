@@ -20,3 +20,8 @@ export class SignInUserRequestDto {
   @MinLength(8)
   password: string;
 }
+
+export class RefreshAccesTokenRequestDto {
+  @IsString()
+  refreshToken: string;
+}

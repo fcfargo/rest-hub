@@ -2,8 +2,12 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { CreateUserRequestDto, SignInUserRequestDto } from './dtos/users.dto';
-import { AuthResponseDto } from './dtos/users.response.dto';
+import {
+  CreateUserRequestDto,
+  RefreshAccesTokenRequestDto,
+  SignInUserRequestDto,
+} from './dtos/users.dto';
+import { AuthResponseDto, TokenResponseDto } from './dtos/users.response.dto';
 import { jwtPayLoad } from './jwt/guards/jwt.payload';
 import { UsersService } from './users.service';
 
@@ -28,6 +32,24 @@ export class AuthService {
     return bcrypt.compare(checkPassword, password);
   }
 
+  private async generateTokens(payload: jwtPayLoad): Promise<TokenResponseDto> {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload, {
+        secret: processEnv.JWT_SECRET,
+        expiresIn: processEnv.REFRESH_TOKEN_EXPIRES_IN,
+      }),
+    ]);
+
+    return { accessToken, refreshToken };
+  }
+
+  private async verifyToken(token: string): Promise<jwtPayLoad> {
+    return this.jwtService.verifyAsync(token, {
+      secret: processEnv.JWT_SECRET,
+    });
+  }
+
   async signup(requestBody: CreateUserRequestDto): Promise<AuthResponseDto> {
     const { username, email, password } = requestBody;
 
@@ -43,15 +65,9 @@ export class AuthService {
 
     const payload: jwtPayLoad = { sub: newUser.id, email: newUser.email };
 
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload),
-      this.jwtService.signAsync(payload, {
-        secret: processEnv.JWT_SECRET,
-        expiresIn: processEnv.REFRESH_TOKEN_EXPIRES_IN,
-      }),
-    ]);
+    const tokens = await this.generateTokens(payload);
 
-    return { user: newUser, token: { accessToken, refreshToken } };
+    return { user: newUser, tokens };
   }
 
   async signin(requestBody: SignInUserRequestDto): Promise<AuthResponseDto> {
@@ -69,14 +85,20 @@ export class AuthService {
 
     const payload: jwtPayLoad = { sub: user.id, email: user.email };
 
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload),
-      this.jwtService.signAsync(payload, {
-        secret: processEnv.JWT_SECRET,
-        expiresIn: processEnv.REFRESH_TOKEN_EXPIRES_IN,
-      }),
-    ]);
+    const tokens = await this.generateTokens(payload);
 
-    return { user, token: { accessToken, refreshToken } };
+    return { user, tokens };
+  }
+
+  async refreshAccessToken(requestBody: RefreshAccesTokenRequestDto): Promise<TokenResponseDto> {
+    const { refreshToken } = requestBody;
+
+    const { sub, email } = await this.verifyToken(refreshToken);
+
+    const payload: jwtPayLoad = { sub, email };
+
+    const tokens = await this.generateTokens(payload);
+
+    return tokens;
   }
 }
