@@ -31,7 +31,7 @@ export class TokenResponseDto {
   refreshToken: string;
 }
 
-export class SignupResponseDto {
+export class AuthResponseDto {
   @Expose()
   @Type(() => UserResponseDto)
   user: UserResponseDto;

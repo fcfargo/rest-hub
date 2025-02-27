@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { CreateUserDto } from './dtos/users.dto';
-import { SignupResponseDto } from './dtos/users.response.dto';
+import { CreateUserDto, SignInUserDto } from './dtos/users.dto';
+import { AuthResponseDto } from './dtos/users.response.dto';
+import { jwtPayLoad } from './jwt/guards/jwt.payload';
 import { UsersService } from './users.service';
 
 import { processEnv } from '@/common/constants';
@@ -23,26 +24,56 @@ export class AuthService {
     return hashedPassword;
   }
 
-  async signup(requestBody: CreateUserDto): Promise<SignupResponseDto> {
+  private async checkPassword(checkPassword: string, password: string): Promise<boolean> {
+    return bcrypt.compare(checkPassword, password);
+  }
+
+  async signup(requestBody: CreateUserDto): Promise<AuthResponseDto> {
     const { username, email, password } = requestBody;
 
-    const users = await this.usersService.findAllUsersByEmail(email);
-    if (users.length) {
+    const user = await this.usersService.findOneUserByEmail(email);
+    if (user) {
       throw new BadRequestException('email in use');
     }
 
     const hashedPassword = await this.hashPassword(password);
 
     const requestData = { username, email, password: hashedPassword };
-    const user = await this.usersService.createUser(requestData);
+    const newUser = await this.usersService.createUser(requestData);
 
-    const payload = { sub: user.id };
+    const payload: jwtPayLoad = { sub: newUser.id, email: newUser.email };
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload),
       this.jwtService.signAsync(payload, {
         secret: processEnv.JWT_SECRET,
         expiresIn: processEnv.REFRESH_TOKEN_EXPIRES_IN,
+      }),
+    ]);
+
+    return { user: newUser, token: { accessToken, refreshToken } };
+  }
+
+  async signin(requestBody: SignInUserDto): Promise<AuthResponseDto> {
+    const { email, password } = requestBody;
+
+    const user = await this.usersService.findOneUserByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('user not found');
+    }
+
+    const isPasswordValid = await this.checkPassword(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('invalid password');
+    }
+
+    const payload: jwtPayLoad = { sub: user.id, email: user.email };
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
       }),
     ]);
 

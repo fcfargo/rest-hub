@@ -42,15 +42,21 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   canActivate = async (context: ExecutionContext): Promise<boolean> => {
     const request = context.switchToHttp().getRequest();
     const { authorization } = request.headers;
+    const xAuthToken = request.headers['x-auth-token'];
     let userData: jwtPayLoad | undefined;
 
-    if (!authorization) {
+    if (!authorization && !xAuthToken) {
       throw new ForbiddenException('Token Have Not');
     }
 
     if (authorization) {
       const token = authorization.replace('Bearer ', '');
       const tokenData = this.validateToken(token);
+      userData = tokenData.data;
+    }
+
+    if (xAuthToken) {
+      const tokenData = this.validateToken(xAuthToken);
       userData = tokenData.data;
     }
 

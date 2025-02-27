@@ -25,8 +25,8 @@ export class UsersRepository {
     });
   }
 
-  async findAllUsersByEmail(email: string): Promise<User[]> {
-    return this.usersRepository.find({
+  async findOneUserByEmail(email: string): Promise<User | null> {
+    return this.usersRepository.findOne({
       where: { email, deletedAt: IsNull() },
     });
   }

@@ -16,6 +16,13 @@ async function bootstrap() {
   const logger = app.get(WINSTON_MODULE_PROVIDER);
   app.useGlobalFilters(new ErrorExceptionFilter(logger));
 
+  const corsOptions = {
+    origin: ['http://localhost:3000', processEnv.CLIENT_URL],
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    allowHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
+  };
+  app.enableCors(corsOptions);
+
   await app.listen(processEnv.PORT ?? 3000);
 }
 bootstrap();

@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dtos/users.dto';
-import { SignupResponseDto, UserResponseDto } from './dtos/users.response.dto';
+import { CreateUserDto, SignInUserDto } from './dtos/users.dto';
+import { AuthResponseDto, UserResponseDto } from './dtos/users.response.dto';
 import { UsersService } from './users.service';
 
 import { Serialize } from '@/common/decorators/serialize.decorator';
@@ -21,9 +21,15 @@ export class UsersController {
     return this.usersService.findOneUserById(id);
   }
 
-  @Serialize(SignupResponseDto)
-  @Post()
+  @Serialize(AuthResponseDto)
+  @Post('auth/signup')
   async signup(@Body() body: CreateUserDto) {
     return this.authService.signup(body);
+  }
+
+  @Serialize(AuthResponseDto)
+  @Post('auth/signin')
+  async signin(@Body() body: SignInUserDto) {
+    return this.authService.signin(body);
   }
 }
