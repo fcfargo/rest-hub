@@ -51,13 +51,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     if (authorization) {
       const token = authorization.replace('Bearer ', '');
-      const tokenData = this.validateToken(token);
-      userData = tokenData.data;
+      const { sub, email } = this.validateToken(token);
+      userData = { sub, email };
     }
 
     if (xAuthToken) {
-      const tokenData = this.validateToken(xAuthToken);
-      userData = tokenData.data;
+      const { sub, email } = this.validateToken(xAuthToken);
+      userData = { sub, email };
     }
 
     if (userData) {

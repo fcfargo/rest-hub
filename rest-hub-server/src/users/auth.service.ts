@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { CreateUserDto, SignInUserDto } from './dtos/users.dto';
+import { CreateUserRequestDto, SignInUserRequestDto } from './dtos/users.dto';
 import { AuthResponseDto } from './dtos/users.response.dto';
 import { jwtPayLoad } from './jwt/guards/jwt.payload';
 import { UsersService } from './users.service';
@@ -28,7 +28,7 @@ export class AuthService {
     return bcrypt.compare(checkPassword, password);
   }
 
-  async signup(requestBody: CreateUserDto): Promise<AuthResponseDto> {
+  async signup(requestBody: CreateUserRequestDto): Promise<AuthResponseDto> {
     const { username, email, password } = requestBody;
 
     const user = await this.usersService.findOneUserByEmail(email);
@@ -54,7 +54,7 @@ export class AuthService {
     return { user: newUser, token: { accessToken, refreshToken } };
   }
 
-  async signin(requestBody: SignInUserDto): Promise<AuthResponseDto> {
+  async signin(requestBody: SignInUserRequestDto): Promise<AuthResponseDto> {
     const { email, password } = requestBody;
 
     const user = await this.usersService.findOneUserByEmail(email);
@@ -72,8 +72,8 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload),
       this.jwtService.signAsync(payload, {
-        secret: process.env.JWT_SECRET,
-        expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
+        secret: processEnv.JWT_SECRET,
+        expiresIn: processEnv.REFRESH_TOKEN_EXPIRES_IN,
       }),
     ]);
 
