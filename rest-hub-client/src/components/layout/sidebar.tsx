@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import { useState } from 'react';
 
+import { PROFILE_IMAGE_DEFAULT } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import styles from '@/styles/sidebar.module.css';
 import globalStyles from '@/styles/utils.module.css';
@@ -36,7 +37,8 @@ export default function Sidebar() {
     return null;
   }
 
-  const { username, profileImage } = user;
+  const username = user.username;
+  const profileImage = user.profileImage || PROFILE_IMAGE_DEFAULT;
 
   return (
     <div className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed}`}>
@@ -93,7 +95,7 @@ export default function Sidebar() {
             src={profileImage}
             width={48}
             height={48}
-            alt="ProfileDefault"
+            alt="ProfileImage"
             className={styles.profileDefault}
           />
         </div>
