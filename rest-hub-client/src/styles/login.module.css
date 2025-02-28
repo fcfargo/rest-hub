@@ -83,17 +83,6 @@
   cursor: pointer;
 }
 
-.orText {
-  font-size: 14px;
-  color: #9699b7;
-}
-
-.line {
-  flex-grow: 1;
-  height: 1px;
-  background: #e4e6ec;
-}
-
 .forgotPassword {
   text-align: center;
   color: #0095f6;
@@ -113,14 +102,4 @@
   color: #0062ff;
   font-weight: bold;
   cursor: pointer;
-}
-
-.errorText {
-  color: #ff4d4f;
-  font-size: 12px;
-  font-weight: 500;
-  margin-top: 4px;
-  padding-left: 8px;
-  display: block;
-  animation: fadeIn 0.3s ease-in-out;
 }

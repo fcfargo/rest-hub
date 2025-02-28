@@ -1,8 +1,12 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { BAD_REQUEST_STATUS_CODE, UNAUTHORIZED_STATUS_CODE } from '@/constants';
+import {
+  AUTH_EFFECT_EXCLUDED_ROUTES,
+  BAD_REQUEST_STATUS_CODE,
+  UNAUTHORIZED_STATUS_CODE,
+} from '@/constants';
 import api from '@/libs/axiosInstance';
 
 interface User {
@@ -24,6 +28,7 @@ interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   login: (requestData: LogInUserRequest) => Promise<boolean>;
+  signup: (requestData: LogInUserRequest) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -42,8 +47,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const shouldSkipEffect = AUTH_EFFECT_EXCLUDED_ROUTES.includes(pathname);
 
   useEffect(() => {
+    if (shouldSkipEffect) {
+      return;
+    }
+
     const getUser = async () => {
       const accessToken = localStorage.getItem('accessToken');
       if (!accessToken) {
@@ -62,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           console.warn('Access token expired, attempting refresh...');
           await refreshAccessToken();
         } else {
-          console.error('Failed to fetch user:', error);
+          console.error('Fetching user failed', error);
           logout();
         }
       }
@@ -87,7 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setUser(refreshedData.body);
     } catch (error) {
-      console.error('Refresh token expired or invalid:', error);
+      console.error('Refresh token failed: expired or invalid:', error);
       logout();
     }
   };
@@ -104,7 +116,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return true;
     } catch (error) {
       if ([UNAUTHORIZED_STATUS_CODE, BAD_REQUEST_STATUS_CODE].includes(error.response?.status)) {
-        console.error('Login unauthorized error:', error);
+        console.error('Login failed: Unauthorized', error);
+        return false;
+      }
+
+      throw new Error(error.message);
+    }
+  };
+
+  const signup = async (requestData: LogInUserRequest): Promise<boolean> => {
+    try {
+      const { data } = await api.post('/users/auth/signup', requestData);
+      const { tokens, user } = data.body;
+
+      saveTokens(tokens.accessToken, tokens.refreshToken);
+      setUser(user);
+      router.push('/');
+
+      return true;
+    } catch (error) {
+      if ([BAD_REQUEST_STATUS_CODE].includes(error.response?.status)) {
+        console.error('Signup failed: Email already in use', error);
         return false;
       }
 
@@ -119,7 +151,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, setUser, login, signup, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 

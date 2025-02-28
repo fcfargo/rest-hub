@@ -10,3 +10,10 @@ export enum HttpStatusCode {
 
 export const BAD_REQUEST_STATUS_CODE = HttpStatusCode.BAD_REQUEST;
 export const UNAUTHORIZED_STATUS_CODE = HttpStatusCode.UNAUTHORIZED;
+
+export const AUTH_ROUTES = {
+  LOGIN: '/auth/login',
+  SIGNUP: '/auth/signup',
+};
+
+export const AUTH_EFFECT_EXCLUDED_ROUTES = Object.values(AUTH_ROUTES);

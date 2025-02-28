@@ -18,7 +18,7 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
             {children}
             <div className={styles.forgotPassword}>Forgot password?</div>
             <Divider />
-            <AuthButton text="Google" iconSrc="/login/google.svg" altText="Google Icon" />
+            <AuthButton text="Google" iconSrc="/auth/google.svg" altText="Google Icon" />
           </div>
         </div>
         <p className={styles.signupText}>

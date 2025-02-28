@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
 import { useAuth } from '@/context/authContext';
+import inputStyles from '@/styles/input.module.css';
 import styles from '@/styles/login.module.css';
 
 const logInSchema = z.object({
@@ -39,7 +40,7 @@ export default function LoginForm() {
         );
       }
     } catch (error) {
-      console.error('Login failed error:', error);
+      console.error('Login failed:', error);
       setLoginError('로그인 중 문제가 발생했습니다. 다시 시도해 주세요.');
     }
   };
@@ -49,7 +50,7 @@ export default function LoginForm() {
       <InputField
         type="email"
         placeholder="Your email"
-        iconSrc="/login/email.svg"
+        iconSrc="/auth/email.svg"
         altText="Email Icon"
         {...register('email')}
         errorMessage={errors.email?.message}
@@ -58,13 +59,13 @@ export default function LoginForm() {
       <InputField
         type="password"
         placeholder="Password"
-        iconSrc="/login/password.svg"
+        iconSrc="/auth/password.svg"
         altText="Password Icon"
         {...register('password')}
         errorMessage={errors.password?.message}
       />
 
-      {loginError && <p className={styles.errorText}>{loginError}</p>}
+      {loginError && <p className={inputStyles.errorText}>{loginError}</p>}
 
       <button className={styles.button} type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Logging in...' : 'Log in'}
