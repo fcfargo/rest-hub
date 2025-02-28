@@ -17,7 +17,7 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
             <div className={styles.signupText}>Sign Up</div>
             {children}
             <Divider />
-            <AuthButton text="Google" iconSrc="/login/google.svg" altText="Google Icon" />
+            <AuthButton text="Google" iconSrc="/auth/google.svg" altText="Google Icon" />
           </div>
         </div>
         <p className={styles.loginText}>

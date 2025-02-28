@@ -1,130 +1,159 @@
 'use client';
+import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+
+import {
+  AUTH_EFFECT_EXCLUDED_ROUTES,
+  BAD_REQUEST_STATUS_CODE,
+  UNAUTHORIZED_STATUS_CODE,
+} from '@/constants';
+import api from '@/libs/axiosInstance';
 
 interface User {
   id: number;
-  email: string;
   username: string;
-  profileImage: string;
+  email: string;
+  profileImage: string | null;
+  deviceToken: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface LogInUserRequest {
+  email: string;
+  password: string;
 }
 
 interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (requestData: LogInUserRequest) => Promise<boolean>;
+  signup: (requestData: LogInUserRequest) => Promise<boolean>;
   logout: () => void;
 }
+
+const saveTokens = (accessToken: string, refreshToken: string) => {
+  localStorage.setItem('accessToken', accessToken);
+  localStorage.setItem('refreshToken', refreshToken);
+};
+
+const removeTokens = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const shouldSkipEffect = AUTH_EFFECT_EXCLUDED_ROUTES.includes(pathname);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        // api 서버 인증 기능 완성 후 데이터 fetch 로직으로 변경할 예정
-        // const token = localStorage.getItem('token');
-        // if (!token) {
-        //   setUser(null);
-        //   router.push('/auth/login');
-        //   return;
-        // }
+    if (shouldSkipEffect) {
+      return;
+    }
 
-        // const res = await fetch('/api/auth/me', {
-        //   method: 'GET',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     Authorization: `Bearer ${token}`, // ✅ JWT 토큰 포함
-        //   },
-        // });
-        const res = {
-          ok: true,
-          data: {
-            user: {
-              id: 1,
-              email: 'fcfargo90@gmail.com',
-              username: 'fcfargo',
-              profileImage: '/layout/sidebar/profile-default.svg',
-            },
-          },
-        };
-        // const res = {
-        //   ok: false,
-        //   data: {
-        //     user: {
-        //       id: 1,
-        //       email: 'fcfargo90@gmail.com',
-        //       username: 'fcfargo',
-        //       profileImage: '/layout/sidebar/profile-default.svg',
-        //     },
-        //   },
-        // };
-        if (res.ok) {
-          // const data = await res.json();
-          const { data } = res;
-          setUser(data.user);
-        } else {
-          setUser(null);
-          localStorage.removeItem('token'); // 인증 실패 시 토큰 제거
-          router.push('/auth/login');
-        }
+    const getUser = async () => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        logout();
+        return;
+      }
+
+      try {
+        const { data } = await api.get('users/auth/me', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        setUser(data.body);
       } catch (error) {
-        console.error('Failed to fetch user:', error);
-        setUser(null);
-        localStorage.removeItem('token');
-        router.push('/auth/login');
+        if (error.response?.status === UNAUTHORIZED_STATUS_CODE) {
+          console.warn('Access token expired, attempting refresh...');
+          await refreshAccessToken();
+        } else {
+          console.error('Fetching user failed', error);
+          logout();
+        }
       }
     };
 
-    fetchUser();
-  }, [router]);
+    getUser();
+  }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const refreshAccessToken = async () => {
     try {
-      // api 서버 인증 기능 완성 후 데이터 fetch 로직으로 변경할 예정
-      // const res = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password }),
-      // });
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) throw new Error('No refresh token available');
 
-      const res = {
-        ok: true,
-        data: {
-          user: {
-            id: 1,
-            email: 'fcfargo90@gmail.com',
-            username: 'fcfargo',
-            profileImage: '/layout/sidebar/profile-default.svg',
-          },
-        },
-      };
-      if (res.ok) {
-        // const { user, token } = await res.json();
-        const { data } = res;
-        // localStorage.setItem('token', token);
-        setUser(data.user);
-        router.push('/');
-        return true;
-      }
-      return false;
+      const { data } = await api.post('users/auth/refresh', { refreshToken });
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } = data.body;
+
+      saveTokens(newAccessToken, newRefreshToken);
+
+      const { data: refreshedData } = await api.get('users/auth/me', {
+        headers: { Authorization: `Bearer ${newAccessToken}` },
+      });
+
+      setUser(refreshedData.body);
     } catch (error) {
-      console.error('Login error:', error);
-      return false;
+      console.error('Refresh token failed: expired or invalid:', error);
+      logout();
+    }
+  };
+
+  const login = async (requestData: LogInUserRequest): Promise<boolean> => {
+    try {
+      const { data } = await api.post('/users/auth/signin', requestData);
+      const { tokens, user } = data.body;
+
+      saveTokens(tokens.accessToken, tokens.refreshToken);
+      setUser(user);
+      router.push('/');
+
+      return true;
+    } catch (error) {
+      if ([UNAUTHORIZED_STATUS_CODE, BAD_REQUEST_STATUS_CODE].includes(error.response?.status)) {
+        console.error('Login failed: Unauthorized', error);
+        return false;
+      }
+
+      throw new Error(error.message);
+    }
+  };
+
+  const signup = async (requestData: LogInUserRequest): Promise<boolean> => {
+    try {
+      const { data } = await api.post('/users/auth/signup', requestData);
+      const { tokens, user } = data.body;
+
+      saveTokens(tokens.accessToken, tokens.refreshToken);
+      setUser(user);
+      router.push('/');
+
+      return true;
+    } catch (error) {
+      if ([BAD_REQUEST_STATUS_CODE].includes(error.response?.status)) {
+        console.error('Signup failed: Email already in use', error);
+        return false;
+      }
+
+      throw new Error(error.message);
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
     setUser(null);
+    removeTokens();
     router.push('/auth/login');
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, setUser, login, signup, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 

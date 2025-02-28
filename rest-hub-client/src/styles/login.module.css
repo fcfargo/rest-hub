@@ -83,17 +83,6 @@
   cursor: pointer;
 }
 
-.orText {
-  font-size: 14px;
-  color: #9699b7;
-}
-
-.line {
-  flex-grow: 1;
-  height: 1px;
-  background: #e4e6ec;
-}
-
 .forgotPassword {
   text-align: center;
   color: #0095f6;

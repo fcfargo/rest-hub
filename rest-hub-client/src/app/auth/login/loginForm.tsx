@@ -1,10 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
+import { useAuth } from '@/context/authContext';
+import inputStyles from '@/styles/input.module.css';
 import styles from '@/styles/login.module.css';
 
 const logInSchema = z.object({
@@ -15,18 +18,31 @@ const logInSchema = z.object({
 type LoginFormValues = z.infer<typeof logInSchema>;
 
 export default function LoginForm() {
+  const { login } = useAuth();
+  const [loginError, setLoginError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setError,
   } = useForm<LoginFormValues>({
     resolver: zodResolver(logInSchema),
     mode: 'onChange',
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    console.log('Log In Data:', data);
+    try {
+      setLoginError(null);
+
+      const success = await login(data);
+      if (!success) {
+        setLoginError(
+          '아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.',
+        );
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      setLoginError('로그인 중 문제가 발생했습니다. 다시 시도해 주세요.');
+    }
   };
 
   return (
@@ -34,7 +50,7 @@ export default function LoginForm() {
       <InputField
         type="email"
         placeholder="Your email"
-        iconSrc="/login/email.svg"
+        iconSrc="/auth/email.svg"
         altText="Email Icon"
         {...register('email')}
         errorMessage={errors.email?.message}
@@ -43,13 +59,13 @@ export default function LoginForm() {
       <InputField
         type="password"
         placeholder="Password"
-        iconSrc="/login/password.svg"
+        iconSrc="/auth/password.svg"
         altText="Password Icon"
         {...register('password')}
         errorMessage={errors.password?.message}
       />
 
-      {errors.root && <p className={styles.errorText}>{errors.root.message}</p>}
+      {loginError && <p className={inputStyles.errorText}>{loginError}</p>}
 
       <button className={styles.button} type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Logging in...' : 'Log in'}

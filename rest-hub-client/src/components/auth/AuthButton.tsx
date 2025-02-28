@@ -1,6 +1,7 @@
-import Image from 'next/image';
-import styles from '@/styles/authButton.module.css';
 import classNames from 'classnames';
+import Image from 'next/image';
+
+import styles from '@/styles/authButton.module.css';
 
 interface AuthButtonProps {
   text: string;

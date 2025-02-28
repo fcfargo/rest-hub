@@ -1,14 +1,18 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
+import { useAuth } from '@/context/authContext';
+import inputStyles from '@/styles/input.module.css';
 import styles from '@/styles/signup.module.css';
 
 const signUpSchema = z
   .object({
     email: z.string().email({ message: '유효한 이메일 형식이 아닙니다.' }),
+    username: z.string().max(50, { message: '유저 네임은 50자리 이하만 가능합니다.' }),
     password: z
       .string()
       .min(8, { message: '비밀번호는 8자리 이상 입력해야 합니다.' })
@@ -25,18 +29,30 @@ const signUpSchema = z
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 export default function SignUpForm() {
+  const { signup } = useAuth();
+  const [signupError, setSignupError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setError,
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     mode: 'onChange',
   });
 
   const onSubmit = async (data: SignUpFormValues) => {
-    console.log('Sign Up Data:', data);
+    try {
+      setSignupError(null);
+
+      const success = await signup(data);
+      if (!success) {
+        setSignupError('이미 사용 중인 email 주소입니다.');
+      }
+    } catch (error) {
+      console.error('Signup failed', error);
+      setSignupError('회원가입 중 문제가 발생했습니다. 다시 시도해 주세요.');
+    }
   };
 
   return (
@@ -45,17 +61,27 @@ export default function SignUpForm() {
       <InputField
         type="email"
         placeholder="Your email"
-        iconSrc="/login/email.svg"
+        iconSrc="/auth/email.svg"
         altText="Email Icon"
         {...register('email')}
         errorMessage={errors.email?.message}
+      />
+
+      {/* 유저 네임 입력 */}
+      <InputField
+        type="username"
+        placeholder="Username"
+        iconSrc="/auth/username.svg"
+        altText="Username Icon"
+        {...register('username')}
+        errorMessage={errors.username?.message}
       />
 
       {/* 비밀번호 입력 */}
       <InputField
         type="password"
         placeholder="Password"
-        iconSrc="/login/password.svg"
+        iconSrc="/auth/password.svg"
         altText="Password Icon"
         {...register('password')}
         errorMessage={errors.password?.message}
@@ -65,14 +91,18 @@ export default function SignUpForm() {
       <InputField
         type="password"
         placeholder="Repeat password"
-        iconSrc="/login/password.svg"
+        iconSrc="/auth/password.svg"
         altText="Password Icon"
         {...register('repeatPassword')}
         errorMessage={errors.repeatPassword?.message}
       />
 
+      {signupError && <p className={inputStyles.errorText}>{signupError}</p>}
+
       {/* 로그인 버튼 */}
-      <button className={styles.button}>Sign Up</button>
+      <button className={styles.button} type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Signing up...' : 'Sign Up'}
+      </button>
     </form>
   );
 }
