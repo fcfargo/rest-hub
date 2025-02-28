@@ -2,12 +2,9 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import {
-  AUTH_EFFECT_EXCLUDED_ROUTES,
-  BAD_REQUEST_STATUS_CODE,
-  UNAUTHORIZED_STATUS_CODE,
-} from '@/constants';
+import { AUTH_EFFECT_EXCLUDED_ROUTES, HTTP_STATUS_CODES } from '@/constants';
 import api from '@/libs/axiosInstance';
+import { getAccessToken, getRefreshToken, removeTokens, saveTokens } from '@/utils/authUtils';
 
 interface User {
   id: number;
@@ -32,16 +29,6 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const saveTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem('accessToken', accessToken);
-  localStorage.setItem('refreshToken', refreshToken);
-};
-
-const removeTokens = () => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-};
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -57,7 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     const getUser = async () => {
-      const accessToken = localStorage.getItem('accessToken');
+      const accessToken = getAccessToken();
       if (!accessToken) {
         logout();
         return;
@@ -70,7 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         setUser(data.body);
       } catch (error) {
-        if (error.response?.status === UNAUTHORIZED_STATUS_CODE) {
+        if (error.response?.status === HTTP_STATUS_CODES.UNAUTHORIZED) {
           console.warn('Access token expired, attempting refresh...');
           await refreshAccessToken();
         } else {
@@ -85,7 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const refreshAccessToken = async () => {
     try {
-      const refreshToken = localStorage.getItem('refreshToken');
+      const refreshToken = getRefreshToken();
       if (!refreshToken) throw new Error('No refresh token available');
 
       const { data } = await api.post('users/auth/refresh', { refreshToken });
@@ -115,7 +102,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return true;
     } catch (error) {
-      if ([UNAUTHORIZED_STATUS_CODE, BAD_REQUEST_STATUS_CODE].includes(error.response?.status)) {
+      if (
+        [HTTP_STATUS_CODES.UNAUTHORIZED, HTTP_STATUS_CODES.BAD_REQUEST].includes(
+          error.response?.status,
+        )
+      ) {
         console.error('Login failed: Unauthorized', error);
         return false;
       }
@@ -135,7 +126,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return true;
     } catch (error) {
-      if ([BAD_REQUEST_STATUS_CODE].includes(error.response?.status)) {
+      if ([HTTP_STATUS_CODES.BAD_REQUEST].includes(error.response?.status)) {
         console.error('Signup failed: Email already in use', error);
         return false;
       }

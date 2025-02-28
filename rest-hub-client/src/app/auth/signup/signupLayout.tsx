@@ -1,3 +1,6 @@
+import { SessionProvider, signIn } from 'next-auth/react';
+
+import GoogleAuthHandler from '../login/googleAuthHandler';
 import AuthButton from '@/components/auth/authButton';
 import Brand from '@/components/ui/brand';
 import Divider from '@/components/ui/divider';
@@ -17,7 +20,15 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
             <div className={styles.signupText}>Sign Up</div>
             {children}
             <Divider />
-            <AuthButton text="Google" iconSrc="/auth/google.svg" altText="Google Icon" />
+            <SessionProvider>
+              <GoogleAuthHandler />
+              <AuthButton
+                text="Google"
+                iconSrc="/auth/google.svg"
+                altText="Google Icon"
+                onClick={() => signIn('google')}
+              />
+            </SessionProvider>
           </div>
         </div>
         <p className={styles.loginText}>
