@@ -5,6 +5,7 @@ import {
   CreateUserRequestDto,
   RefreshAccesTokenRequestDto,
   SignInUserRequestDto,
+  VerifyGoogleOAuthRequestDto,
 } from './dtos/users.dto';
 import { AuthResponseDto, TokenResponseDto, UserResponseDto } from './dtos/users.response.dto';
 import { JwtAuthGuard } from './jwt/guards/jwt.guard';
@@ -31,6 +32,12 @@ export class UsersController {
   @Post('auth/signin')
   async signin(@Body() body: SignInUserRequestDto) {
     return this.authService.signin(body);
+  }
+
+  @Serialize(AuthResponseDto)
+  @Post('auth/google')
+  async verifyGoogleOAuth(@Body() body: VerifyGoogleOAuthRequestDto) {
+    return this.authService.verifyGoogleOAuth(body);
   }
 
   @UseGuards(JwtAuthGuard)
