@@ -50,7 +50,7 @@ export default function SignUpForm() {
         setSignupError('이미 사용 중인 email 주소입니다.');
       }
     } catch (error) {
-      console.error('Signup failed', error);
+      console.error('Signup failed:', error);
       setSignupError('회원가입 중 문제가 발생했습니다. 다시 시도해 주세요.');
     }
   };

@@ -15,7 +15,7 @@ rest-hub-server/coverage
 rest-hub-client/node_modules
 rest-hub-client/.next/
 rest-hub-client/.out/
-rest-hub-client/config/.env
+rest-hub-client/.env
 rest-hub-client/.cache/
 rest-hub-client/build
 rest-hub-client/coverage
