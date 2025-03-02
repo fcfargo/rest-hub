@@ -14,7 +14,8 @@
 }
 
 .input {
-  flex: 0.2;
+  width: 100%;
+  flex-basis: 70%;
   border: none;
   outline: none;
   font-size: 14px;
@@ -30,15 +31,15 @@
 }
 
 .eyeIcon {
-  width: 22px;
-  height: 24px;
+  width: 18px;
+  height: 20px;
 }
 
 .errorText {
   color: #ff4d4f;
   font-size: 12px;
   font-weight: 500;
-  margin-right: 22px;
+  margin-right: 20px;
   margin-top: 4px;
   padding-left: 8px;
   display: block;
