@@ -25,3 +25,8 @@ export class RefreshAccesTokenRequestDto {
   @IsString()
   refreshToken: string;
 }
+
+export class VerifyGoogleOAuthRequestDto {
+  @IsString()
+  id_token: string;
+}

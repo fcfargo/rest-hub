@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 
-import { CreateUserRequestDto } from './dtos/users.dto';
+import { CreateUserRequest } from './interfaces/users.interface';
 
 import { User } from '@/model/user.entity';
 
@@ -13,7 +13,7 @@ export class UsersRepository {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async createUser(requestData: CreateUserRequestDto): Promise<User> {
+  async createUser(requestData: CreateUserRequest): Promise<User> {
     const user = this.usersRepository.create(requestData);
 
     return this.usersRepository.save(user);
