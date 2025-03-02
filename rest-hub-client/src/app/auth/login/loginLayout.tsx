@@ -1,6 +1,6 @@
 import { SessionProvider, signIn } from 'next-auth/react';
 
-import GoogleAuthHandler from './googleAuthHandler';
+import GoogleOAuthHandler from './googleOAuthHandler';
 import AuthButton from '@/components/auth/authButton';
 import Brand from '@/components/ui/brand';
 import Divider from '@/components/ui/divider';
@@ -22,7 +22,7 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
             <div className={styles.forgotPassword}>Forgot password?</div>
             <Divider />
             <SessionProvider>
-              <GoogleAuthHandler />
+              <GoogleOAuthHandler />
               <AuthButton
                 text="Google"
                 iconSrc="/auth/google.svg"

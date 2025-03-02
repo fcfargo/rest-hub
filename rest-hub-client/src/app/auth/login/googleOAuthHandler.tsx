@@ -5,12 +5,14 @@ import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
 import { SESSION_STATUS } from '@/constants';
+import { useAuth } from '@/context/authContext';
 import api from '@/libs/axiosInstance';
 import { saveTokens } from '@/utils/authUtils';
 
-export default function GoogleAuthHandler() {
+export default function GoogleOAuthHandler() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { setUser } = useAuth();
 
   useEffect(() => {
     if (status !== SESSION_STATUS.AUTHENTICATED && !session?.user?.id_token) {
@@ -21,10 +23,12 @@ export default function GoogleAuthHandler() {
       try {
         const requestData = { id_token: session.user.id_token };
 
-        const { data } = await api.post('/auth/google', requestData);
+        const { data } = await api.post('/users/auth/google', requestData);
 
-        const { accessToken, refreshToken } = data.body;
-        saveTokens(accessToken, refreshToken);
+        const { tokens, user } = data.body;
+
+        saveTokens(tokens.accessToken, tokens.refreshToken);
+        setUser({ ...user, isOAuth: true });
 
         router.push('/');
       } catch (error) {
@@ -33,7 +37,7 @@ export default function GoogleAuthHandler() {
     };
 
     authenticateWithBackend();
-  }, [router, session, status]);
+  }, [router, session, status, setUser]);
 
   return null;
 }

@@ -1,5 +1,6 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { AUTH_EFFECT_EXCLUDED_ROUTES, HTTP_STATUS_CODES } from '@/constants';
@@ -14,6 +15,7 @@ interface User {
   deviceToken: string | null;
   createdAt: Date;
   updatedAt: Date;
+  isOAuth?: boolean;
 }
 
 interface LogInUserRequest {
@@ -136,9 +138,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
-    setUser(null);
-    removeTokens();
-    router.push('/auth/login');
+    if (user?.isOAuth) {
+      signOut({ callbackUrl: '/auth/login' });
+    } else {
+      setUser(null);
+      removeTokens();
+      router.push('/auth/login');
+    }
   };
 
   return (
