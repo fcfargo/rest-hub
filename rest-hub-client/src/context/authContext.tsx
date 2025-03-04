@@ -75,7 +75,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const refreshAccessToken = async () => {
     try {
       const refreshToken = getRefreshToken();
-      if (!refreshToken) throw new Error('No refresh token available');
+      if (!refreshToken) {
+        throw new Error('No refresh token available');
+      }
 
       const { data } = await api.post('users/auth/refresh', { refreshToken });
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } = data.body;

@@ -11,6 +11,7 @@ export const HTTP_STATUS_CODES = {
 export const AUTH_ROUTES = {
   LOGIN: '/auth/login',
   SIGNUP: '/auth/signup',
+  REST_PASSWORD: '/auth/reset-password',
 };
 
 export const AUTH_EFFECT_EXCLUDED_ROUTES = Object.values(AUTH_ROUTES);

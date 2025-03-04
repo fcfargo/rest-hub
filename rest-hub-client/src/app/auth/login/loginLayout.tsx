@@ -19,7 +19,9 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
           <div className={styles.login}>
             <div className={styles.loginText}>Log in</div>
             {children}
-            <div className={styles.forgotPassword}>Forgot password?</div>
+            <a href="/auth/reset-password" className={styles.forgotPassword}>
+              Forgot password?
+            </a>
             <Divider />
             <SessionProvider>
               <GoogleOAuthHandler />
