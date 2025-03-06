@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { SessionProvider, signIn } from 'next-auth/react';
 
 import GoogleOAuthHandler from '../login/googleOAuthHandler';
@@ -33,9 +34,9 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
         </div>
         <p className={styles.loginText}>
           Already have an account?{' '}
-          <a href="/auth/login" className={styles.loginLink}>
+          <Link href="/auth/login" className={styles.loginLink}>
             Log in
-          </a>
+          </Link>
         </p>
       </div>
     </div>

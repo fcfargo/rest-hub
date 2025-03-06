@@ -59,7 +59,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         setUser(data.body);
       } catch (error) {
-        if (error.response?.status === HTTP_STATUS_CODES.UNAUTHORIZED) {
+        const status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+
+        if (status === HTTP_STATUS_CODES.UNAUTHORIZED) {
           console.warn('Access token expired, attempting refresh...');
           await refreshAccessToken();
         } else {
@@ -106,11 +108,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return true;
     } catch (error) {
-      if (
-        [HTTP_STATUS_CODES.UNAUTHORIZED, HTTP_STATUS_CODES.BAD_REQUEST].includes(
-          error.response?.status,
-        )
-      ) {
+      const status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+
+      if ([HTTP_STATUS_CODES.UNAUTHORIZED, HTTP_STATUS_CODES.BAD_REQUEST].includes(status)) {
         console.error('Login failed: Unauthorized', error);
         return false;
       }
@@ -130,7 +130,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return true;
     } catch (error) {
-      if ([HTTP_STATUS_CODES.BAD_REQUEST].includes(error.response?.status)) {
+      const status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+
+      if ([HTTP_STATUS_CODES.BAD_REQUEST].includes(status)) {
         console.error('Signup failed: Email already in use', error);
         return false;
       }

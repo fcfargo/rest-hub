@@ -19,6 +19,7 @@ type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordForm() {
   const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const router = useRouter();
 
@@ -32,11 +33,12 @@ export default function ResetPasswordForm() {
   });
 
   const onSubmit = async ({ email }: ResetPasswordFormValues) => {
+    setLoading(true);
     setMessage(null);
     setIsSuccess(false);
 
     try {
-      const { data } = await api.post('/api/auth/reset-password', { email });
+      const { data } = await api.post('/users/auth/reset-password', { email });
       if (!data.body) {
         throw new Error('failed to send email from the server');
       }
@@ -51,18 +53,19 @@ export default function ResetPasswordForm() {
       console.error('Reset password failed:', error);
 
       let errorMessage = '비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해주세요.';
+      const status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
 
-      if (error.response?.status === HTTP_STATUS_CODES.BAD_REQUEST) {
+      if (status === HTTP_STATUS_CODES.BAD_REQUEST) {
         errorMessage =
           '이 이메일은 소셜 로그인 계정입니다. 비밀번호 재설정을 하려면 일반 로그인 계정을 사용해야 합니다.';
-      } else if (error.response?.status === HTTP_STATUS_CODES.UNAUTHORIZED) {
+      } else if (status === HTTP_STATUS_CODES.UNAUTHORIZED) {
         errorMessage =
           '입력하신 이메일로 가입된 계정을 찾을 수 없습니다. 이메일을 다시 확인해주세요.';
-      } else {
       }
 
       setMessage(errorMessage);
-      setIsSuccess(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,8 +80,8 @@ export default function ResetPasswordForm() {
         errorMessage={errors.email?.message}
       />
 
-      <button className={styles.button} type="submit" disabled={isSuccess}>
-        {isSuccess ? '요청 완료' : 'Continue'}
+      <button className={styles.button} type="submit" disabled={loading || isSuccess}>
+        {loading ? '요청 중...' : isSuccess ? '요청 완료' : 'Continue'}
       </button>
 
       {message && (

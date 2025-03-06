@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 import styles from '@/styles/resetPassword.module.css';
 
@@ -28,9 +29,9 @@ export default function ResetPasswordLayout({ children }: ResetPasswordLayoutPro
       </div>
       <div className={styles.linkText}>
         <span>Got your temporary password? </span>
-        <a href="/auth/login" className={styles.link}>
+        <Link href="/auth/login" className={styles.link}>
           Log in
-        </a>
+        </Link>
       </div>
     </div>
   );
