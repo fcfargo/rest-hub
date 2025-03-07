@@ -1,6 +1,7 @@
 'use client';
 import classNames from 'classnames';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 
 import { PROFILE_IMAGE_DEFAULT } from '@/constants';
@@ -9,23 +10,26 @@ import styles from '@/styles/sidebar.module.css';
 import globalStyles from '@/styles/utils.module.css';
 
 const MENU_ITEMS = [
-  { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home' },
-  { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search' },
+  { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home', href: '' },
+  { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search', href: '' },
   {
     src: '/layout/sidebar/notification.svg',
     alt: 'Notification',
     label: 'Notification',
+    href: '',
   },
   {
     src: '/layout/sidebar/communities.svg',
     alt: 'Communities',
     label: 'Communities',
+    href: '',
   },
-  { src: '/layout/sidebar/post.svg', alt: 'Post', label: 'Post' },
+  { src: '/layout/sidebar/post.svg', alt: 'Post', label: 'Post', href: '' },
   {
     src: '/layout/sidebar/settings.svg',
     alt: 'Settings',
     label: 'Settings',
+    href: '/settings',
   },
 ];
 
@@ -41,18 +45,19 @@ export default function Sidebar() {
   const profileImage = user.profileImage || PROFILE_IMAGE_DEFAULT;
 
   return (
-    <div className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed}`}>
-      <div
+    <aside className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed}`}>
+      <Link
+        href={'/'}
         className={classNames(styles.titleWrapper, {
           [globalStyles.hidden]: !expanded,
         })}
       >
         Rest Hub
-      </div>
+      </Link>
 
       <nav className={styles.menu}>
         {MENU_ITEMS.map((item, index) => (
-          <div key={index} className={styles.menuItem}>
+          <Link href={item.href} key={index} className={styles.menuItem}>
             <Image src={item.src} width={0} height={0} alt={item.alt} className={styles.menuIcon} />
             <span
               className={classNames(styles.textWrapper, {
@@ -61,7 +66,7 @@ export default function Sidebar() {
             >
               {item.label}
             </span>
-          </div>
+          </Link>
         ))}
       </nav>
 
@@ -107,6 +112,6 @@ export default function Sidebar() {
           {username}
         </span>
       </div>
-    </div>
+    </aside>
   );
 }
