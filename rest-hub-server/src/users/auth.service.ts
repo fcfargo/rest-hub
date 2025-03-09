@@ -9,27 +9,33 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { v4 as uuidv4 } from 'uuid';
 import { Logger } from 'winston';
 
 import {
+  ChangePasswordRequestDto,
   CreateUserRequestDto,
   RefreshAccesTokenRequestDto,
+  ResetPasswordRequestDto,
   SignInUserRequestDto,
   VerifyGoogleOAuthRequestDto,
 } from './dtos/users.dto';
 import { AuthResponseDto, TokenResponseDto } from './dtos/users.response.dto';
+import { SOCIAL_PROVIDERS } from './interfaces/users.interface';
 import { jwtPayLoad } from './jwt/guards/jwt.payload';
 import { UsersService } from './users.service';
 
-import { processEnv } from '@/common/constants';
+import { ERROR_CODE, processEnv } from '@/common/constants';
+import { QueueService } from '@/common/queue/queue.service';
 
 @Injectable()
 export class AuthService {
-  private googleClient: OAuth2Client;
+  private readonly googleClient: OAuth2Client;
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly queuService: QueueService,
   ) {
     this.googleClient = new OAuth2Client();
   }
@@ -92,6 +98,11 @@ export class AuthService {
       throw new UnauthorizedException('user not found');
     }
 
+    const { socialProvider } = user;
+    if (socialProvider) {
+      throw new BadRequestException('not available for social login accounts.');
+    }
+
     const isPasswordValid = await this._checkPassword(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('invalid password');
@@ -148,11 +159,69 @@ export class AuthService {
       email,
       username: name,
       profileImage: picture,
+      socialProvider: SOCIAL_PROVIDERS.GOOGLE,
     });
 
     const jwtPayload: jwtPayLoad = { sub: user.id, email: user.email };
     const tokens = await this._generateTokens(jwtPayload);
 
     return { user, tokens };
+  }
+
+  async resetPassword(requestBody: ResetPasswordRequestDto): Promise<string> {
+    const { email } = requestBody;
+
+    const user = await this.usersService.findOneUserByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('user not found');
+    }
+
+    const { id, socialProvider } = user;
+    if (socialProvider) {
+      throw new BadRequestException('not available for social login accounts.');
+    }
+
+    const tempPassword = uuidv4().slice(0, 8);
+    const hashedPassword = await this._hashPassword(tempPassword);
+    await this.usersService.updateUser(id, { password: hashedPassword });
+
+    const subject = `비밀번호 재설정 안내`;
+    const text = `임시 비밀번호: ${tempPassword}\n로그인 후 반드시 비밀번호를 변경해주세요.`;
+    const jobId = await this.queuService.addMailQueue(email, subject, text);
+
+    return jobId;
+  }
+
+  async changePassword(
+    userId: number,
+    changePasswordDto: ChangePasswordRequestDto,
+  ): Promise<string> {
+    const { oldPassword, newPassword } = changePasswordDto;
+
+    const user = await this.usersService.findOneUserById(userId);
+    if (!user) {
+      throw new UnauthorizedException({
+        code: ERROR_CODE.USER_NOD_FOUND,
+        message: 'user not found',
+      });
+    }
+
+    const { socialProvider } = user;
+    if (socialProvider) {
+      throw new BadRequestException('not available for social login accounts.');
+    }
+
+    const isPasswordValid = await this._checkPassword(oldPassword, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException({
+        code: ERROR_CODE.INVALID__PASSWORD,
+        message: 'invalid password',
+      });
+    }
+
+    const hashedPassword = await this._hashPassword(newPassword);
+    await this.usersService.updateUser(userId, { password: hashedPassword });
+
+    return 'Password changed successfully';
   }
 }

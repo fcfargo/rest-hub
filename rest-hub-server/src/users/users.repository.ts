@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, Repository, UpdateResult } from 'typeorm';
 
-import { CreateUserRequest } from './interfaces/users.interface';
+import { CreateUserRequest, UpdateUserData } from './interfaces/users.interface';
 
 import { User } from '@/model/user.entity';
 
@@ -13,15 +13,19 @@ export class UsersRepository {
     private readonly usersRepository: Repository<User>,
   ) {}
 
+  async updateUser(userId: number, updateData: UpdateUserData): Promise<UpdateResult> {
+    return this.usersRepository.update({ id: userId }, updateData);
+  }
+
   async createUser(requestData: CreateUserRequest): Promise<User> {
     const user = this.usersRepository.create(requestData);
 
     return this.usersRepository.save(user);
   }
 
-  async findOneUserById(id: number): Promise<User | null> {
+  async findOneUserById(userId: number): Promise<User | null> {
     return this.usersRepository.findOne({
-      where: { id, deletedAt: IsNull() },
+      where: { id: userId, deletedAt: IsNull() },
     });
   }
 
