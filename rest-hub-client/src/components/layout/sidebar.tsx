@@ -6,8 +6,9 @@ import { useState } from 'react';
 
 import { PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
-import styles from '@/styles/sidebar.module.css';
-import globalStyles from '@/styles/utils.module.css';
+import styles from '@/styles/layout/sidebar.module.css';
+
+import globalStyles from '@/styles/utils/utils.module.css';
 
 const MENU_ITEMS = [
   { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home', href: ROUTES.HOME },

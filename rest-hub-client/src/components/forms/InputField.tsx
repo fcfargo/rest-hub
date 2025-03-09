@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
 
-import styles from '@/styles/input.module.css';
+import styles from '@/styles/forms/input.module.css';
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   iconSrc: string;

@@ -10,7 +10,7 @@ import InputField from '@/components/forms/inputField';
 import { HTTP_STATUS_CODES, ROUTES } from '@/constants';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import styles from '@/styles/resetPassword.module.css';
+import styles from '@/styles/auth/resetPassword.module.css';
 
 const resetPasswordSchema = z.object({
   email: z.string().email({ message: '유효한 이메일 형식이 아닙니다.' }),

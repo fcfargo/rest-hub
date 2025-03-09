@@ -6,7 +6,7 @@ import AuthButton from '@/components/auth/authButton';
 import Brand from '@/components/ui/brand';
 import Divider from '@/components/ui/divider';
 import { ROUTES } from '@/constants';
-import styles from '@/styles/signup.module.css';
+import styles from '@/styles/auth/signup.module.css';
 
 interface SignUpLayoutProps {
   children: React.ReactNode;

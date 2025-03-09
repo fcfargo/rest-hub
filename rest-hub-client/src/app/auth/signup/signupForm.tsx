@@ -6,8 +6,8 @@ import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
 import { useAuth } from '@/context/authContext';
-import inputStyles from '@/styles/input.module.css';
-import styles from '@/styles/signup.module.css';
+import styles from '@/styles/auth/signup.module.css';
+import inputStyles from '@/styles/forms/input.module.css';
 
 const signUpSchema = z
   .object({

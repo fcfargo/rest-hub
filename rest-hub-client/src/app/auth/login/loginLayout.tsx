@@ -6,7 +6,7 @@ import AuthButton from '@/components/auth/authButton';
 import Brand from '@/components/ui/brand';
 import Divider from '@/components/ui/divider';
 import { ROUTES } from '@/constants';
-import styles from '@/styles/login.module.css';
+import styles from '@/styles/auth/login.module.css';
 
 interface LoginLayoutProps {
   children: React.ReactNode;

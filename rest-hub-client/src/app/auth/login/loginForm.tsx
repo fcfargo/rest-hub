@@ -7,8 +7,8 @@ import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
 import { useAuth } from '@/context/authContext';
-import inputStyles from '@/styles/input.module.css';
-import styles from '@/styles/login.module.css';
+import styles from '@/styles/auth/login.module.css';
+import inputStyles from '@/styles/forms/input.module.css';
 
 const logInSchema = z.object({
   email: z.string().email({ message: '유효한 이메일 형식이 아닙니다.' }),
