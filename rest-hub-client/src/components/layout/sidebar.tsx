@@ -4,13 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import { PROFILE_IMAGE_DEFAULT } from '@/constants';
+import { PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import styles from '@/styles/sidebar.module.css';
 import globalStyles from '@/styles/utils.module.css';
 
 const MENU_ITEMS = [
-  { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home', href: '' },
+  { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home', href: ROUTES.HOME },
   { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search', href: '' },
   {
     src: '/layout/sidebar/notification.svg',
@@ -29,7 +29,7 @@ const MENU_ITEMS = [
     src: '/layout/sidebar/settings.svg',
     alt: 'Settings',
     label: 'Settings',
-    href: '/settings',
+    href: ROUTES.SETTINGS.HOME,
   },
 ];
 
@@ -47,7 +47,7 @@ export default function Sidebar() {
   return (
     <aside className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed}`}>
       <Link
-        href={'/'}
+        href={ROUTES.HOME}
         className={classNames(styles.titleWrapper, {
           [globalStyles.hidden]: !expanded,
         })}

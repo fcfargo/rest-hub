@@ -8,9 +8,10 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
-import { ERROR_CODE, HTTP_STATUS_CODES } from '@/constants';
+import { ERROR_CODE, HTTP_STATUS_CODES, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import styles from '@/styles/settings/passwordChangeModal.module.css';
 import { getAccessToken } from '@/utils/authUtils';
@@ -62,7 +63,7 @@ export default function PasswordChangeModal() {
       }
 
       const { data } = await api.post(
-        '/users/auth/change-password',
+        API_ENDPOINTS.CHANGE_PASSWORD,
         {
           oldPassword: currentPassword,
           newPassword,
@@ -97,7 +98,7 @@ export default function PasswordChangeModal() {
       } else if (code === ERROR_CODE.USER_NOD_FOUND) {
         closeModal();
         logout();
-        router.push('/auth/login');
+        router.push(ROUTES.AUTH.LOGIN);
         return;
       }
     }

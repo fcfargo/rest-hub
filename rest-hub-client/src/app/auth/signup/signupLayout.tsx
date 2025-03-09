@@ -5,6 +5,7 @@ import GoogleOAuthHandler from '../login/googleOAuthHandler';
 import AuthButton from '@/components/auth/authButton';
 import Brand from '@/components/ui/brand';
 import Divider from '@/components/ui/divider';
+import { ROUTES } from '@/constants';
 import styles from '@/styles/signup.module.css';
 
 interface SignUpLayoutProps {
@@ -34,7 +35,7 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
         </div>
         <p className={styles.loginText}>
           Already have an account?{' '}
-          <Link href="/auth/login" className={styles.loginLink}>
+          <Link href={ROUTES.AUTH.LOGIN} className={styles.loginLink}>
             Log in
           </Link>
         </p>

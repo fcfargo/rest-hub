@@ -3,7 +3,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { AUTH_EFFECT_EXCLUDED_ROUTES, HTTP_STATUS_CODES } from '@/constants';
+import { AUTH_EFFECT_EXCLUDED_ROUTES, HTTP_STATUS_CODES, ROUTES } from '@/constants';
+import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import { getAccessToken, getRefreshToken, removeTokens, saveTokens } from '@/utils/authUtils';
 
@@ -53,7 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       try {
-        const { data } = await api.get('users/auth/me', {
+        const { data } = await api.get(API_ENDPOINTS.USER, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
@@ -81,12 +82,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw new Error('No refresh token available');
       }
 
-      const { data } = await api.post('users/auth/refresh', { refreshToken });
+      const { data } = await api.post(API_ENDPOINTS.OAUTH_GOOGLE, { refreshToken });
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } = data.body;
 
       saveTokens(newAccessToken, newRefreshToken);
 
-      const { data: refreshedData } = await api.get('users/auth/me', {
+      const { data: refreshedData } = await api.get(API_ENDPOINTS.USER, {
         headers: { Authorization: `Bearer ${newAccessToken}` },
       });
 
@@ -99,12 +100,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (requestData: LogInUserRequest): Promise<boolean> => {
     try {
-      const { data } = await api.post('/users/auth/signin', requestData);
+      const { data } = await api.post(API_ENDPOINTS.LOGIN, requestData);
       const { tokens, user } = data.body;
 
       saveTokens(tokens.accessToken, tokens.refreshToken);
       setUser(user);
-      router.push('/');
+      router.push(ROUTES.HOME);
 
       return true;
     } catch (error) {
@@ -121,12 +122,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signup = async (requestData: LogInUserRequest): Promise<boolean> => {
     try {
-      const { data } = await api.post('/users/auth/signup', requestData);
+      const { data } = await api.post(API_ENDPOINTS.SIGNUP, requestData);
       const { tokens, user } = data.body;
 
       saveTokens(tokens.accessToken, tokens.refreshToken);
       setUser(user);
-      router.push('/');
+      router.push(ROUTES.HOME);
 
       return true;
     } catch (error) {
@@ -141,13 +142,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     if (user?.isOAuth) {
-      signOut({ callbackUrl: '/auth/login' });
+      await signOut({ callbackUrl: ROUTES.AUTH.LOGIN });
     } else {
       setUser(null);
       removeTokens();
-      router.push('/auth/login');
+      router.push(ROUTES.AUTH.LOGIN);
     }
   };
 

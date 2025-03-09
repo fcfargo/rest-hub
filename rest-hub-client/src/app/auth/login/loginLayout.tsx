@@ -5,6 +5,7 @@ import GoogleOAuthHandler from './googleOAuthHandler';
 import AuthButton from '@/components/auth/authButton';
 import Brand from '@/components/ui/brand';
 import Divider from '@/components/ui/divider';
+import { ROUTES } from '@/constants';
 import styles from '@/styles/login.module.css';
 
 interface LoginLayoutProps {
@@ -20,7 +21,7 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
           <div className={styles.login}>
             <div className={styles.loginText}>Log in</div>
             {children}
-            <Link href="/auth/reset-password" className={styles.forgotPassword}>
+            <Link href={ROUTES.AUTH.RESET_PASSWORD} className={styles.forgotPassword}>
               Forgot password?
             </Link>
             <Divider />
@@ -37,7 +38,7 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
         </div>
         <p className={styles.signupText}>
           Don’t have an account?{' '}
-          <Link href="/auth/signup" className={styles.signupLink}>
+          <Link href={ROUTES.AUTH.SIGNUP} className={styles.signupLink}>
             Sign Up
           </Link>
         </p>

@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { ROUTES } from '@/constants';
 import styles from '@/styles/resetPassword.module.css';
 
 interface ResetPasswordLayoutProps {
@@ -33,7 +34,7 @@ export default function ResetPasswordLayout({ children }: ResetPasswordLayoutPro
 
       <p className={styles.linkText}>
         <span>Got your temporary password? </span>
-        <Link href="/auth/login" className={styles.link}>
+        <Link href={ROUTES.AUTH.LOGIN} className={styles.link}>
           Log in
         </Link>
       </p>

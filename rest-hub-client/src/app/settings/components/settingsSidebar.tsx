@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { ROUTES } from '@/constants';
 import styles from '@/styles/settings/settingsSidebar.module.css';
 
 interface SidebarItemProps {
@@ -14,7 +15,7 @@ interface SidebarItemProps {
 
 const sidebarItems = [
   { href: '', src: '/settings/profile.svg', label: '프로필 편집' },
-  { href: '/settings/security', src: '/settings/security.svg', label: '비밀번호 및 보안' },
+  { href: ROUTES.SETTINGS.SECURITY, src: '/settings/security.svg', label: '비밀번호 및 보안' },
   { href: '', src: '/settings/notifications.svg', label: '알림' },
 ];
 

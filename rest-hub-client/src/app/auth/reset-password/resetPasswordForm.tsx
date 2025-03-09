@@ -7,7 +7,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
-import { HTTP_STATUS_CODES } from '@/constants';
+import { HTTP_STATUS_CODES, ROUTES } from '@/constants';
+import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import styles from '@/styles/resetPassword.module.css';
 
@@ -36,7 +37,7 @@ export default function ResetPasswordForm() {
     setIsSuccess(false);
 
     try {
-      const { data } = await api.post('/users/auth/reset-password', { email });
+      const { data } = await api.post(API_ENDPOINTS.RESET_PASSWORD, { email });
       if (!data.body) {
         throw new Error('failed to send email from the server');
       }
@@ -45,7 +46,7 @@ export default function ResetPasswordForm() {
       setIsSuccess(true);
 
       setTimeout(() => {
-        router.push('/auth/login');
+        router.push(ROUTES.AUTH.LOGIN);
       }, 3000);
     } catch (error) {
       console.error('Reset password failed:', error);

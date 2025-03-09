@@ -2,8 +2,9 @@
 
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-import PasswordChangeModal from '@/app/settings/components/passwordChangeModal';
 import { MODAL_TYPE } from '@/constants';
+
+import PasswordChangeModal from '@/app/settings/components/passwordChangeModal';
 
 interface ModalContextType {
   openModal: (modalType: ModalType) => void;
