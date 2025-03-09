@@ -4,7 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import styles from '@/styles/sidebarSettings.module.css';
+import styles from '@/styles/settings/settingsSidebar.module.css';
+
+interface SidebarItemProps {
+  href: string;
+  src: string;
+  label: string;
+}
 
 const sidebarItems = [
   { href: '', src: '/settings/profile.svg', label: '프로필 편집' },
@@ -12,7 +18,7 @@ const sidebarItems = [
   { href: '', src: '/settings/notifications.svg', label: '알림' },
 ];
 
-function SidebarItem({ href, src, label }: { href: string; src: string; label: string }) {
+function SidebarItem({ href, src, label }: SidebarItemProps) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -25,20 +31,20 @@ function SidebarItem({ href, src, label }: { href: string; src: string; label: s
         className={`${styles.itemIcon} ${isActive ? styles.itemIconActive : ''}`}
         src={src}
         alt={`${label} Icon`}
-        width={0}
-        height={0}
+        width={18}
+        height={18}
       />
       <p className={`${styles.itemName} ${isActive ? styles.itemNameActive : ''}`}>{label}</p>
     </Link>
   );
 }
 
-export default function SidebarSettings() {
+export default function SettingsSidebar() {
   return (
     <aside className={styles.container}>
       <div className={styles.wrapper}>
-        <div className={styles.title}>설정</div>
-        <div className={styles.navigationList}>
+        <h2 className={styles.title}>설정</h2>
+        <nav className={styles.navigationList}>
           <div className={styles.section}>
             <div className={styles.sectionTitle}>계정</div>
             <div className={styles.sectionContent}>
@@ -48,7 +54,7 @@ export default function SidebarSettings() {
             </div>
             <div className={styles.divider}></div>
           </div>
-        </div>
+        </nav>
       </div>
     </aside>
   );

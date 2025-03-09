@@ -10,6 +10,7 @@ const handler = NextAuth({
   ],
   pages: {
     signIn: '/auth/login',
+    signOut: '/auth/login',
   },
   callbacks: {
     async session({ session, token }) {

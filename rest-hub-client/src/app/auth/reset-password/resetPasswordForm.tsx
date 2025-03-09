@@ -19,21 +19,19 @@ type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordForm() {
   const [message, setMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
     mode: 'onChange',
   });
 
   const onSubmit = async ({ email }: ResetPasswordFormValues) => {
-    setLoading(true);
     setMessage(null);
     setIsSuccess(false);
 
@@ -64,8 +62,6 @@ export default function ResetPasswordForm() {
       }
 
       setMessage(errorMessage);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -80,8 +76,8 @@ export default function ResetPasswordForm() {
         errorMessage={errors.email?.message}
       />
 
-      <button className={styles.button} type="submit" disabled={loading || isSuccess}>
-        {loading ? '요청 중...' : isSuccess ? '요청 완료' : 'Continue'}
+      <button className={styles.button} type="submit" disabled={isSubmitting || isSuccess}>
+        {isSubmitting ? '요청 중...' : isSuccess ? '요청 완료' : 'Continue'}
       </button>
 
       {message && (

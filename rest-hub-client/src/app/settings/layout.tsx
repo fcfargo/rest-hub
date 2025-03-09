@@ -1,4 +1,4 @@
-import SidebarSettings from '@/components/layout/sidebarSettings';
+import SettingsSidebar from '@/app/settings/components/settingsSidebar';
 
 interface SettingsLayoutProps {
   children: React.ReactNode;
@@ -7,7 +7,7 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <div className="flex flex-grow">
-      <SidebarSettings />
+      <SettingsSidebar />
       {children}
     </div>
   );

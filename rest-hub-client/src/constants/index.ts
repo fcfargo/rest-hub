@@ -21,3 +21,13 @@ export const SESSION_STATUS = {
   AUTHENTICATED: 'authenticated',
   UNAUTHENTICATED: 'unauthenticated',
 } as const;
+
+export const MODAL_TYPE = {
+  PASSWORD_CHANGE: 'passwordChange',
+} as const;
+
+export const ERROR_CODE = {
+  INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
+  USER_NOD_FOUND: 'USER_NOT_FOUND',
+  INVALID__PASSWORD: 'INVALID__PASSWORD',
+};
