@@ -1,17 +1,5 @@
 import { IsEmail, IsString, MinLength } from 'class-validator';
 
-export class CreateUserRequestDto {
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  username: string;
-
-  @IsString()
-  @MinLength(8)
-  password: string;
-}
-
 export class SignInUserRequestDto {
   @IsEmail()
   email: string;
@@ -19,6 +7,11 @@ export class SignInUserRequestDto {
   @IsString()
   @MinLength(8)
   password: string;
+}
+
+export class CreateUserRequestDto extends SignInUserRequestDto {
+  @IsString()
+  username: string;
 }
 
 export class RefreshAccesTokenRequestDto {
@@ -29,4 +22,19 @@ export class RefreshAccesTokenRequestDto {
 export class VerifyGoogleOAuthRequestDto {
   @IsString()
   id_token: string;
+}
+
+export class ResetPasswordRequestDto {
+  @IsEmail()
+  email: string;
+}
+
+export class ChangePasswordRequestDto {
+  @IsString()
+  @MinLength(8)
+  oldPassword: string;
+
+  @IsString()
+  @MinLength(8)
+  newPassword: string;
 }

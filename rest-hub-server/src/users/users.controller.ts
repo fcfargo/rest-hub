@@ -2,8 +2,10 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import {
+  ChangePasswordRequestDto,
   CreateUserRequestDto,
   RefreshAccesTokenRequestDto,
+  ResetPasswordRequestDto,
   SignInUserRequestDto,
   VerifyGoogleOAuthRequestDto,
 } from './dtos/users.dto';
@@ -51,5 +53,19 @@ export class UsersController {
   @Post('auth/refresh')
   async refreshAccessToken(@Body() body: RefreshAccesTokenRequestDto) {
     return this.authService.refreshAccessToken(body);
+  }
+
+  @Post('auth/reset-password')
+  async resetPassword(@Body() body: ResetPasswordRequestDto) {
+    return this.authService.resetPassword(body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('auth/change-password')
+  async changePassword(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Body() body: ChangePasswordRequestDto,
+  ) {
+    return this.authService.changePassword(currentUser.sub, body);
   }
 }

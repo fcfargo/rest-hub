@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -30,6 +31,14 @@ import { UsersModule } from './users/users.module';
           ),
         }),
       ],
+    }),
+    BullModule.forRootAsync({
+      useFactory: () => ({
+        connection: {
+          host: processEnv.REDIS_HOST,
+          port: Number(processEnv.REDIS_PORT),
+        },
+      }),
     }),
     UsersModule,
   ],

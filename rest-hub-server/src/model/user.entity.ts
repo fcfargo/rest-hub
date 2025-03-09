@@ -7,6 +7,8 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 
+import { SOCIAL_PROVIDERS, SocialProvider } from '@/users/interfaces/users.interface';
+
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
@@ -21,10 +23,10 @@ export class User {
   @Column({ nullable: true })
   password: string;
 
-  @Column({ default: null })
+  @Column({ nullable: true })
   profileImage: string;
 
-  @Column({ default: null })
+  @Column({ nullable: true })
   deviceToken: string;
 
   @CreateDateColumn()
@@ -33,6 +35,9 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn({ default: null })
-  deletedAt?: Date;
+  @DeleteDateColumn({ nullable: true })
+  deletedAt: Date;
+
+  @Column({ type: 'enum', enum: SOCIAL_PROVIDERS, nullable: true })
+  socialProvider: SocialProvider;
 }

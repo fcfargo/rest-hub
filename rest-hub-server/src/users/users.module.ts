@@ -8,6 +8,7 @@ import { UsersRepository } from './users.repository';
 import { UsersService } from './users.service';
 
 import { processEnv } from '@/common/constants';
+import { QueueModule } from '@/common/queue/queue.module';
 import { User } from '@/model/user.entity';
 
 @Module({
@@ -22,6 +23,7 @@ import { User } from '@/model/user.entity';
         },
       }),
     }),
+    QueueModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, UsersRepository, AuthService],
