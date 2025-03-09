@@ -1,0 +1,156 @@
+.container {
+  flex-grow: 0;
+  background: #ffffff;
+  width: 260px;
+  position: relative;
+  border-right: 1px solid #ddd;
+  animation: fadeInSlide 0.4s ease-in-out forwards;
+}
+
+@keyframes fadeInSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.sidebarEnter {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.sidebarExit {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+
+.title {
+  color: #000000;
+  font-family: 'Inter-Bold', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 44px;
+  margin-left: 41px;
+}
+
+.navigationList {
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  color: #57606a;
+  text-align: left;
+  font-family: 'NotoSans-DisplaySemiBold', sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  margin-left: 16px;
+  margin-bottom: 8px;
+}
+
+.sectionContent {
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  margin-left: 18px;
+}
+
+.divider {
+  background: rgba(208, 215, 222, 0.48);
+  height: 1px;
+  margin-top: 2px;
+  margin-left: 14px;
+}
+
+.item {
+  height: 48px;
+  display: flex;
+  position: relative;
+  gap: 10px;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.item:hover {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 6px;
+  background: rgba(208, 215, 222, 0.24);
+}
+
+.itemActive {
+  height: 48px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  background: rgba(208, 215, 222, 0.24);
+}
+
+.itemIcon {
+  margin-left: 6px;
+  width: 18px;
+  height: 18px;
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.itemIconActive {
+  margin-left: 6px;
+  width: 18px;
+  height: 18px;
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+.itemName {
+  color: #24292f;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+  transition: background-color 0.3s ease;
+}
+
+.itemNameActive {
+  color: #24292f;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+}
+
+.activeIndicator {
+  background: rgba(0, 149, 246, 1);
+  border-radius: 6px;
+  width: 4px;
+  height: 40px;
+  position: absolute;
+  left: -8px;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.3s ease;
+}
+
+.activeIndicatorVisible {
+  opacity: 1;
+  transform: translateX(0);
+}

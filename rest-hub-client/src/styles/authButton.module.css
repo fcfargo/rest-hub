@@ -17,3 +17,9 @@
   width: 20px;
   height: 20px;
 }
+
+.authButton:hover {
+  background: #f5f7fa;
+  border-color: #c4c8d2;
+  color: #0062ff;
+}

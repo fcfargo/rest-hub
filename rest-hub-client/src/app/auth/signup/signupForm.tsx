@@ -81,6 +81,7 @@ export default function SignUpForm() {
       <InputField
         type="password"
         placeholder="Password"
+        isEyesImage={true}
         iconSrc="/auth/password.svg"
         altText="Password Icon"
         {...register('password')}
@@ -91,6 +92,7 @@ export default function SignUpForm() {
       <InputField
         type="password"
         placeholder="Repeat password"
+        isEyesImage={true}
         iconSrc="/auth/password.svg"
         altText="Password Icon"
         {...register('repeatPassword')}

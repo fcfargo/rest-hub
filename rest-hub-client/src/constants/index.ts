@@ -1,3 +1,16 @@
+export const ROUTES = {
+  HOME: '/',
+  AUTH: {
+    LOGIN: '/auth/login',
+    SIGNUP: '/auth/signup',
+    RESET_PASSWORD: '/auth/reset-password',
+  },
+  SETTINGS: {
+    HOME: '/settings',
+    SECURITY: '/settings/security',
+  },
+};
+
 export const PROFILE_IMAGE_DEFAULT = '/layout/sidebar/profile-default.svg';
 
 export const HTTP_STATUS_CODES = {
@@ -9,8 +22,9 @@ export const HTTP_STATUS_CODES = {
 } as const;
 
 export const AUTH_ROUTES = {
-  LOGIN: '/auth/login',
-  SIGNUP: '/auth/signup',
+  LOGIN: ROUTES.AUTH.LOGIN,
+  SIGNUP: ROUTES.AUTH.SIGNUP,
+  REST_PASSWORD: ROUTES.AUTH.RESET_PASSWORD,
 };
 
 export const AUTH_EFFECT_EXCLUDED_ROUTES = Object.values(AUTH_ROUTES);
@@ -20,3 +34,13 @@ export const SESSION_STATUS = {
   AUTHENTICATED: 'authenticated',
   UNAUTHENTICATED: 'unauthenticated',
 } as const;
+
+export const MODAL_TYPE = {
+  PASSWORD_CHANGE: 'passwordChange',
+} as const;
+
+export const ERROR_CODE = {
+  INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
+  USER_NOD_FOUND: 'USER_NOT_FOUND',
+  INVALID__PASSWORD: 'INVALID__PASSWORD',
+};

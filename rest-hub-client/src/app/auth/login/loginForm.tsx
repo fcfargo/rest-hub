@@ -59,6 +59,7 @@ export default function LoginForm() {
       <InputField
         type="password"
         placeholder="Password"
+        isEyesImage={true}
         iconSrc="/auth/password.svg"
         altText="Password Icon"
         {...register('password')}

@@ -1,12 +1,11 @@
 .sidebar {
+  flex-grow: 0;
   position: relative;
   width: 260px;
   height: 1024px;
   background-color: #ffffff;
-  border-right-width: 1px;
-  border-right-style: solid;
-  border-color: #00000033;
-  transition: width 0.3s ease-in-out;
+  border-right: 1px solid #ddd;
+  transition: width 0.5s ease-in-out;
 }
 
 .expanded {
@@ -51,8 +50,8 @@
 }
 
 .menuIcon {
-  width: 24;
-  height: 24;
+  width: 24px;
+  height: 24px;
 }
 
 .textWrapper {

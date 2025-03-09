@@ -1,9 +1,11 @@
+import Link from 'next/link';
 import { SessionProvider, signIn } from 'next-auth/react';
 
 import GoogleOAuthHandler from './googleOAuthHandler';
 import AuthButton from '@/components/auth/authButton';
 import Brand from '@/components/ui/brand';
 import Divider from '@/components/ui/divider';
+import { ROUTES } from '@/constants';
 import styles from '@/styles/login.module.css';
 
 interface LoginLayoutProps {
@@ -19,7 +21,9 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
           <div className={styles.login}>
             <div className={styles.loginText}>Log in</div>
             {children}
-            <div className={styles.forgotPassword}>Forgot password?</div>
+            <Link href={ROUTES.AUTH.RESET_PASSWORD} className={styles.forgotPassword}>
+              Forgot password?
+            </Link>
             <Divider />
             <SessionProvider>
               <GoogleOAuthHandler />
@@ -34,9 +38,9 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
         </div>
         <p className={styles.signupText}>
           Don’t have an account?{' '}
-          <a href="/auth/signup" className={styles.signupLink}>
+          <Link href={ROUTES.AUTH.SIGNUP} className={styles.signupLink}>
             Sign Up
-          </a>
+          </Link>
         </p>
       </div>
       <div className={styles.rectangleContainer}>
