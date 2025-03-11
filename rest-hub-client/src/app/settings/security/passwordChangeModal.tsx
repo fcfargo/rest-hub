@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
-import { ERROR_CODE, HTTP_STATUS_CODES, ROUTES } from '@/constants';
+import { ERROR_CODES, HTTP_STATUS_CODES, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
 import { API_ENDPOINTS } from '@/libs/api';
@@ -85,7 +85,7 @@ export default function PasswordChangeModal() {
     console.error('Password change failed:', error);
 
     const status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
-    const code = error.response?.data.error.code ?? ERROR_CODE.INTERNAL_SERVER_ERROR;
+    const code = error.response?.data.error.code ?? ERROR_CODES.INTERNAL_SERVER_ERROR;
 
     let errorMessage = '비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.';
 
@@ -93,9 +93,9 @@ export default function PasswordChangeModal() {
       errorMessage =
         '이 이메일은 소셜 로그인 계정입니다. 비밀번호를 변경하려면 일반 로그인 계정을 사용해야 합니다.';
     } else if (status === HTTP_STATUS_CODES.UNAUTHORIZED) {
-      if (code === ERROR_CODE.INVALID__PASSWORD) {
+      if (code === ERROR_CODES.INVALID__PASSWORD) {
         errorMessage = '현재 비밀번호가 틀렸습니다. 비밀번호를 정확히 입력해 주세요.';
-      } else if (code === ERROR_CODE.USER_NOD_FOUND) {
+      } else if (code === ERROR_CODES.USER_NOD_FOUND) {
         closeModal();
         logout();
         router.push(ROUTES.AUTH.LOGIN);
@@ -114,7 +114,7 @@ export default function PasswordChangeModal() {
           <button className={styles.closeButton} onClick={() => closeModal()}>
             <Image
               className={styles.icon}
-              src="/settings/cancel.svg"
+              src="/settings/cancel-black.svg"
               alt="Close"
               width={24}
               height={24}

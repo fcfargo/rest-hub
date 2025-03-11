@@ -35,12 +35,24 @@ export const SESSION_STATUS = {
   UNAUTHENTICATED: 'unauthenticated',
 } as const;
 
-export const MODAL_TYPE = {
+export const MODAL_TYPES = {
   PASSWORD_CHANGE: 'passwordChange',
+  POST_CREATE: 'postCreate',
 } as const;
 
-export const ERROR_CODE = {
+export const ERROR_CODES = {
   INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
   USER_NOD_FOUND: 'USER_NOT_FOUND',
   INVALID__PASSWORD: 'INVALID__PASSWORD',
+};
+
+export const POST_CREATE_STEPS = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+};
+
+export const MEDIA_TYPES = {
+  IMAGE: 'image',
+  VIDEO: 'video',
 };

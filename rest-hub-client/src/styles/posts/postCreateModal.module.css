@@ -1,0 +1,139 @@
+.overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.closeButton {
+  flex-grow: 0;
+  align-self: flex-end;
+  margin-top: 16px;
+  margin-right: 16px;
+}
+
+.cancelIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -40px;
+}
+
+.wrapper {
+  width: 500px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 12px;
+  box-shadow: 0px 9px 24px 0px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+}
+
+.header {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-style: solid;
+  border-color: #dbdbdb;
+  border-width: 0px 0px 1px 0px;
+  padding: 9px 0px 9px 0px;
+}
+
+.title {
+  color: #262626;
+  text-align: center;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.uploadContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.imageWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  padding: 16px 14px 16px 16px;
+  border: 1px dashed #dbdbdb;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.imageWrapper:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.icon {
+  width: 96px;
+  height: 77px;
+}
+
+.description {
+  color: #262626;
+  text-align: center;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonWrapper {
+  background: rgba(0, 149, 246, 0.7);
+  border-radius: 8px;
+  padding: 7px 16.69px 7px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonWrapper:hover {
+  background-color: rgba(0, 149, 246, 1);
+}
+
+.button {
+  color: #ffffff;
+  text-align: center;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+.failedMessage {
+  align-self: center;
+  font-size: 14px;
+  color: #ff4d4f;
+  margin-top: 10px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.hiddenInput {
+  display: none;
+}

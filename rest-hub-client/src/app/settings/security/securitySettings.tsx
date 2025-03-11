@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { MODAL_TYPE } from '@/constants';
+import { MODAL_TYPES } from '@/constants';
 import { useModal } from '@/context/modalContext';
 import styles from '@/styles/settings/securitySettings.module.css';
 
@@ -35,7 +35,7 @@ const AuthenticationSection = () => {
   return (
     <section className={styles.section}>
       <h3 className={styles.sectionTitle}>인증</h3>
-      <button className={styles.button} onClick={() => openModal(MODAL_TYPE.PASSWORD_CHANGE)}>
+      <button className={styles.button} onClick={() => openModal(MODAL_TYPES.PASSWORD_CHANGE)}>
         <span className={styles.buttonText}>비밀번호 변경</span>
         <Image
           className={styles.arrowIcon}
