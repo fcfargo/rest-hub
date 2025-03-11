@@ -1,0 +1,41 @@
+import { ChangeEvent, useRef } from 'react';
+
+import { INPUT_TYPES, MEDIA_TYPES } from '@/constants';
+import styles from '@/styles/forms/fileUploadField.module.css';
+
+interface FileUploadFieldProps {
+  handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  accept?: string;
+  errorMessage?: string | null;
+}
+
+export default function FileUploadField({
+  handleFileChange,
+  accept = `${MEDIA_TYPES.IMAGE}/*, ${MEDIA_TYPES.VIDEO}/*`,
+  errorMessage,
+}: FileUploadFieldProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const triggerFileSelect = () => fileInputRef.current?.click();
+
+  return (
+    <div className={styles.uploadContainer}>
+      {/* 파일 선택 버튼 */}
+      <button className={styles.button} onClick={triggerFileSelect}>
+        파일 선택
+      </button>
+
+      {/* 숨겨진 파일 입력 */}
+      <input
+        ref={fileInputRef}
+        type={INPUT_TYPES.FILE}
+        accept={accept}
+        className={styles.hiddenInput}
+        onChange={handleFileChange}
+      />
+
+      {/* 에러 메시지 출력 */}
+      {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
+    </div>
+  );
+}

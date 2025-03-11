@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 
 import { PostDataProps } from '../postCreateModal';
 
+import FileUploadField from '@/components/forms/FileUploadField';
 import { MEDIA_TYPES } from '@/constants';
 import styles from '@/styles/posts/postCreateModal.module.css';
 
@@ -15,7 +16,6 @@ interface PostCreateUploadProps {
 
 export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUploadProps) {
   const [message, setMessage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -42,12 +42,6 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
     nextStep();
   };
 
-  const triggerFileSelect = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   return (
     <div className={styles.wrapper}>
       {/* 헤더 */}
@@ -69,24 +63,7 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
 
         <p className={styles.description}>사진과 동영상을 여기에 끌어다 놓으세요</p>
 
-        {/* 파일 선택 버튼 */}
-        <div className={styles.buttonWrapper}>
-          <button className={styles.button} onClick={triggerFileSelect}>
-            컴퓨터에서 선택
-          </button>
-        </div>
-
-        {/* 에러 메시지 출력 */}
-        {message && <p className={styles.failedMessage}>{message}</p>}
-
-        {/* 숨겨진 파일 입력 */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept={`${MEDIA_TYPES.IMAGE}/*, ${MEDIA_TYPES.VIDEO}/*`}
-          onChange={handleFileChange}
-          className={styles.hiddenInput}
-        />
+        <FileUploadField handleFileChange={handleFileChange} errorMessage={message} />
       </div>
     </div>
   );

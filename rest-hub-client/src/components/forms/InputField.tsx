@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
 
+import { INPUT_TYPES } from '@/constants';
 import styles from '@/styles/forms/input.module.css';
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -20,8 +21,13 @@ export default function InputField({
   ...props
 }: InputFieldProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   const inputType =
-    isEyesImage && type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type;
+    isEyesImage && type === INPUT_TYPES.PASSWORD
+      ? isPasswordVisible
+        ? INPUT_TYPES.TEXT
+        : INPUT_TYPES.PASSWORD
+      : type;
 
   const togglePasswordVisibility = useCallback(() => {
     setIsPasswordVisible((prev) => !prev);
@@ -35,7 +41,7 @@ export default function InputField({
 
       {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
 
-      {isEyesImage && type === 'password' && (
+      {isEyesImage && type === INPUT_TYPES.PASSWORD && (
         <button type="button" className={styles.eyeButton} onClick={togglePasswordVisibility}>
           <Image
             src={isPasswordVisible ? '/auth/eyes-open.svg' : '/auth/eyes-closed.svg'}

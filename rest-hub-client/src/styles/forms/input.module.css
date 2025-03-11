@@ -1,5 +1,4 @@
 .inputContainer {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -9,13 +8,14 @@
 }
 
 .icon {
+  flex-shrink: 0;
   width: 20px;
   height: 20px;
 }
 
 .input {
-  width: 100%;
-  flex-basis: 70%;
+  flex-shrink: 1;
+  flex-basis: 80%;
   border: none;
   outline: none;
   font-size: 14px;
@@ -23,11 +23,10 @@
 }
 
 .eyeButton {
+  flex-shrink: 0;
   background: none;
   border: none;
   cursor: pointer;
-  position: absolute;
-  right: 9px;
 }
 
 .eyeIcon {

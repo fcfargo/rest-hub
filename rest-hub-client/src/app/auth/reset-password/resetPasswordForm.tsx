@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
-import { HTTP_STATUS_CODES, ROUTES } from '@/constants';
+import { HTTP_STATUS_CODES, INPUT_TYPES, ROUTES } from '@/constants';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import styles from '@/styles/auth/resetPassword.module.css';
@@ -69,7 +69,7 @@ export default function ResetPasswordForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.formWrapper}>
       <InputField
-        type="email"
+        type={INPUT_TYPES.EMAIL}
         placeholder="Your email"
         iconSrc="/auth/email.svg"
         altText="Email Icon"

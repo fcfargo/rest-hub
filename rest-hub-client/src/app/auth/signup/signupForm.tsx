@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
+import { INPUT_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import styles from '@/styles/auth/signup.module.css';
 import inputStyles from '@/styles/forms/input.module.css';
@@ -59,7 +60,7 @@ export default function SignUpForm() {
     <form onSubmit={handleSubmit(onSubmit)} className={styles.signupWindow}>
       {/* 이메일 입력 */}
       <InputField
-        type="email"
+        type={INPUT_TYPES.EMAIL}
         placeholder="Your email"
         iconSrc="/auth/email.svg"
         altText="Email Icon"
@@ -69,7 +70,7 @@ export default function SignUpForm() {
 
       {/* 유저 네임 입력 */}
       <InputField
-        type="username"
+        type={INPUT_TYPES.TEXT}
         placeholder="Username"
         iconSrc="/auth/username.svg"
         altText="Username Icon"
@@ -79,7 +80,7 @@ export default function SignUpForm() {
 
       {/* 비밀번호 입력 */}
       <InputField
-        type="password"
+        type={INPUT_TYPES.PASSWORD}
         placeholder="Password"
         isEyesImage={true}
         iconSrc="/auth/password.svg"
@@ -90,7 +91,7 @@ export default function SignUpForm() {
 
       {/* 비밀번호 확인 입력 */}
       <InputField
-        type="password"
+        type={INPUT_TYPES.PASSWORD}
         placeholder="Repeat password"
         isEyesImage={true}
         iconSrc="/auth/password.svg"

@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import InputField from '@/components/forms/inputField';
+import InputField from '@/components/forms/InputField';
 import { CloseButtonBlack } from '@/components/ui/closelButton';
-import { ERROR_CODES, HTTP_STATUS_CODES, ROUTES } from '@/constants';
+import { ERROR_CODES, HTTP_STATUS_CODES, INPUT_TYPES, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
 import { API_ENDPOINTS } from '@/libs/api';
@@ -123,7 +123,7 @@ export default function PasswordChangeModal() {
           {/* 입력 폼 */}
           <form onSubmit={handleSubmit(onSubmit)} className={styles.formWrapper}>
             <InputField
-              type="password"
+              type={INPUT_TYPES.PASSWORD}
               placeholder="현재 비밀번호"
               isEyesImage={true}
               iconSrc="/auth/password.svg"
@@ -133,7 +133,7 @@ export default function PasswordChangeModal() {
             />
 
             <InputField
-              type="password"
+              type={INPUT_TYPES.PASSWORD}
               placeholder="새 비밀번호"
               isEyesImage={true}
               iconSrc="/auth/password.svg"
@@ -143,7 +143,7 @@ export default function PasswordChangeModal() {
             />
 
             <InputField
-              type="password"
+              type={INPUT_TYPES.PASSWORD}
               placeholder="비밀번호 확인"
               isEyesImage={true}
               iconSrc="/auth/password.svg"

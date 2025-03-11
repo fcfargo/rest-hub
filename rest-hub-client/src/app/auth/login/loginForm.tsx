@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
+import { INPUT_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import styles from '@/styles/auth/login.module.css';
 import inputStyles from '@/styles/forms/input.module.css';
@@ -48,7 +49,7 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.loginWindow}>
       <InputField
-        type="email"
+        type={INPUT_TYPES.EMAIL}
         placeholder="Your email"
         iconSrc="/auth/email.svg"
         altText="Email Icon"
@@ -57,7 +58,7 @@ export default function LoginForm() {
       />
 
       <InputField
-        type="password"
+        type={INPUT_TYPES.PASSWORD}
         placeholder="Password"
         isEyesImage={true}
         iconSrc="/auth/password.svg"

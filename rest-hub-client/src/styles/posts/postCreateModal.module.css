@@ -76,7 +76,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  padding: 16px 14px 16px 16px;
+  padding: 16px 13px 16px 16px;
   border: 1px dashed #dbdbdb;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
@@ -101,39 +101,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.buttonWrapper {
-  background: rgba(0, 149, 246, 0.7);
-  border-radius: 8px;
-  padding: 7px 16.69px 7px 16px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-.buttonWrapper:hover {
-  background-color: rgba(0, 149, 246, 1);
-}
-
-.button {
-  color: #ffffff;
-  text-align: center;
-  font-family: 'Inter-SemiBold', sans-serif;
-  font-size: 14px;
-  line-height: 18px;
-  font-weight: 600;
-}
-
-.failedMessage {
-  align-self: center;
-  font-size: 14px;
-  color: #ff4d4f;
-  margin-top: 10px;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.hiddenInput {
-  display: none;
 }
