@@ -25,7 +25,7 @@ export default function PostCreateCrop({
     <div className={modalStyles.wrapper}>
       {/* 헤더 */}
       <div className={modalStyles.header}>
-        <h2 className={modalStyles.title}>게시물 편집</h2>
+        <h2 className={modalStyles.title}>게시물 자르기</h2>
       </div>
 
       {/* 파일 업로드 영역 */}

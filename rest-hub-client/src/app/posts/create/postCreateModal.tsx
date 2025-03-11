@@ -1,11 +1,11 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
 
 import PostCreateCrop from './steps/PostCreateCrop';
 import PostCreateUpload from './steps/PostCreateUpload';
 
+import { CloseButtonWhite } from '@/components/ui/closelButton';
 import { POST_CREATE_STEPS } from '@/constants';
 import { useModal } from '@/context/modalContext';
 import styles from '@/styles/posts/postCreateModal.module.css';
@@ -33,16 +33,7 @@ export default function PostCreateModal() {
 
   return (
     <div className={styles.overlay}>
-      {/* 닫기 버튼 */}
-      <button className={styles.closeButton} onClick={() => closeModal()}>
-        <Image
-          className={styles.cancelIcon}
-          src="/settings/cancel-white.svg"
-          alt="Close"
-          width={24}
-          height={24}
-        />
-      </button>
+      <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
 
       {/* stage 별 게시글 생성 영역 */}
       <div className={styles.container}>

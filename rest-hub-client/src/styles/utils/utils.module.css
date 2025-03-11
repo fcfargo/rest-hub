@@ -36,3 +36,18 @@
   width: 150px;
   height: auto;
 }
+
+.closeButton {
+  flex-grow: 0;
+  align-self: flex-end;
+}
+
+.closeIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.closeButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}

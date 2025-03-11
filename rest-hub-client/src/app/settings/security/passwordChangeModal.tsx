@@ -1,13 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/inputField';
+import { CloseButtonBlack } from '@/components/ui/closelButton';
 import { ERROR_CODES, HTTP_STATUS_CODES, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
@@ -110,16 +110,7 @@ export default function PasswordChangeModal() {
     <div className={styles.overlay}>
       <div className={styles.container}>
         <div className={styles.wrapper}>
-          {/* 닫기 버튼 */}
-          <button className={styles.closeButton} onClick={() => closeModal()}>
-            <Image
-              className={styles.icon}
-              src="/settings/cancel-black.svg"
-              alt="Close"
-              width={24}
-              height={24}
-            />
-          </button>
+          <CloseButtonBlack onClick={() => closeModal()} className={'mt-[16px] -mr-[32px]'} />
 
           {/* 제목 */}
           <h2 className={styles.title}>비밀번호 변경</h2>
