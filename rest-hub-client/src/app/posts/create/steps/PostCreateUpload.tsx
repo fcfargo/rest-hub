@@ -1,5 +1,6 @@
 'use client';
 
+import classNames from 'classnames';
 import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 
@@ -16,9 +17,9 @@ interface PostCreateUploadProps {
 
 export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUploadProps) {
   const [message, setMessage] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFile = (file: File | null) => {
     if (!file) {
       return;
     }
@@ -42,6 +43,28 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
     nextStep();
   };
 
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    handleFile(file);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (!isDragging) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = () => setIsDragging(false);
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+
+    const file = event.dataTransfer.files[0] || null;
+    handleFile(file);
+  };
+
   return (
     <div className={styles.wrapper}>
       {/* 헤더 */}
@@ -50,7 +73,12 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
       </div>
 
       {/* 파일 업로드 영역 */}
-      <div className={styles.uploadContainer}>
+      <div
+        className={classNames(styles.uploadContainer, isDragging ?? styles.dragging)}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
         <div className={styles.imageWrapper}>
           <Image
             className={styles.icon}

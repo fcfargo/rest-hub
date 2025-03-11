@@ -71,6 +71,11 @@
   gap: 16px;
 }
 
+.uploadContainer.dragging {
+  background-color: rgba(0, 149, 246, 0.1);
+  border-color: #0095f6;
+}
+
 .imageWrapper {
   display: flex;
   align-items: center;
@@ -80,10 +85,6 @@
   border: 1px dashed #dbdbdb;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
-}
-
-.imageWrapper:hover {
-  background: rgba(0, 0, 0, 0.05);
 }
 
 .icon {

@@ -21,9 +21,11 @@ export default function FileUploadField({
   return (
     <div className={styles.uploadContainer}>
       {/* 파일 선택 버튼 */}
-      <button className={styles.button} onClick={triggerFileSelect}>
-        파일 선택
-      </button>
+      <div className={styles.buttonWrapper}>
+        <button className={styles.button} onClick={triggerFileSelect}>
+          파일 선택
+        </button>
+      </div>
 
       {/* 숨겨진 파일 입력 */}
       <input
