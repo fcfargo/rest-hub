@@ -74,7 +74,7 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
 
       {/* 파일 업로드 영역 */}
       <div
-        className={classNames(styles.uploadContainer, isDragging ?? styles.dragging)}
+        className={classNames(styles.uploadContainer, { [styles.dragging]: isDragging })}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}

@@ -40,6 +40,7 @@
 .closeButton {
   flex-grow: 0;
   align-self: flex-end;
+  z-index: 10;
 }
 
 .closeIcon {
@@ -50,4 +51,39 @@
 .closeButton:hover {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 50%;
+}
+
+.messageWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.inputMessageWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.errorText {
+  align-self: center;
+  font-size: 14px;
+  color: #ff4d4f;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.successText {
+  align-self: center;
+  font-size: 14px;
+  color: green;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.inputErrorText {
+  color: #ff4d4f;
+  padding: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
 }

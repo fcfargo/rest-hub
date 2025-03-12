@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 import InputField from '@/components/forms/InputField';
 import { CloseButtonBlack } from '@/components/ui/closelButton';
+import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
 import { ERROR_CODES, HTTP_STATUS_CODES, INPUT_TYPES, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
@@ -110,6 +111,7 @@ export default function PasswordChangeModal() {
     <div className={styles.overlay}>
       <div className={styles.container}>
         <div className={styles.wrapper}>
+          {/* 모달 창 닫기 버튼 */}
           <CloseButtonBlack onClick={() => closeModal()} className={'mt-[16px] -mr-[32px]'} />
 
           {/* 제목 */}
@@ -162,9 +164,12 @@ export default function PasswordChangeModal() {
             </button>
 
             {/* 에러 메시지 출력 */}
-            {message && (
-              <p className={isSuccess ? styles.successMessage : styles.failedMessage}>{message}</p>
-            )}
+            {message &&
+              (isSuccess ? (
+                <SuccessMessage message={message} />
+              ) : (
+                <ErrorMessage message={message} />
+              ))}
           </form>
         </div>
       </div>

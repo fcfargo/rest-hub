@@ -62,4 +62,5 @@ export const INPUT_TYPES = {
   PASSWORD: 'password',
   TEXT: 'text',
   FILE: 'file',
+  RANGE: 'range',
 } as const;

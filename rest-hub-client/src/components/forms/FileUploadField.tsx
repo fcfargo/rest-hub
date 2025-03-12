@@ -1,5 +1,7 @@
 import { ChangeEvent, useRef } from 'react';
 
+import { ErrorMessage } from '../ui/message';
+
 import { INPUT_TYPES, MEDIA_TYPES } from '@/constants';
 import styles from '@/styles/forms/fileUploadField.module.css';
 
@@ -37,7 +39,7 @@ export default function FileUploadField({
       />
 
       {/* 에러 메시지 출력 */}
-      {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
     </div>
   );
 }

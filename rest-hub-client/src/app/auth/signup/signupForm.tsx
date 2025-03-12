@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import InputField from '@/components/forms/inputField';
+import InputField from '@/components/forms/InputField';
+import { InputErrorMessage } from '@/components/ui/message';
 import { INPUT_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import styles from '@/styles/auth/signup.module.css';
-import inputStyles from '@/styles/forms/input.module.css';
 
 const signUpSchema = z
   .object({
@@ -100,7 +100,7 @@ export default function SignUpForm() {
         errorMessage={errors.repeatPassword?.message}
       />
 
-      {signupError && <p className={inputStyles.errorText}>{signupError}</p>}
+      {signupError && <InputErrorMessage message={signupError} />}
 
       {/* 로그인 버튼 */}
       <button className={styles.button} type="submit" disabled={isSubmitting}>

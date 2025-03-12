@@ -22,7 +22,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: -1;
+  z-index: -10;
 }
 
 .ellipse {
@@ -31,7 +31,7 @@
   background: #fe8660;
   border-radius: 50%;
   position: relative;
-  z-index: 1;
+  z-index: 0;
 }
 
 .rectangle {
@@ -39,7 +39,7 @@
   height: 217px;
   background: rgba(248, 242, 240, 0.4);
   backdrop-filter: blur(25px);
-  z-index: 2;
+  z-index: 10;
   margin-top: -125px;
 }
 

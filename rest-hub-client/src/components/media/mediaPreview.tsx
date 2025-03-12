@@ -17,7 +17,7 @@ export default function MediaPreview({ preview, mediaType }: MediaPreviewProps) 
           src={preview}
           alt="Image Preview"
           fill
-          objectFit="contain"
+          objectFit="cover"
           priority
         />
       ) : (

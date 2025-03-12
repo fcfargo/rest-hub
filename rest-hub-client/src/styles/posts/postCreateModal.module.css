@@ -46,14 +46,19 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   border-style: solid;
   border-color: #dbdbdb;
   border-width: 0px 0px 1px 0px;
   padding: 9px 0px 9px 0px;
 }
 
+.header:has(:only-child) {
+  justify-content: center;
+}
+
 .title {
+  align-self: center;
   color: #262626;
   text-align: center;
   font-family: 'Inter-SemiBold', sans-serif;

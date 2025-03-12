@@ -1,5 +1,7 @@
 import Image from 'next/image';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
+
+import { InputErrorMessage } from '../ui/message';
 
 import { INPUT_TYPES } from '@/constants';
 import styles from '@/styles/forms/input.module.css';
@@ -29,9 +31,9 @@ export default function InputField({
         : INPUT_TYPES.PASSWORD
       : type;
 
-  const togglePasswordVisibility = useCallback(() => {
+  const togglePasswordVisibility = () => {
     setIsPasswordVisible((prev) => !prev);
-  }, []);
+  };
 
   return (
     <div className={styles.inputContainer}>
@@ -39,7 +41,7 @@ export default function InputField({
 
       <input className={styles.input} type={inputType} {...props} />
 
-      {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
+      {errorMessage && <InputErrorMessage message={errorMessage} />}
 
       {isEyesImage && type === INPUT_TYPES.PASSWORD && (
         <button type="button" className={styles.eyeButton} onClick={togglePasswordVisibility}>

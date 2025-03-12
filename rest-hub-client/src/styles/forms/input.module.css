@@ -34,17 +34,6 @@
   height: 20px;
 }
 
-.errorText {
-  color: #ff4d4f;
-  font-size: 12px;
-  font-weight: 500;
-  margin-right: 20px;
-  margin-top: 4px;
-  padding-left: 8px;
-  display: block;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;

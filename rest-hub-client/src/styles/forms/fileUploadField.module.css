@@ -28,14 +28,6 @@
   font-weight: 600;
 }
 
-.errorText {
-  align-self: center;
-  font-size: 14px;
-  color: #ff4d4f;
-  margin-top: 10px;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
 .hiddenInput {
   display: none;
 }

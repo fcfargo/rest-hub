@@ -6,7 +6,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import InputField from '@/components/forms/inputField';
+import InputField from '@/components/forms/InputField';
+import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
 import { HTTP_STATUS_CODES, INPUT_TYPES, ROUTES } from '@/constants';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
@@ -81,9 +82,12 @@ export default function ResetPasswordForm() {
         {isSubmitting ? '요청 중...' : isSuccess ? '요청 완료' : 'Continue'}
       </button>
 
-      {message && (
-        <p className={isSuccess ? styles.successMessage : styles.failedMessage}>{message}</p>
-      )}
+      {message &&
+        (isSuccess ? (
+          <SuccessMessage message={message} className="mt-[16px] -mb-[16px]" />
+        ) : (
+          <ErrorMessage message={message} className="mt-[16px] -mb-[16px]" />
+        ))}
     </form>
   );
 }

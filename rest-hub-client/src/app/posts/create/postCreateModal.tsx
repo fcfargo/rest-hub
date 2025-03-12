@@ -33,6 +33,7 @@ export default function PostCreateModal() {
 
   return (
     <div className={styles.overlay}>
+      {/* 모달 창 닫기 버튼 */}
       <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
 
       {/* stage 별 게시글 생성 영역 */}
@@ -49,7 +50,6 @@ export default function PostCreateModal() {
             prevStep={() => changeStep(POST_CREATE_STEPS.ONE)}
             setPostData={setPostData}
             fileUrl={postData.fileUrl}
-            mediaType={postData.mediaType}
           />
         )}
       </div>
