@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import InputField from '@/components/forms/InputField';
-import { CloseButtonBlack } from '@/components/ui/closelButton';
+import { CloseButtonBlack } from '@/components/ui/closeButton';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
 import { ERROR_CODES, HTTP_STATUS_CODES, INPUT_TYPES, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';

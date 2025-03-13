@@ -104,11 +104,17 @@ export default function PostCreateCrop({
       {/* 헤더 */}
       <div className={modalStyles.header}>
         <button onClick={prevStep} className={cropStyles.backButton}>
-          뒤로
+          <Image
+            className={cropStyles.backButtonIcon}
+            src="/posts/arrow-back.svg"
+            alt="Back Button Icon"
+            width={24}
+            height={24}
+          />
         </button>
         <h2 className={modalStyles.title}>게시물 자르기</h2>
         <button onClick={handleCropDone} className={cropStyles.doneButton}>
-          다음
+          next
         </button>
       </div>
 
