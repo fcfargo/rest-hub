@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw new Error('No refresh token available');
       }
 
-      const { data } = await api.post(API_ENDPOINTS.OAUTH_GOOGLE, { refreshToken });
+      const { data } = await api.post(API_ENDPOINTS.REFRESH_TOKEN, { refreshToken });
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } = data.body;
 
       saveTokens(newAccessToken, newRefreshToken);

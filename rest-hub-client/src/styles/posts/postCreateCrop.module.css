@@ -1,32 +1,82 @@
 .backButton {
   margin-left: 16px;
   z-index: 10;
+  cursor: pointer;
 }
 
 .doneButton {
   margin-right: 16px;
   z-index: 10;
+  cursor: pointer;
 }
 
-.cropContainer {
-  flex-grow: 1;
+.controlsContainer {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  margin-bottom: 16px;
 }
 
 .zoomContainer {
-  width: 100%;
-  flex-shrink: 0;
+  flex-grow: 1;
   display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
+  padding-top: 2px;
+  margin-right: 16px;
 }
 
 .zoom {
-  padding: 9px 0px 9px 0px;
   z-index: 10;
   cursor: pointer;
+}
+
+.aspectRatioContainer {
+  flex-grow: 0;
+  margin-left: 16px;
+}
+
+.aspectRatioButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: white;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.aspectRatioIcon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.dropdownMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  left: 56px;
+  top: 0px;
+}
+
+.dropdownItem {
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 14px;
+  color: white;
+  padding: 6px 8px;
+  line-height: 20px;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
 }

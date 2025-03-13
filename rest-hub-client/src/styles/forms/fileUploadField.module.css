@@ -15,8 +15,9 @@
   justify-content: center;
 }
 
-.uploadContainer:hover {
+.buttonWrapper:hover {
   background-color: rgba(0, 149, 246, 1);
+  border-radius: 8px;
 }
 
 .button {

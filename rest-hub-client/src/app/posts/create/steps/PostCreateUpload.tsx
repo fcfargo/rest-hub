@@ -24,7 +24,6 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
       return;
     }
 
-    setMessage(null);
     const fileUrl = URL.createObjectURL(file);
     const fileExt = file.type.split('/')[0];
 
@@ -32,6 +31,8 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
       setMessage('지원되지 않는 파일 형식입니다.');
       return;
     }
+
+    setMessage(null);
 
     setPostData((prev: PostDataProps) => ({
       ...prev,

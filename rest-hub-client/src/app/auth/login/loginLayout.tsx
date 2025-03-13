@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { SessionProvider, signIn } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 
 import GoogleOAuthHandler from './googleOAuthHandler';
 import AuthButton from '@/components/auth/authButton';
@@ -25,15 +25,13 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
               Forgot password?
             </Link>
             <Divider />
-            <SessionProvider>
-              <GoogleOAuthHandler />
-              <AuthButton
-                text="Google"
-                iconSrc="/auth/google.svg"
-                altText="Google Icon"
-                onClick={() => signIn('google')}
-              />
-            </SessionProvider>
+            <GoogleOAuthHandler />
+            <AuthButton
+              text="Google"
+              iconSrc="/auth/google.svg"
+              altText="Google Icon"
+              onClick={() => signIn('google')}
+            />
           </div>
         </div>
         <p className={styles.signupText}>

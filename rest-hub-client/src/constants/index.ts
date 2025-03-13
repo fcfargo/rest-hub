@@ -64,3 +64,10 @@ export const INPUT_TYPES = {
   FILE: 'file',
   RANGE: 'range',
 } as const;
+
+export const ASPECT_RATIO_VALUES = {
+  ORIGINAL: 0, // 원본
+  SQUARE: 1, // 1:1
+  LANDSCAPE_4_5: 4 / 5, // 4:5
+  LANDSCAPE_16_9: 16 / 9, // 16:9
+} as const;

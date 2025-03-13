@@ -1,15 +1,16 @@
 'use client';
 
+import Image from 'next/image';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
-import Cropper from 'react-easy-crop';
 
 import { PostDataProps } from '../postCreateModal';
 
+import MediaCrop from '@/components/media/mediaCrop';
 import { ErrorMessage } from '@/components/ui/message';
-import { INPUT_TYPES } from '@/constants';
+import { ASPECT_RATIO_VALUES, INPUT_TYPES } from '@/constants';
 import cropStyles from '@/styles/posts/postCreateCrop.module.css';
 import modalStyles from '@/styles/posts/postCreateModal.module.css';
-import { getCroppedImg } from '@/utils/imageUtils';
+import { getCroppedImgUrl, getImageAspectRatio } from '@/utils/imageUtils';
 
 interface PostCreateCropProps {
   nextStep: () => void;
@@ -18,17 +19,37 @@ interface PostCreateCropProps {
   fileUrl: string;
 }
 
-type Crop = {
+type AspectRatioValueTypes = (typeof ASPECT_RATIO_VALUES)[keyof typeof ASPECT_RATIO_VALUES];
+
+interface ControlsProps {
+  zoom: number;
+  setZoom: Dispatch<SetStateAction<number>>;
+}
+
+interface AspectRatioMenu {
+  isDropdownOpen: boolean;
+  setIsDropdownOpen: Dispatch<SetStateAction<boolean>>;
+  handleAspectRatioChange: (value: AspectRatioValueTypes) => void;
+}
+
+export type Crop = {
   x: number;
   y: number;
 };
 
-type CroppedAreaPixels = {
+export type CroppedAreaPixels = {
   width: number;
   height: number;
   x: number;
   y: number;
 };
+
+const ASPECT_RATIOS = [
+  { label: '원본', value: ASPECT_RATIO_VALUES.ORIGINAL },
+  { label: '1:1', value: ASPECT_RATIO_VALUES.SQUARE },
+  { label: '4:5', value: ASPECT_RATIO_VALUES.LANDSCAPE_4_5 },
+  { label: '16:9', value: ASPECT_RATIO_VALUES.LANDSCAPE_16_9 },
+];
 
 export default function PostCreateCrop({
   nextStep,
@@ -39,29 +60,43 @@ export default function PostCreateCrop({
   const [message, setMessage] = useState<string | null>(null);
   const [crop, setCrop] = useState<Crop>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [aspectRatio, setAspectRatio] = useState(1);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
 
-  const onCropComplete = useCallback((_, croppedAreaPixels: CroppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+  const onCropComplete = useCallback(
+    (_: any, croppedAreaPixels: CroppedAreaPixels) => setCroppedAreaPixels(croppedAreaPixels),
+    [],
+  );
 
   const handleCropDone = async () => {
-    setMessage(null);
-
     if (!croppedAreaPixels) {
       setMessage('게시물 편집을 완료해야 다음 단계로 이동할 수 있습니다.');
       return;
     }
 
     try {
-      const croppedImage = await getCroppedImg(fileUrl, croppedAreaPixels);
-      setPostData((prev: PostDataProps) => ({ ...prev, fileUrl: croppedImage }));
-
+      const croppedImageUrl = await getCroppedImgUrl({
+        imageSrc: fileUrl,
+        pixelCrop: croppedAreaPixels,
+      });
+      setPostData((prev: PostDataProps) => ({ ...prev, fileUrl: croppedImageUrl }));
       nextStep();
     } catch (error) {
       console.error('Handle crop failed:', error);
       setMessage('게시물 편집 중 오류가 발생했습니다. 다시 시도해 주세요.');
     }
+  };
+
+  const handleAspectRatioChange = async (value: AspectRatioValueTypes) => {
+    if (value === ASPECT_RATIO_VALUES.ORIGINAL) {
+      const originalAspect = await getImageAspectRatio(fileUrl);
+      setAspectRatio(originalAspect);
+    } else {
+      setAspectRatio(value);
+    }
+
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -78,33 +113,81 @@ export default function PostCreateCrop({
       </div>
 
       {/* 크롭 컨테이너 */}
-      <div className={cropStyles.cropContainer}>
-        <Cropper
-          image={fileUrl}
-          crop={crop}
-          zoom={zoom}
-          aspect={1}
-          onCropChange={setCrop}
-          onZoomChange={setZoom}
-          onCropComplete={onCropComplete}
-        />
-      </div>
+      <MediaCrop
+        fileUrl={fileUrl}
+        crop={crop}
+        zoom={zoom}
+        aspect={aspectRatio}
+        setCrop={setCrop}
+        setZoom={setZoom}
+        onCropComplete={onCropComplete}
+      />
 
       {/* 에러 메시지 출력 */}
       {message && <ErrorMessage message={message} />}
 
-      {/* 줌 컨트롤 */}
-      <div className={cropStyles.zoomContainer}>
-        <input
-          className={cropStyles.zoom}
-          type={INPUT_TYPES.RANGE}
-          min="1"
-          max="3"
-          step="0.1"
-          value={zoom}
-          onChange={(e) => setZoom(Number(e.target.value))}
+      <div className={cropStyles.controlsContainer}>
+        {/* 크롭 비율 컨트롤 */}
+        <AspectRatioControls
+          isDropdownOpen={isDropdownOpen}
+          setIsDropdownOpen={setIsDropdownOpen}
+          handleAspectRatioChange={handleAspectRatioChange}
         />
+
+        {/* 줌 컨트롤 */}
+        <ZoomControls zoom={zoom} setZoom={setZoom} />
       </div>
     </div>
   );
 }
+
+const ZoomControls = ({ zoom, setZoom }: ControlsProps) => (
+  <div className={cropStyles.zoomContainer}>
+    <input
+      className={cropStyles.zoom}
+      type={INPUT_TYPES.RANGE}
+      min="1"
+      max="3"
+      step="0.1"
+      value={zoom}
+      onChange={(e) => setZoom(Number(e.target.value))}
+    />
+  </div>
+);
+
+const AspectRatioControls = ({
+  isDropdownOpen,
+  setIsDropdownOpen,
+  handleAspectRatioChange,
+}: AspectRatioMenu) => (
+  <div className={cropStyles.aspectRatioContainer}>
+    {/* 비율 선택 버튼 */}
+    <button
+      className={cropStyles.aspectRatioButton}
+      onClick={() => setIsDropdownOpen((prev) => !prev)}
+    >
+      <Image
+        src={'/posts/aspect-ratio.svg'}
+        width={24}
+        height={24}
+        alt="Aspect Ratio Image"
+        className={cropStyles.aspectRatioIcon}
+      />
+    </button>
+
+    {/* 드롭다운 메뉴 */}
+    {isDropdownOpen && (
+      <ul className={cropStyles.dropdownMenu}>
+        {ASPECT_RATIOS.map((ratio) => (
+          <li
+            key={ratio.value}
+            className={cropStyles.dropdownItem}
+            onClick={() => handleAspectRatioChange(ratio.value)}
+          >
+            {ratio.label}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+);

@@ -16,7 +16,7 @@ export default function GoogleOAuthHandler() {
   const { setUser } = useAuth();
 
   useEffect(() => {
-    if (status !== SESSION_STATUS.AUTHENTICATED && !session?.user?.id_token) {
+    if (status !== SESSION_STATUS.AUTHENTICATED || !session?.user?.id_token) {
       return;
     }
 

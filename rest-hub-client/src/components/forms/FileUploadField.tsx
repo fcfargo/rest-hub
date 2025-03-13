@@ -39,7 +39,7 @@ export default function FileUploadField({
       />
 
       {/* 에러 메시지 출력 */}
-      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {errorMessage && <ErrorMessage message={errorMessage} className="mt-1" />}
     </div>
   );
 }
