@@ -7,4 +7,5 @@ export const API_ENDPOINTS = {
   RESET_PASSWORD: '/users/auth/reset-password',
   CHANGE_PASSWORD: '/users/auth/change-password',
   POST_CREATE: '/posts',
+  PLACES_AUTOCOMPLETE: '/places/autocomplete',
 };

@@ -144,8 +144,15 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;
+  border: 2px solid rgba(255, 255, 255, 0.6); /* ✅ Back 버튼과 통일 */
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1); /* ✅ Back 버튼과 동일한 배경 */
+  box-shadow:
+    0px 0px 6px rgba(255, 255, 255, 1),
+    0px 0px 12px rgba(255, 255, 255, 0.8); /* ✅ Back 버튼과 동일한 그림자 효과 */
+
   text-shadow:
     0px 0px 10px rgba(255, 255, 255, 1),
     0px 0px 18px rgba(255, 255, 255, 0.9),
-    0px 0px 24px rgba(255, 255, 255, 0.6);
+    0px 0px 24px rgba(255, 255, 255, 1);
 }

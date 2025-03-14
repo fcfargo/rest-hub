@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 import { PostDataProps } from '../postCreateModal';
-
 import MediaCrop from '@/components/media/mediaCrop';
 import { ErrorMessage } from '@/components/ui/message';
 import { ASPECT_RATIO_VALUES, INPUT_TYPES } from '@/constants';

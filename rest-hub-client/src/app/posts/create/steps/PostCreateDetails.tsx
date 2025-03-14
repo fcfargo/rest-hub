@@ -5,11 +5,12 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 import { MediaTypes } from '../postCreateModal';
-
 import MediaPreview from '@/components/media/mediaPreview';
+import { CloseButtonBlack } from '@/components/ui/closeButton';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
 import { INPUT_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
+import { usePlacesAutocomplete } from '@/hooks/usePlacesAutocomplete';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import detailsStyles from '@/styles/posts/postCreateDetails.module.css';
@@ -34,11 +35,16 @@ export default function PostCreateDetails({
   const [message, setMessage] = useState<string | null>(null);
   const [postContent, setPostContent] = useState('');
   const [showPicker, setShowPicker] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [location, setLocation] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const { logout } = useAuth();
 
+  const { suggestions, loading } = usePlacesAutocomplete(location);
+
   const pickerRef = useRef<HTMLDivElement>(null);
+
+  const suggestionsRef = useRef<HTMLUListElement>(null);
 
   const addEmoji = (emojiObject: { emoji: string }) => {
     setPostContent((prev) => prev + emojiObject.emoji);
@@ -49,7 +55,12 @@ export default function PostCreateDetails({
       if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
         setShowPicker(false);
       }
+
+      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
     }
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -62,6 +73,10 @@ export default function PostCreateDetails({
 
   const handleLocationInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
+  };
+
+  const handleSelectLocation = (place: string) => {
+    setLocation(place);
   };
 
   const handlePostCreate = async () => {
@@ -179,14 +194,49 @@ export default function PostCreateDetails({
                 value={location}
                 placeholder="Add location"
                 onChange={handleLocationInput}
+                onFocus={() => setShowSuggestions(true)}
               />
-              <Image
-                className={detailsStyles.locationIcon}
-                src="/posts/location.svg"
-                alt="Location Icon"
-                width={24}
-                height={24}
-              />
+
+              {location ? (
+                <CloseButtonBlack
+                  className={detailsStyles.closeButton}
+                  onClick={() => setLocation('')}
+                />
+              ) : (
+                <Image
+                  className={detailsStyles.locationIcon}
+                  src="/posts/location.svg"
+                  alt="Location Icon"
+                  width={18}
+                  height={18}
+                />
+              )}
+
+              {/* 자동완성된 주소 목록 표시 */}
+              {location && showSuggestions && (
+                <ul ref={suggestionsRef} className={detailsStyles.suggestionsList}>
+                  {loading ? (
+                    <Image
+                      className={detailsStyles.loadingIcon}
+                      src="/posts/loading.gif"
+                      alt="Location loading Icon"
+                      width={24}
+                      height={24}
+                    />
+                  ) : (
+                    suggestions.length > 0 &&
+                    suggestions.map((place) => (
+                      <li
+                        key={place.placeId}
+                        className={detailsStyles.suggestionItem}
+                        onClick={() => handleSelectLocation(place.description)}
+                      >
+                        {place.description}
+                      </li>
+                    ))
+                  )}
+                </ul>
+              )}
             </div>
           </div>
         </div>
