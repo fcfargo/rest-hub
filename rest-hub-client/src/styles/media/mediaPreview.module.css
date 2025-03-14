@@ -1,10 +1,10 @@
 .mediaWrapper {
-  flex-grow: 1;
-  width: 100%;
+  position: relative;
+  flex-basis: 62.5%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
 
 .previewImage {

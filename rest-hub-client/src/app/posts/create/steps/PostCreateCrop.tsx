@@ -10,13 +10,15 @@ import { ErrorMessage } from '@/components/ui/message';
 import { ASPECT_RATIO_VALUES, INPUT_TYPES } from '@/constants';
 import cropStyles from '@/styles/posts/postCreateCrop.module.css';
 import modalStyles from '@/styles/posts/postCreateModal.module.css';
-import { getCroppedImgUrl, getImageAspectRatio } from '@/utils/imageUtils';
+import { getCroppedImgFile, getImageAspectRatio } from '@/utils/imageUtils';
 
 interface PostCreateCropProps {
   nextStep: () => void;
   prevStep: () => void;
   setPostData: Dispatch<SetStateAction<PostDataProps>>;
   fileUrl: string;
+  userId: number;
+  username: string;
 }
 
 type AspectRatioValueTypes = (typeof ASPECT_RATIO_VALUES)[keyof typeof ASPECT_RATIO_VALUES];
@@ -56,6 +58,8 @@ export default function PostCreateCrop({
   prevStep,
   setPostData,
   fileUrl,
+  userId,
+  username,
 }: PostCreateCropProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [crop, setCrop] = useState<Crop>({ x: 0, y: 0 });
@@ -76,11 +80,20 @@ export default function PostCreateCrop({
     }
 
     try {
-      const croppedImageUrl = await getCroppedImgUrl({
+      const croppedFile = await getCroppedImgFile({
         imageSrc: fileUrl,
         pixelCrop: croppedAreaPixels,
+        userId,
+        username,
       });
-      setPostData((prev: PostDataProps) => ({ ...prev, fileUrl: croppedImageUrl }));
+
+      const croppedUrl = URL.createObjectURL(croppedFile);
+
+      setPostData((prev: PostDataProps) => ({
+        ...prev,
+        croppedFile,
+        croppedUrl,
+      }));
       nextStep();
     } catch (error) {
       console.error('Handle crop failed:', error);
@@ -103,9 +116,9 @@ export default function PostCreateCrop({
     <div className={modalStyles.wrapper}>
       {/* 헤더 */}
       <div className={modalStyles.header}>
-        <button onClick={prevStep} className={cropStyles.backButton}>
+        <button onClick={prevStep} className={modalStyles.backButton}>
           <Image
-            className={cropStyles.backButtonIcon}
+            className={modalStyles.backButtonIcon}
             src="/posts/arrow-back.svg"
             alt="Back Button Icon"
             width={24}
@@ -113,8 +126,8 @@ export default function PostCreateCrop({
           />
         </button>
         <h2 className={modalStyles.title}>게시물 자르기</h2>
-        <button onClick={handleCropDone} className={cropStyles.doneButton}>
-          next
+        <button onClick={handleCropDone} className={modalStyles.doneButton}>
+          다음
         </button>
       </div>
 

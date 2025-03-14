@@ -142,7 +142,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     if (user?.isOAuth) {
       await signOut({ callbackUrl: ROUTES.AUTH.LOGIN });
     } else {

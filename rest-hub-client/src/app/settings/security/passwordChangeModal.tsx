@@ -56,13 +56,13 @@ export default function PasswordChangeModal() {
     setMessage(null);
     setIsSuccess(false);
 
-    try {
-      const accessToken = getAccessToken();
-      if (!accessToken) {
-        logout();
-        return;
-      }
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      logout();
+      return;
+    }
 
+    try {
       const { data } = await api.post(
         API_ENDPOINTS.CHANGE_PASSWORD,
         {

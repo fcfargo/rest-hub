@@ -27,7 +27,7 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
     const fileUrl = URL.createObjectURL(file);
     const fileExt = file.type.split('/')[0];
 
-    if (![MEDIA_TYPES.IMAGE, MEDIA_TYPES.VIDEO].includes(fileExt)) {
+    if (![MEDIA_TYPES.IMAGE].includes(fileExt)) {
       setMessage('지원되지 않는 파일 형식입니다.');
       return;
     }

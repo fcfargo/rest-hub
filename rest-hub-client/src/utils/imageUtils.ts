@@ -3,6 +3,8 @@ import { CroppedAreaPixels } from '@/app/posts/create/steps/PostCreateCrop';
 interface GetCroppedImgProps {
   imageSrc: string;
   pixelCrop: CroppedAreaPixels;
+  userId: number;
+  username: string;
 }
 
 const isClient = typeof window !== 'undefined';
@@ -22,10 +24,12 @@ export function createImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
-export async function getCroppedImgUrl({
+export async function getCroppedImgFile({
   imageSrc,
   pixelCrop,
-}: GetCroppedImgProps): Promise<string> {
+  userId,
+  username,
+}: GetCroppedImgProps): Promise<File> {
   if (!isClient) {
     throw new Error('Window is undefined. This function should run on the client.');
   }
@@ -59,7 +63,13 @@ export async function getCroppedImgUrl({
         reject(new Error('Canvas Blob 생성 실패'));
         return;
       }
-      resolve(URL.createObjectURL(blob));
+
+      const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, ''); // 20240314153045 형식
+      const file = new File([blob], `${userId}_${username}_cropped_${timestamp}.jpg`, {
+        type: 'image/jpeg',
+      });
+
+      resolve(file);
     }, 'image/jpeg');
   });
 }
