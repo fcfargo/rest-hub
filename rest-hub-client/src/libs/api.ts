@@ -8,4 +8,5 @@ export const API_ENDPOINTS = {
   CHANGE_PASSWORD: '/users/auth/change-password',
   POST_CREATE: '/posts',
   PLACES_AUTOCOMPLETE: '/places/autocomplete',
+  PRESIGNED_URL: '/upload/presigned-url',
 };

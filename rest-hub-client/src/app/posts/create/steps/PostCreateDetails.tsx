@@ -2,7 +2,7 @@
 
 import EmojiPicker from 'emoji-picker-react';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { MediaTypes } from '../postCreateModal';
 import MediaPreview from '@/components/media/mediaPreview';
@@ -13,6 +13,7 @@ import { useAuth } from '@/context/authContext';
 import { usePlacesAutocomplete } from '@/hooks/usePlacesAutocomplete';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
+import { uploadImageToS3 } from '@/libs/upload';
 import detailsStyles from '@/styles/posts/postCreateDetails.module.css';
 import modalStyles from '@/styles/posts/postCreateModal.module.css';
 import { getAccessToken } from '@/utils/authUtils';
@@ -32,63 +33,45 @@ export default function PostCreateDetails({
   mediaType,
   closeModal,
 }: PostCreateDetailsProps) {
-  const [message, setMessage] = useState<string | null>(null);
   const [postContent, setPostContent] = useState('');
+  const [location, setLocation] = useState('');
   const [showPicker, setShowPicker] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [location, setLocation] = useState('');
+  const [message, setMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
-  const { logout } = useAuth();
 
+  const { logout } = useAuth();
   const { suggestions, loading } = usePlacesAutocomplete(location);
 
   const pickerRef = useRef<HTMLDivElement>(null);
-
   const suggestionsRef = useRef<HTMLUListElement>(null);
 
-  const addEmoji = (emojiObject: { emoji: string }) => {
+  /** 이모지 추가 */
+  const addEmoji = useCallback((emojiObject: { emoji: string }) => {
     setPostContent((prev) => prev + emojiObject.emoji);
-  };
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
-        setShowPicker(false);
-      }
-
-      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
   }, []);
 
-  const handleTextWrite = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  /** 게시글 작성 */
+  const handleTextWrite = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostContent(e.target.value);
-  };
+  }, []);
 
-  const handleLocationInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /** 위치 입력 */
+  const handleLocationInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
-  };
+  }, []);
 
-  const handleSelectLocation = (place: string) => {
+  /** 위치 선택 */
+  const handleSelectLocation = useCallback((place: string) => {
     setLocation(place);
-  };
+  }, []);
 
-  const handlePostCreate = async () => {
+  /**  게시글 업로드 */
+  const handlePostCreate = useCallback(async () => {
     if (!croppedFile) {
       setMessage('이미지가 필요합니다.');
       return;
     }
-
-    const formData = new FormData();
-    formData.append('image', croppedFile);
-    formData.append('content', postContent);
-    formData.append('location', location);
 
     const accessToken = getAccessToken();
     if (!accessToken) {
@@ -96,7 +79,20 @@ export default function PostCreateDetails({
       return;
     }
 
+    if (!postContent.trim()) {
+      setMessage('게시물 내용을 입력해야 합니다.');
+      return;
+    }
+
     try {
+      const imageUrl = await uploadImageToS3(croppedFile, logout);
+
+      const formData = {
+        imageUrl,
+        content: postContent.trim(),
+        location: location.trim() ? location : null,
+      };
+
       const { data } = await api.post(API_ENDPOINTS.POST_CREATE, formData, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -110,14 +106,28 @@ export default function PostCreateDetails({
       setMessage('게시물이 성공적으로 업로드되었습니다.');
       setIsSuccess(true);
 
-      setTimeout(() => {
-        closeModal();
-      }, 2000);
+      setTimeout(closeModal, 2000);
     } catch (error) {
       console.error('Post Create failed:', error);
       setMessage('게시물 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
     }
-  };
+  }, [croppedFile, postContent, location, closeModal, logout]);
+
+  /** 외부 클릭 감지하여 이모지 & 추천 리스트 닫기 */
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+        setShowPicker(false);
+      }
+
+      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <div className={detailsStyles.wrapper}>
@@ -137,14 +147,13 @@ export default function PostCreateDetails({
           공유하기
         </button>
       </div>
+      {/* 미디어 미리보기 & 게시글 작성  */}
       <div className={detailsStyles.postDetailsContainer}>
-        {/* 미디어 미리보기  */}
         <MediaPreview preview={croppedUrl} mediaType={mediaType} />
 
-        {/* 게시물 정보 입력 */}
         <div className={detailsStyles.postInfo}>
+          {/* 게시물 입력 */}
           <div className={detailsStyles.postContent}>
-            {/*  게시글 입력 필드 */}
             <textarea
               className={detailsStyles.postContentText}
               value={postContent}
@@ -153,7 +162,6 @@ export default function PostCreateDetails({
               maxLength={2200}
             />
 
-            {/*  게시글 하단 UI */}
             <div className={detailsStyles.postContentFooter}>
               {/* 이모지 버튼 */}
               <button
@@ -185,8 +193,9 @@ export default function PostCreateDetails({
               <div className={detailsStyles.contentLength}>{postContent.length}/2200</div>
             </div>
           </div>
+
+          {/*  위치 입력*/}
           <div className={detailsStyles.postMeta}>
-            {/*  게시글 위치 정보 추가*/}
             <div className={detailsStyles.locationContainer}>
               <input
                 className={detailsStyles.locationInput}

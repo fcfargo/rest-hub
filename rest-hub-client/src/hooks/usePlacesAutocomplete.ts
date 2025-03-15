@@ -33,7 +33,6 @@ export const usePlacesAutocomplete = (input: string) => {
           },
         });
 
-        console.log(data.body);
         setSuggestions(
           data.body.map((place: any) => ({
             placeId: place.placeId,

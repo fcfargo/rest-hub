@@ -6,7 +6,6 @@ import { useState } from 'react';
 import PostCreateCrop from './steps/PostCreateCrop';
 import PostCreateDetails from './steps/PostCreateDetails';
 import PostCreateUpload from './steps/PostCreateUpload';
-
 import { CloseButtonWhite } from '@/components/ui/closeButton';
 import { MEDIA_TYPES, POST_CREATE_STEPS, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
