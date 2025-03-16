@@ -2,6 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 
 import { processEnv } from '@/common/constants';
+import { Post } from '@/model/post.entity';
 import { User } from '@/model/user.entity';
 
 dotenv.config({ path: 'config/.env' });
@@ -13,6 +14,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   port: Number(processEnv.DB_PORT),
   username: processEnv.DB_USERNAME,
   password: processEnv.DB_PASSWORD,
-  entities: [User],
+  entities: [User, Post],
   synchronize: true,
 };

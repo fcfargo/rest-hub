@@ -7,16 +7,19 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 import { jwtPayLoad } from './jwt.payload';
 
 import { processEnv } from '@/common/constants';
-import { UsersService } from '@/users/users.service';
+import { User } from '@/model/user.entity';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
-    private readonly usersService: UsersService,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
     private jwtService: JwtService,
   ) {
     super();
@@ -63,7 +66,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     if (userData) {
       const userId = userData.sub;
-      const user = await this.usersService.findOneUserById(userId);
+      const user = await this.usersRepository.findOne({
+        where: { id: userId, deletedAt: IsNull() },
+      });
       if (!user) {
         throw new ForbiddenException('User is not Exist');
       }

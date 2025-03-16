@@ -21,6 +21,9 @@ export class UserResponseDto {
 
   @Expose()
   updatedAt: Date;
+
+  @Expose()
+  socialProvider: string;
 }
 
 export class TokenResponseDto {
