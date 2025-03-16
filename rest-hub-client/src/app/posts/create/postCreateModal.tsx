@@ -10,6 +10,7 @@ import { CloseButtonWhite } from '@/components/ui/closeButton';
 import { MEDIA_TYPES, POST_CREATE_STEPS, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { useMounted } from '@/hooks/useMounted';
 import styles from '@/styles/posts/postCreateModal.module.css';
 
 export type MediaTypes = (typeof MEDIA_TYPES)[keyof typeof MEDIA_TYPES];
@@ -37,6 +38,7 @@ export default function PostCreateModal() {
 
   const router = useRouter();
   const { user } = useAuth();
+  const isMounted = useMounted();
 
   if (!user) {
     router.push(ROUTES.AUTH.LOGIN);
@@ -54,31 +56,45 @@ export default function PostCreateModal() {
 
       {/* stage 별 게시글 생성 영역 */}
       <div className={styles.container}>
-        {step === POST_CREATE_STEPS.ONE && (
-          <PostCreateUpload
-            nextStep={() => changeStep(POST_CREATE_STEPS.TWO)}
-            setPostData={setPostData}
-          />
-        )}
-        {step === POST_CREATE_STEPS.TWO && (
-          <PostCreateCrop
-            nextStep={() => changeStep(POST_CREATE_STEPS.THREE)}
-            prevStep={() => changeStep(POST_CREATE_STEPS.ONE)}
-            setPostData={setPostData}
-            fileUrl={postData.fileUrl}
-            userId={user.id}
-            username={user.username}
-          />
-        )}
-        {step === POST_CREATE_STEPS.THREE && postData.croppedFile && (
-          <PostCreateDetails
-            prevStep={() => changeStep(POST_CREATE_STEPS.TWO)}
-            croppedFile={postData.croppedFile}
-            croppedUrl={postData.croppedUrl}
-            mediaType={postData.mediaType}
-            closeModal={closeModal}
-          />
-        )}
+        <div
+          className={`${styles.stepContainer} ${isMounted && step === POST_CREATE_STEPS.ONE ? styles.active : ''}`}
+        >
+          {step === POST_CREATE_STEPS.ONE && (
+            <PostCreateUpload
+              nextStep={() => changeStep(POST_CREATE_STEPS.TWO)}
+              setPostData={setPostData}
+            />
+          )}
+        </div>
+
+        <div
+          className={`${styles.stepContainer} ${step === POST_CREATE_STEPS.TWO ? styles.active : ''}`}
+        >
+          {step === POST_CREATE_STEPS.TWO && (
+            <PostCreateCrop
+              nextStep={() => changeStep(POST_CREATE_STEPS.THREE)}
+              prevStep={() => changeStep(POST_CREATE_STEPS.ONE)}
+              setPostData={setPostData}
+              fileUrl={postData.fileUrl}
+              userId={user.id}
+              username={user.username}
+            />
+          )}
+        </div>
+
+        <div
+          className={`${styles.stepContainer} ${step === POST_CREATE_STEPS.THREE ? styles.active : ''}`}
+        >
+          {step === POST_CREATE_STEPS.THREE && postData.croppedFile && (
+            <PostCreateDetails
+              prevStep={() => changeStep(POST_CREATE_STEPS.TWO)}
+              croppedFile={postData.croppedFile}
+              croppedUrl={postData.croppedUrl}
+              mediaType={postData.mediaType}
+              closeModal={closeModal}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

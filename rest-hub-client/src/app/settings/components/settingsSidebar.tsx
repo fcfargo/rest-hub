@@ -1,30 +1,30 @@
 'use client';
 
+import classNames from 'classnames';
 import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { ROUTES } from '@/constants';
+import { useMounted } from '@/hooks/useMounted';
 import styles from '@/styles/settings/settingsSidebar.module.css';
 
 interface SidebarItemProps {
-  href: string;
+  path: string;
   src: string;
   label: string;
+  onClick?: () => void;
 }
 
-const sidebarItems = [
-  { href: '', src: '/settings/profile.svg', label: '프로필 편집' },
-  { href: ROUTES.SETTINGS.SECURITY, src: '/settings/security.svg', label: '비밀번호 및 보안' },
-  { href: '', src: '/settings/notifications.svg', label: '알림' },
-];
-
-function SidebarItem({ href, src, label }: SidebarItemProps) {
+function SidebarItem({ path, src, label, onClick }: SidebarItemProps) {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = pathname === path;
 
   return (
-    <Link href={href} className={`${styles.item} ${isActive ? styles.itemActive : ''}`}>
+    <button
+      className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
+      onClick={onClick}
+      disabled={!onClick}
+    >
       {isActive && (
         <div className={`${styles.activeIndicator} ${styles.activeIndicatorVisible}`}></div>
       )}
@@ -36,13 +36,31 @@ function SidebarItem({ href, src, label }: SidebarItemProps) {
         height={18}
       />
       <p className={`${styles.itemName} ${isActive ? styles.itemNameActive : ''}`}>{label}</p>
-    </Link>
+    </button>
   );
 }
 
 export default function SettingsSidebar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const isMounted = useMounted();
+
+  const sidebarItems = [
+    { path: '', src: '/settings/profile.svg', label: '프로필 편집' },
+    {
+      path: ROUTES.SETTINGS.SECURITY,
+      src: '/settings/security.svg',
+      label: '비밀번호 및 보안',
+      onClick: () =>
+        router.push(
+          pathname === ROUTES.SETTINGS.HOME ? ROUTES.SETTINGS.SECURITY : ROUTES.SETTINGS.HOME,
+        ),
+    },
+    { path: '', src: '/settings/notifications.svg', label: '알림' },
+  ];
+
   return (
-    <aside className={styles.container}>
+    <aside className={classNames(styles.container, isMounted ? styles.active : '')}>
       <div className={styles.wrapper}>
         <h2 className={styles.title}>설정</h2>
         <nav className={styles.navigationList}>

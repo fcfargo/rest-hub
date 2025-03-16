@@ -93,7 +93,7 @@ export default function PasswordChangeModal() {
     } else if (status === HTTP_STATUS_CODES.UNAUTHORIZED) {
       if (code === ERROR_CODES.INVALID__PASSWORD) {
         errorMessage = '현재 비밀번호가 틀렸습니다. 비밀번호를 정확히 입력해 주세요.';
-      } else if (code === ERROR_CODES.USER_NOD_FOUND) {
+      } else if (code === ERROR_CODES.USER_NOT_FOUND) {
         closeModal();
         logout();
         router.push(ROUTES.AUTH.LOGIN);

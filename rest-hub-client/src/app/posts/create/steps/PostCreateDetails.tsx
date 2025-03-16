@@ -1,5 +1,6 @@
 'use client';
 
+import classNames from 'classnames';
 import EmojiPicker from 'emoji-picker-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -174,16 +175,20 @@ export default function PostCreateDetails({
               </button>
 
               {/* ✨ 이모지 피커 */}
-              {showPicker && (
-                <div ref={pickerRef} className={detailsStyles.emojiPickerContainer}>
-                  <EmojiPicker
-                    searchDisabled={true}
-                    width={300}
-                    height={360}
-                    onEmojiClick={addEmoji}
-                  />
-                </div>
-              )}
+              <div
+                ref={pickerRef}
+                className={classNames(
+                  detailsStyles.emojiPickerContainer,
+                  showPicker && detailsStyles.active,
+                )}
+              >
+                <EmojiPicker
+                  searchDisabled={true}
+                  width={300}
+                  height={360}
+                  onEmojiClick={addEmoji}
+                />
+              </div>
 
               {/* 글자 수 표시 */}
               <div className={detailsStyles.contentLength}>{postContent.length}/2200</div>

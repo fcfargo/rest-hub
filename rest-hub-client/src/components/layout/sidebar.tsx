@@ -3,6 +3,7 @@
 import classNames from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { MODAL_TYPES, PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
@@ -15,17 +16,23 @@ export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const { user, logout } = useAuth();
   const { openModal } = useModal();
+  const router = useRouter();
+  const pathname = usePathname();
 
   interface MenuItemProps {
     src: string;
     alt: string;
     label: string;
-    href?: string;
     onClick?: () => void;
   }
 
   const MENU_ITEMS = [
-    { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home', href: ROUTES.HOME },
+    {
+      src: '/layout/sidebar/home.svg',
+      alt: 'Home',
+      label: 'Home',
+      onClick: () => router.push(ROUTES.HOME),
+    },
     { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search' },
     {
       src: '/layout/sidebar/notification.svg',
@@ -47,7 +54,8 @@ export default function Sidebar() {
       src: '/layout/sidebar/settings.svg',
       alt: 'Settings',
       label: 'Settings',
-      href: ROUTES.SETTINGS.HOME,
+      onClick: () =>
+        router.push(pathname === ROUTES.SETTINGS.HOME ? ROUTES.HOME : ROUTES.SETTINGS.HOME),
     },
   ];
 
@@ -71,13 +79,19 @@ export default function Sidebar() {
 
       <nav className={styles.menu}>
         {MENU_ITEMS.map((item: MenuItemProps, index: number) => (
-          <Link
-            href={item.href ?? ''}
+          <button
             key={index}
             className={styles.menuItem}
-            onClick={item.onClick ?? (() => {})}
+            onClick={item.onClick}
+            disabled={!item.onClick}
           >
-            <Image src={item.src} width={0} height={0} alt={item.alt} className={styles.menuIcon} />
+            <Image
+              src={item.src}
+              width={24}
+              height={24}
+              alt={item.alt}
+              className={styles.menuIcon}
+            />
             <span
               className={classNames(styles.textWrapper, {
                 [globalStyles.hidden]: !expanded,
@@ -85,7 +99,7 @@ export default function Sidebar() {
             >
               {item.label}
             </span>
-          </Link>
+          </button>
         ))}
       </nav>
 
