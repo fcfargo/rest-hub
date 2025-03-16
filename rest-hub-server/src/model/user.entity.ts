@@ -5,7 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+import { Post } from './post.entity';
 
 import { SOCIAL_PROVIDERS, SocialProvider } from '@/users/interfaces/users.interface';
 
@@ -40,4 +43,7 @@ export class User {
 
   @Column({ type: 'enum', enum: SOCIAL_PROVIDERS, nullable: true })
   socialProvider: SocialProvider;
+
+  @OneToMany(() => Post, (post) => post.user, { cascade: true })
+  posts: Post[];
 }
