@@ -12,14 +12,7 @@ export default function MediaPreview({ preview, mediaType }: MediaPreviewProps) 
   return (
     <div className={styles.mediaWrapper}>
       {mediaType.startsWith(MEDIA_TYPES.IMAGE) ? (
-        <Image
-          className={styles.previewImage}
-          src={preview}
-          alt="Image Preview"
-          fill
-          objectFit="cover"
-          priority
-        />
+        <Image style={{ objectFit: 'contain' }} src={preview} alt="Image Preview" fill priority />
       ) : (
         <video className={styles.previewVideo} src={preview} controls />
       )}

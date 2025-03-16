@@ -16,7 +16,7 @@ import api from '@/libs/axiosInstance';
 import { uploadImageToS3 } from '@/libs/upload';
 import detailsStyles from '@/styles/posts/postCreateDetails.module.css';
 import modalStyles from '@/styles/posts/postCreateModal.module.css';
-import { getAccessToken } from '@/utils/authUtils';
+import { apiRequest } from '@/utils/apiRequest';
 
 interface PostCreateDetailsProps {
   prevStep: () => void;
@@ -73,12 +73,6 @@ export default function PostCreateDetails({
       return;
     }
 
-    const accessToken = getAccessToken();
-    if (!accessToken) {
-      logout();
-      return;
-    }
-
     if (!postContent.trim()) {
       setMessage('게시물 내용을 입력해야 합니다.');
       return;
@@ -93,9 +87,11 @@ export default function PostCreateDetails({
         location: location.trim() ? location : null,
       };
 
-      const { data } = await api.post(API_ENDPOINTS.POST_CREATE, formData, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const { data } = await apiRequest(async (accessToken: string) => {
+        return api.post(API_ENDPOINTS.POST_CREATE, formData, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      }, logout);
 
       if (!data.body) {
         throw new Error('failed to create a post from the server');

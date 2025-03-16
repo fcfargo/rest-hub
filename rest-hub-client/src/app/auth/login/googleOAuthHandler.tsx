@@ -29,7 +29,7 @@ export default function GoogleOAuthHandler() {
         const { tokens, user } = data.body;
 
         saveTokens(tokens.accessToken, tokens.refreshToken);
-        setUser({ ...user, isOAuth: true });
+        setUser({ ...user });
 
         router.push(ROUTES.HOME);
       } catch (error) {

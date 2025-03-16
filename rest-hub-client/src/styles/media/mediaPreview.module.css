@@ -5,9 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.previewImage {
+  overflow: hidden;
 }
 
 .previewVideo {

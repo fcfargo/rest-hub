@@ -6,7 +6,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { AUTH_EFFECT_EXCLUDED_ROUTES, HTTP_STATUS_CODES, ROUTES } from '@/constants';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import { getAccessToken, getRefreshToken, removeTokens, saveTokens } from '@/utils/authUtils';
+import { apiRequest } from '@/utils/apiRequest';
+import { removeTokens, saveTokens } from '@/utils/authUtils';
 
 interface User {
   id: number;
@@ -16,7 +17,7 @@ interface User {
   deviceToken: string | null;
   createdAt: Date;
   updatedAt: Date;
-  isOAuth?: boolean;
+  socialProvider: string | null;
 }
 
 interface LogInUserRequest {
@@ -47,56 +48,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     const getUser = async () => {
-      const accessToken = getAccessToken();
-      if (!accessToken) {
-        logout();
-        return;
-      }
-
       try {
-        const { data } = await api.get(API_ENDPOINTS.USER, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const { data } = await apiRequest(async (accessToken: string) => {
+          return api.get(API_ENDPOINTS.USER, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+        }, logout);
 
         setUser(data.body);
       } catch (error) {
-        const status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
-
-        if (status === HTTP_STATUS_CODES.UNAUTHORIZED) {
-          console.warn('Access token expired, attempting refresh...');
-          await refreshAccessToken();
-        } else {
-          console.error('Fetching user failed', error);
-          logout();
-        }
+        console.error('Fetching user failed', error);
+        throw error;
       }
     };
 
     getUser();
   }, []);
-
-  const refreshAccessToken = async () => {
-    try {
-      const refreshToken = getRefreshToken();
-      if (!refreshToken) {
-        throw new Error('No refresh token available');
-      }
-
-      const { data } = await api.post(API_ENDPOINTS.REFRESH_TOKEN, { refreshToken });
-      const { accessToken: newAccessToken, refreshToken: newRefreshToken } = data.body;
-
-      saveTokens(newAccessToken, newRefreshToken);
-
-      const { data: refreshedData } = await api.get(API_ENDPOINTS.USER, {
-        headers: { Authorization: `Bearer ${newAccessToken}` },
-      });
-
-      setUser(refreshedData.body);
-    } catch (error) {
-      console.error('Refresh token failed: expired or invalid:', error);
-      logout();
-    }
-  };
 
   const login = async (requestData: LogInUserRequest): Promise<boolean> => {
     try {
@@ -143,7 +110,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async (): Promise<void> => {
-    if (user?.isOAuth) {
+    if (user?.socialProvider) {
       await signOut({ callbackUrl: ROUTES.AUTH.LOGIN });
     } else {
       setUser(null);

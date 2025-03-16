@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/authContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import { getAccessToken } from '@/utils/authUtils';
+import { apiRequest } from '@/utils/apiRequest';
 
 export const usePlacesAutocomplete = (input: string) => {
   const [suggestions, setSuggestions] = useState<{ placeId: string; description: string }[]>([]);
@@ -19,19 +19,15 @@ export const usePlacesAutocomplete = (input: string) => {
     const fetchPlaces = async () => {
       setLoading(true);
 
-      const accessToken = getAccessToken();
-      if (!accessToken) {
-        logout();
-        return;
-      }
-
       try {
-        const { data } = await api.get(API_ENDPOINTS.PLACES_AUTOCOMPLETE, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-          params: {
-            input,
-          },
-        });
+        const { data } = await apiRequest(async (accessToken: string) => {
+          return api.get(API_ENDPOINTS.PLACES_AUTOCOMPLETE, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            params: {
+              input,
+            },
+          });
+        }, logout);
 
         setSuggestions(
           data.body.map((place: any) => ({

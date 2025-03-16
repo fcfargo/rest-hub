@@ -15,7 +15,7 @@ import { useModal } from '@/context/modalContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import styles from '@/styles/settings/passwordChangeModal.module.css';
-import { getAccessToken } from '@/utils/authUtils';
+import { apiRequest } from '@/utils/apiRequest';
 
 const passwordChangeSchema = z
   .object({
@@ -56,21 +56,18 @@ export default function PasswordChangeModal() {
     setMessage(null);
     setIsSuccess(false);
 
-    const accessToken = getAccessToken();
-    if (!accessToken) {
-      logout();
-      return;
-    }
-
     try {
-      const { data } = await api.post(
-        API_ENDPOINTS.CHANGE_PASSWORD,
-        {
-          oldPassword: currentPassword,
-          newPassword,
-        },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+      const { data } = await apiRequest(async (accessToken: string) => {
+        return api.post(
+          API_ENDPOINTS.CHANGE_PASSWORD,
+          {
+            oldPassword: currentPassword,
+            newPassword,
+          },
+          { headers: { Authorization: `Bearer ${accessToken}` } },
+        );
+      }, logout);
+
       if (!data.body) {
         throw new Error('failed to change password from the server');
       }

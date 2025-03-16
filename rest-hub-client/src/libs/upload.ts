@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_ENDPOINTS } from './api';
 import api from './axiosInstance';
 
+import { apiRequest } from '@/utils/apiRequest';
 import { getAccessToken } from '@/utils/authUtils';
 
 export async function uploadImageToS3(file: File, logout: () => void): Promise<string> {
@@ -13,10 +14,12 @@ export async function uploadImageToS3(file: File, logout: () => void): Promise<s
   }
 
   try {
-    const { data } = await api.get(API_ENDPOINTS.PRESIGNED_URL, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      params: { fileName: file.name, fileType: file.type },
-    });
+    const { data } = await apiRequest(async (accessToken: string) => {
+      return api.get(API_ENDPOINTS.PRESIGNED_URL, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        params: { fileName: file.name, fileType: file.type },
+      });
+    }, logout);
 
     const presignedUrl = data.body;
 
