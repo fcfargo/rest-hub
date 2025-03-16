@@ -11,6 +11,6 @@ export const QUEUE_JOB_NAMES = {
 } as const;
 
 export const ERROR_CODE = {
-  USER_NOD_FOUND: 'USER_NOT_FOUND',
+  USER_NOT_FOUND: 'USER_NOT_FOUND',
   INVALID__PASSWORD: 'INVALID__PASSWORD',
-};
+} as const;

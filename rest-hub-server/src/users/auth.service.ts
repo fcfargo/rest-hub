@@ -30,14 +30,17 @@ import { QueueService } from '@/common/queue/queue.service';
 
 @Injectable()
 export class AuthService {
-  private readonly googleClient: OAuth2Client;
+  private static googleClient: OAuth2Client | null = null;
+
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly queuService: QueueService,
   ) {
-    this.googleClient = new OAuth2Client();
+    if (!AuthService.googleClient) {
+      AuthService.googleClient = new OAuth2Client();
+    }
   }
 
   private async _hashPassword(password: string): Promise<string> {
@@ -129,7 +132,7 @@ export class AuthService {
 
   private async _verifyGoogleIdToken(id_token: string): Promise<TokenPayload> {
     try {
-      const ticket = await this.googleClient.verifyIdToken({
+      const ticket = await AuthService.googleClient!.verifyIdToken({
         idToken: id_token,
         audience: processEnv.GOOGLE_CLIENT_ID,
       });
@@ -201,7 +204,7 @@ export class AuthService {
     const user = await this.usersService.findOneUserById(userId);
     if (!user) {
       throw new UnauthorizedException({
-        code: ERROR_CODE.USER_NOD_FOUND,
+        code: ERROR_CODE.USER_NOT_FOUND,
         message: 'user not found',
       });
     }
