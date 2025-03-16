@@ -1,6 +1,7 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from 'config/typeorm.config';
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
@@ -10,6 +11,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { processEnv } from './common/constants';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { PlacesModule } from './places/places.module';
+import { PostsModule } from './posts/posts.module';
+import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -40,7 +44,17 @@ import { UsersModule } from './users/users.module';
         },
       }),
     }),
+    JwtModule.register({
+      global: true,
+      secret: processEnv.JWT_SECRET,
+      signOptions: {
+        expiresIn: processEnv.ACCESS_TOKEN_EXPIRES_IN,
+      },
+    }),
     UsersModule,
+    PlacesModule,
+    UploadModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: 'APP_INTERCEPTOR', useClass: LoggingInterceptor }],
