@@ -1,0 +1,170 @@
+.wrapper {
+  width: 800px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 12px;
+  box-shadow: 0px 9px 24px 0px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+}
+
+.postDetailsContainer {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+  align-items: center;
+}
+
+.postInfo {
+  flex-basis: 37.5%;
+  height: 100%;
+  border-left: 1px solid #dbdbdb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.postContent {
+  flex-basis: 50%;
+  width: 100%;
+  border-bottom: 1px solid #dbdbdb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.postContentText {
+  width: 90%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.postContentFooter {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.emojiButton {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.emojiIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.contentLength {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(128, 129, 135, 0.8);
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+  padding-top: 2px;
+}
+
+.emojiPickerContainer {
+  top: -26px;
+  right: 36px;
+  position: absolute;
+  transform: scale(0.7);
+}
+
+.postMeta {
+  flex-basis: 50%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.locationContainer {
+  flex-basis: 15%;
+  width: 100%;
+  border-bottom: 1px solid #dbdbdb;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.locationInput {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: cneter;
+  margin-left: 8px;
+  margin-bottom: 1px;
+}
+
+.locationIcon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.closeButton {
+  transform: scale(0.8);
+  align-self: center;
+  margin-right: 4px;
+}
+
+.suggestionsList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  overflow-y: auto;
+  width: 100%;
+  position: absolute;
+  border: 1px solid #dbdbdb;
+  top: 40px;
+  border-radius: 14px;
+  box-shadow: 0px 9px 24px 0px rgba(0, 0, 0, 0.25);
+}
+
+.suggestionItem {
+  padding: 8px 12px;
+  font-size: 16px;
+  width: 100%;
+  font-weight: 700;
+  color: #333;
+  text-align: left;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.suggestionItem:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.loadingIcon {
+  align-self: center;
+  width: 24px;
+  height: 24px;
+}

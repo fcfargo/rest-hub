@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { ROUTES } from '@/constants';
-import styles from '@/styles/resetPassword.module.css';
+import styles from '@/styles/auth/resetPassword.module.css';
 
 interface ResetPasswordLayoutProps {
   children: React.ReactNode;

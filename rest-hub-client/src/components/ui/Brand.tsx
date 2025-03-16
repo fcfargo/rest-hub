@@ -1,4 +1,4 @@
-import styles from '@/styles/utils.module.css';
+import styles from '@/styles/utils/utils.module.css';
 
 export default function Brand() {
   return (

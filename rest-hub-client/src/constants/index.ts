@@ -35,12 +35,39 @@ export const SESSION_STATUS = {
   UNAUTHENTICATED: 'unauthenticated',
 } as const;
 
-export const MODAL_TYPE = {
+export const MODAL_TYPES = {
   PASSWORD_CHANGE: 'passwordChange',
+  POST_CREATE: 'postCreate',
 } as const;
 
-export const ERROR_CODE = {
+export const ERROR_CODES = {
   INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
   USER_NOD_FOUND: 'USER_NOT_FOUND',
   INVALID__PASSWORD: 'INVALID__PASSWORD',
+} as const;
+
+export const POST_CREATE_STEPS = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+} as const;
+
+export const MEDIA_TYPES = {
+  IMAGE: 'image',
+  VIDEO: 'video',
 };
+
+export const INPUT_TYPES = {
+  EMAIL: 'email',
+  PASSWORD: 'password',
+  TEXT: 'text',
+  FILE: 'file',
+  RANGE: 'range',
+} as const;
+
+export const ASPECT_RATIO_VALUES = {
+  ORIGINAL: 0, // 원본
+  SQUARE: 1, // 1:1
+  LANDSCAPE_4_5: 4 / 5, // 4:5
+  LANDSCAPE_16_9: 16 / 9, // 16:9
+} as const;

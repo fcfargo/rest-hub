@@ -4,7 +4,7 @@
   width: 260px;
   position: relative;
   border-right: 1px solid #ddd;
-  animation: fadeInSlide 0.4s ease-in-out forwards;
+  animation: fadeInSlide 0.3s ease-in-out forwards;
 }
 
 @keyframes fadeInSlide {

@@ -2,16 +2,16 @@
 
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-import { MODAL_TYPE } from '@/constants';
-
-import PasswordChangeModal from '@/app/settings/components/passwordChangeModal';
+import PostCreateModal from '@/app/posts/create/postCreateModal';
+import PasswordChangeModal from '@/app/settings/security/passwordChangeModal';
+import { MODAL_TYPES } from '@/constants';
 
 interface ModalContextType {
   openModal: (modalType: ModalType) => void;
   closeModal: () => void;
 }
 
-type ModalType = (typeof MODAL_TYPE)[keyof typeof MODAL_TYPE];
+type ModalType = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES];
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
@@ -26,7 +26,8 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {children}
 
-      {activeModal === MODAL_TYPE.PASSWORD_CHANGE && <PasswordChangeModal />}
+      {activeModal === MODAL_TYPES.PASSWORD_CHANGE && <PasswordChangeModal />}
+      {activeModal === MODAL_TYPES.POST_CREATE && <PostCreateModal />}
     </ModalContext.Provider>
   );
 };

@@ -1,0 +1,89 @@
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.brandFrame {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 50px;
+}
+
+.brandLogo {
+  width: 28px;
+  height: 28px;
+  background-color: #0095f6;
+  border-radius: 50%;
+  margin-top: 1px;
+}
+
+.brandName {
+  font-size: 38px;
+  font-weight: bold;
+  color: #171725;
+}
+
+.middleBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.middleBarImage {
+  width: 150px;
+  height: auto;
+}
+
+.closeButton {
+  flex-grow: 0;
+  align-self: flex-end;
+  z-index: 10;
+}
+
+.closeIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.closeButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+.messageWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.inputMessageWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.errorText {
+  align-self: center;
+  font-size: 14px;
+  color: #ff4d4f;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.successText {
+  align-self: center;
+  font-size: 14px;
+  color: green;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.inputErrorText {
+  color: #ff4d4f;
+  padding: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}

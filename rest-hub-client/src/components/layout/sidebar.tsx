@@ -1,41 +1,55 @@
 'use client';
+
 import classNames from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import { PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
+import { MODAL_TYPES, PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
-import styles from '@/styles/sidebar.module.css';
-import globalStyles from '@/styles/utils.module.css';
-
-const MENU_ITEMS = [
-  { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home', href: ROUTES.HOME },
-  { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search', href: '' },
-  {
-    src: '/layout/sidebar/notification.svg',
-    alt: 'Notification',
-    label: 'Notification',
-    href: '',
-  },
-  {
-    src: '/layout/sidebar/communities.svg',
-    alt: 'Communities',
-    label: 'Communities',
-    href: '',
-  },
-  { src: '/layout/sidebar/post.svg', alt: 'Post', label: 'Post', href: '' },
-  {
-    src: '/layout/sidebar/settings.svg',
-    alt: 'Settings',
-    label: 'Settings',
-    href: ROUTES.SETTINGS.HOME,
-  },
-];
+import { useModal } from '@/context/modalContext';
+import styles from '@/styles/layout/sidebar.module.css';
+import globalStyles from '@/styles/utils/utils.module.css';
 
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const { user, logout } = useAuth();
+  const { openModal } = useModal();
+
+  interface MenuItemProps {
+    src: string;
+    alt: string;
+    label: string;
+    href?: string;
+    onClick?: () => void;
+  }
+
+  const MENU_ITEMS = [
+    { src: '/layout/sidebar/home.svg', alt: 'Home', label: 'Home', href: ROUTES.HOME },
+    { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search' },
+    {
+      src: '/layout/sidebar/notification.svg',
+      alt: 'Notification',
+      label: 'Notification',
+    },
+    {
+      src: '/layout/sidebar/communities.svg',
+      alt: 'Communities',
+      label: 'Communities',
+    },
+    {
+      src: '/layout/sidebar/post.svg',
+      alt: 'Post',
+      label: 'Post',
+      onClick: () => openModal(MODAL_TYPES.POST_CREATE),
+    },
+    {
+      src: '/layout/sidebar/settings.svg',
+      alt: 'Settings',
+      label: 'Settings',
+      href: ROUTES.SETTINGS.HOME,
+    },
+  ];
 
   if (!user) {
     return null;
@@ -56,8 +70,13 @@ export default function Sidebar() {
       </Link>
 
       <nav className={styles.menu}>
-        {MENU_ITEMS.map((item, index) => (
-          <Link href={item.href} key={index} className={styles.menuItem}>
+        {MENU_ITEMS.map((item: MenuItemProps, index: number) => (
+          <Link
+            href={item.href ?? ''}
+            key={index}
+            className={styles.menuItem}
+            onClick={item.onClick ?? (() => {})}
+          >
             <Image src={item.src} width={0} height={0} alt={item.alt} className={styles.menuIcon} />
             <span
               className={classNames(styles.textWrapper, {

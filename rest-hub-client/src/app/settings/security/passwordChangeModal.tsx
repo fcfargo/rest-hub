@@ -1,20 +1,21 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import InputField from '@/components/forms/inputField';
-import { ERROR_CODE, HTTP_STATUS_CODES, ROUTES } from '@/constants';
+import InputField from '@/components/forms/InputField';
+import { CloseButtonBlack } from '@/components/ui/closeButton';
+import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
+import { ERROR_CODES, HTTP_STATUS_CODES, INPUT_TYPES, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import styles from '@/styles/settings/passwordChangeModal.module.css';
-import { getAccessToken } from '@/utils/authUtils';
+import { apiRequest } from '@/utils/apiRequest';
 
 const passwordChangeSchema = z
   .object({
@@ -56,20 +57,17 @@ export default function PasswordChangeModal() {
     setIsSuccess(false);
 
     try {
-      const accessToken = getAccessToken();
-      if (!accessToken) {
-        logout();
-        return;
-      }
+      const { data } = await apiRequest(async (accessToken: string) => {
+        return api.post(
+          API_ENDPOINTS.CHANGE_PASSWORD,
+          {
+            oldPassword: currentPassword,
+            newPassword,
+          },
+          { headers: { Authorization: `Bearer ${accessToken}` } },
+        );
+      }, logout);
 
-      const { data } = await api.post(
-        API_ENDPOINTS.CHANGE_PASSWORD,
-        {
-          oldPassword: currentPassword,
-          newPassword,
-        },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
       if (!data.body) {
         throw new Error('failed to change password from the server');
       }
@@ -85,7 +83,7 @@ export default function PasswordChangeModal() {
     console.error('Password change failed:', error);
 
     const status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
-    const code = error.response?.data.error.code ?? ERROR_CODE.INTERNAL_SERVER_ERROR;
+    const code = error.response?.data.error.code ?? ERROR_CODES.INTERNAL_SERVER_ERROR;
 
     let errorMessage = '비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.';
 
@@ -93,9 +91,9 @@ export default function PasswordChangeModal() {
       errorMessage =
         '이 이메일은 소셜 로그인 계정입니다. 비밀번호를 변경하려면 일반 로그인 계정을 사용해야 합니다.';
     } else if (status === HTTP_STATUS_CODES.UNAUTHORIZED) {
-      if (code === ERROR_CODE.INVALID__PASSWORD) {
+      if (code === ERROR_CODES.INVALID__PASSWORD) {
         errorMessage = '현재 비밀번호가 틀렸습니다. 비밀번호를 정확히 입력해 주세요.';
-      } else if (code === ERROR_CODE.USER_NOD_FOUND) {
+      } else if (code === ERROR_CODES.USER_NOD_FOUND) {
         closeModal();
         logout();
         router.push(ROUTES.AUTH.LOGIN);
@@ -110,16 +108,8 @@ export default function PasswordChangeModal() {
     <div className={styles.overlay}>
       <div className={styles.container}>
         <div className={styles.wrapper}>
-          {/* 닫기 버튼 */}
-          <button className={styles.closeButton} onClick={() => closeModal()}>
-            <Image
-              className={styles.icon}
-              src="/settings/cancel.svg"
-              alt="Close"
-              width={24}
-              height={24}
-            />
-          </button>
+          {/* 모달 창 닫기 버튼 */}
+          <CloseButtonBlack onClick={() => closeModal()} className={'mt-[16px] -mr-[32px]'} />
 
           {/* 제목 */}
           <h2 className={styles.title}>비밀번호 변경</h2>
@@ -132,7 +122,7 @@ export default function PasswordChangeModal() {
           {/* 입력 폼 */}
           <form onSubmit={handleSubmit(onSubmit)} className={styles.formWrapper}>
             <InputField
-              type="password"
+              type={INPUT_TYPES.PASSWORD}
               placeholder="현재 비밀번호"
               isEyesImage={true}
               iconSrc="/auth/password.svg"
@@ -142,7 +132,7 @@ export default function PasswordChangeModal() {
             />
 
             <InputField
-              type="password"
+              type={INPUT_TYPES.PASSWORD}
               placeholder="새 비밀번호"
               isEyesImage={true}
               iconSrc="/auth/password.svg"
@@ -152,7 +142,7 @@ export default function PasswordChangeModal() {
             />
 
             <InputField
-              type="password"
+              type={INPUT_TYPES.PASSWORD}
               placeholder="비밀번호 확인"
               isEyesImage={true}
               iconSrc="/auth/password.svg"
@@ -171,9 +161,12 @@ export default function PasswordChangeModal() {
             </button>
 
             {/* 에러 메시지 출력 */}
-            {message && (
-              <p className={isSuccess ? styles.successMessage : styles.failedMessage}>{message}</p>
-            )}
+            {message &&
+              (isSuccess ? (
+                <SuccessMessage message={message} />
+              ) : (
+                <ErrorMessage message={message} />
+              ))}
           </form>
         </div>
       </div>

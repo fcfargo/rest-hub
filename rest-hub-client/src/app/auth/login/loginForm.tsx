@@ -5,10 +5,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import InputField from '@/components/forms/inputField';
+import InputField from '@/components/forms/InputField';
+import { InputErrorMessage } from '@/components/ui/message';
+import { INPUT_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
-import inputStyles from '@/styles/input.module.css';
-import styles from '@/styles/login.module.css';
+import styles from '@/styles/auth/login.module.css';
 
 const logInSchema = z.object({
   email: z.string().email({ message: '유효한 이메일 형식이 아닙니다.' }),
@@ -48,7 +49,7 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.loginWindow}>
       <InputField
-        type="email"
+        type={INPUT_TYPES.EMAIL}
         placeholder="Your email"
         iconSrc="/auth/email.svg"
         altText="Email Icon"
@@ -57,7 +58,7 @@ export default function LoginForm() {
       />
 
       <InputField
-        type="password"
+        type={INPUT_TYPES.PASSWORD}
         placeholder="Password"
         isEyesImage={true}
         iconSrc="/auth/password.svg"
@@ -66,7 +67,7 @@ export default function LoginForm() {
         errorMessage={errors.password?.message}
       />
 
-      {loginError && <p className={inputStyles.errorText}>{loginError}</p>}
+      {loginError && <InputErrorMessage message={loginError} />}
 
       <button className={styles.button} type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Logging in...' : 'Log in'}

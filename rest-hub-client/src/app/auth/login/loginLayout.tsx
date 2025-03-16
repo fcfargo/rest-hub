@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { SessionProvider, signIn } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 
 import GoogleOAuthHandler from './googleOAuthHandler';
 import AuthButton from '@/components/auth/authButton';
 import Brand from '@/components/ui/brand';
 import Divider from '@/components/ui/divider';
 import { ROUTES } from '@/constants';
-import styles from '@/styles/login.module.css';
+import styles from '@/styles/auth/login.module.css';
 
 interface LoginLayoutProps {
   children: React.ReactNode;
@@ -25,15 +25,13 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
               Forgot password?
             </Link>
             <Divider />
-            <SessionProvider>
-              <GoogleOAuthHandler />
-              <AuthButton
-                text="Google"
-                iconSrc="/auth/google.svg"
-                altText="Google Icon"
-                onClick={() => signIn('google')}
-              />
-            </SessionProvider>
+            <GoogleOAuthHandler />
+            <AuthButton
+              text="Google"
+              iconSrc="/auth/google.svg"
+              altText="Google Icon"
+              onClick={() => signIn('google')}
+            />
           </div>
         </div>
         <p className={styles.signupText}>

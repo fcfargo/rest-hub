@@ -6,11 +6,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import InputField from '@/components/forms/inputField';
-import { HTTP_STATUS_CODES, ROUTES } from '@/constants';
+import InputField from '@/components/forms/InputField';
+import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
+import { HTTP_STATUS_CODES, INPUT_TYPES, ROUTES } from '@/constants';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import styles from '@/styles/resetPassword.module.css';
+import styles from '@/styles/auth/resetPassword.module.css';
 
 const resetPasswordSchema = z.object({
   email: z.string().email({ message: '유효한 이메일 형식이 아닙니다.' }),
@@ -69,7 +70,7 @@ export default function ResetPasswordForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.formWrapper}>
       <InputField
-        type="email"
+        type={INPUT_TYPES.EMAIL}
         placeholder="Your email"
         iconSrc="/auth/email.svg"
         altText="Email Icon"
@@ -81,9 +82,12 @@ export default function ResetPasswordForm() {
         {isSubmitting ? '요청 중...' : isSuccess ? '요청 완료' : 'Continue'}
       </button>
 
-      {message && (
-        <p className={isSuccess ? styles.successMessage : styles.failedMessage}>{message}</p>
-      )}
+      {message &&
+        (isSuccess ? (
+          <SuccessMessage message={message} className="mt-[16px] -mb-[16px]" />
+        ) : (
+          <ErrorMessage message={message} className="mt-[16px] -mb-[16px]" />
+        ))}
     </form>
   );
 }

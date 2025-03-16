@@ -1,0 +1,158 @@
+.overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.closeButton {
+  flex-grow: 0;
+  align-self: flex-end;
+  margin-top: 16px;
+  margin-right: 16px;
+}
+
+.cancelIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -40px;
+}
+
+.wrapper {
+  width: 500px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 12px;
+  box-shadow: 0px 9px 24px 0px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+}
+
+.header {
+  width: 100%;
+  height: 47px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-style: solid;
+  border-color: #dbdbdb;
+  border-width: 0px 0px 1px 0px;
+  padding: 9px 0px 9px 0px;
+}
+
+.header:has(:only-child) {
+  justify-content: center;
+}
+
+.title {
+  flex-grow: 1;
+  align-self: center;
+  color: #262626;
+  text-align: center;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.uploadContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.uploadContainer.dragging {
+  background-color: rgba(0, 149, 246, 0.1);
+  border-color: #0095f6;
+}
+
+.imageWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  padding: 16px 13px 16px 16px;
+  border: 1px dashed #dbdbdb;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.icon {
+  width: 96px;
+  height: 77px;
+}
+
+.description {
+  color: #262626;
+  text-align: center;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backButton {
+  flex-shrink: 0;
+  margin-left: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0px 0px 6px rgba(255, 255, 255, 1),
+    0px 0px 12px rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+}
+
+.backButtonIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.doneButton {
+  flex-shrink: 0;
+  margin-right: 16px;
+  z-index: 10;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0095f6;
+  text-align: center;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  border: 2px solid rgba(255, 255, 255, 0.6); /* ✅ Back 버튼과 통일 */
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1); /* ✅ Back 버튼과 동일한 배경 */
+  box-shadow:
+    0px 0px 6px rgba(255, 255, 255, 1),
+    0px 0px 12px rgba(255, 255, 255, 0.8); /* ✅ Back 버튼과 동일한 그림자 효과 */
+
+  text-shadow:
+    0px 0px 10px rgba(255, 255, 255, 1),
+    0px 0px 18px rgba(255, 255, 255, 0.9),
+    0px 0px 24px rgba(255, 255, 255, 1);
+}
