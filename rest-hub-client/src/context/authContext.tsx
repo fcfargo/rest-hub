@@ -6,19 +6,9 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { AUTH_EFFECT_EXCLUDED_ROUTES, HTTP_STATUS_CODES, ROUTES } from '@/constants';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
+import { User } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 import { removeTokens, saveTokens } from '@/utils/authUtils';
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  profileImage: string | null;
-  deviceToken: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  socialProvider: string | null;
-}
 
 interface LogInUserRequest {
   email: string;

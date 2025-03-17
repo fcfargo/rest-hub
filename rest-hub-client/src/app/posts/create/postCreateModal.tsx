@@ -7,22 +7,12 @@ import PostCreateCrop from './steps/PostCreateCrop';
 import PostCreateDetails from './steps/PostCreateDetails';
 import PostCreateUpload from './steps/PostCreateUpload';
 import { CloseButtonWhite } from '@/components/ui/closeButton';
-import { MEDIA_TYPES, POST_CREATE_STEPS, ROUTES } from '@/constants';
+import { POST_CREATE_STEPS, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
 import { useMounted } from '@/hooks/useMounted';
 import styles from '@/styles/posts/postCreateModal.module.css';
-
-export type MediaTypes = (typeof MEDIA_TYPES)[keyof typeof MEDIA_TYPES];
-
-export interface PostDataProps {
-  media: File | null;
-  mediaType: MediaTypes;
-  caption: string;
-  fileUrl: string;
-  croppedFile: File | null;
-  croppedUrl: string;
-}
+import { PostDataProps } from '@/types';
 
 export default function PostCreateModal() {
   const { closeModal } = useModal();

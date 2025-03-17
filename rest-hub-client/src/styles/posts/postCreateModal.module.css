@@ -103,7 +103,6 @@
   padding: 16px 13px 16px 16px;
   border: 1px dashed #dbdbdb;
   cursor: pointer;
-  transition: background 0.3s ease-in-out;
 }
 
 .icon {

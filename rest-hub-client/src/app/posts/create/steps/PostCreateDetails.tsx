@@ -5,7 +5,6 @@ import EmojiPicker from 'emoji-picker-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { MediaTypes } from '../postCreateModal';
 import MediaPreview from '@/components/media/mediaPreview';
 import { CloseButtonBlack } from '@/components/ui/closeButton';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
@@ -17,6 +16,7 @@ import api from '@/libs/axiosInstance';
 import { uploadImageToS3 } from '@/libs/upload';
 import detailsStyles from '@/styles/posts/postCreateDetails.module.css';
 import modalStyles from '@/styles/posts/postCreateModal.module.css';
+import { MediaTypes } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 
 interface PostCreateDetailsProps {
