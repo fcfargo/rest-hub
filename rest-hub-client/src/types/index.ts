@@ -1,15 +1,15 @@
 import { MEDIA_TYPES } from '@/constants';
 
 export type Post = {
-  id: number;
+  id: string;
   content: number;
-  imageUrl?: string;
-  location?: string;
-  likeCount: number;
+  imageUrl: string | null;
+  location: string | null;
+  likesCount: number;
   user: {
     id: number;
     username: string;
-    profileImage?: string;
+    profileImage: string | null;
   };
   createdAt: string;
   updatedAt: string;

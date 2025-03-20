@@ -77,7 +77,7 @@ export default function Sidebar() {
         Rest Hub
       </Link>
 
-      <nav className={styles.menu}>
+      <nav className={classNames(styles.menu, !expanded ? styles.menuCollapsed : '')}>
         {MENU_ITEMS.map((item: MenuItemProps, index: number) => (
           <button
             key={index}
@@ -92,24 +92,34 @@ export default function Sidebar() {
               alt={item.alt}
               className={styles.menuIcon}
             />
-            <span
-              className={classNames(styles.textWrapper, {
-                [globalStyles.hidden]: !expanded,
-              })}
-            >
-              {item.label}
-            </span>
+            {expanded && <span className={styles.textWrapper}>{item.label}</span>}{' '}
           </button>
         ))}
       </nav>
 
-      <button
-        className={classNames(styles.footer, { [globalStyles.hidden]: !expanded })}
-        onClick={() => logout()}
-      >
-        <Image src="/layout/sidebar/logout.svg" width={24} height={24} alt="Logout" />
-        <span className={styles.textWrapper}>Logout</span>
-      </button>
+      <div className={styles.footerContainer}>
+        <div className={styles.user}>
+          <div className={styles.profileWrapper}>
+            <Image
+              src={profileImage}
+              width={48}
+              height={48}
+              alt="ProfileImage"
+              className={styles.profileDefault}
+            />
+          </div>
+
+          {expanded && <span className={styles.profileTextWrapper}>{username}</span>}
+        </div>
+
+        <button
+          className={classNames(styles.logoutButton, { [globalStyles.hidden]: !expanded })}
+          onClick={() => logout()}
+        >
+          <Image src="/layout/sidebar/logout.svg" width={24} height={24} alt="Logout" />
+          <span className={styles.textWrapper}>Logout</span>
+        </button>
+      </div>
 
       <button
         className={`${styles.chevronsButton} ${
@@ -126,25 +136,6 @@ export default function Sidebar() {
           alt="Toggle Sidebar"
         />
       </button>
-
-      <div className={`${styles.user} ${!expanded ? styles.userCollapsed : ''}`}>
-        <div className={styles.profileWrapper}>
-          <Image
-            src={profileImage}
-            width={48}
-            height={48}
-            alt="ProfileImage"
-            className={styles.profileDefault}
-          />
-        </div>
-        <span
-          className={classNames(styles.textWrapper, {
-            [globalStyles.hidden]: !expanded,
-          })}
-        >
-          {username}
-        </span>
-      </div>
     </aside>
   );
 }
