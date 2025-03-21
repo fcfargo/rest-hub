@@ -1,4 +1,5 @@
 .sidebar {
+  overflow: hidden;
   flex-grow: 0;
   position: relative;
   width: 260px;

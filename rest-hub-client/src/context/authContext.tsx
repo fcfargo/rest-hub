@@ -17,6 +17,7 @@ interface LogInUserRequest {
 
 interface AuthContextType {
   user: User | null;
+  isAuthReady: boolean;
   setUser: (user: User | null) => void;
   login: (requestData: LogInUserRequest) => Promise<boolean>;
   signup: (requestData: LogInUserRequest) => Promise<boolean>;
@@ -27,6 +28,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -37,7 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    const getUser = async () => {
+    const getUser = async (): Promise<User> => {
       try {
         const { data } = await apiRequest(async (accessToken: string) => {
           return api.get(API_ENDPOINTS.USER, {
@@ -45,14 +48,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           });
         }, logout);
 
-        setUser(data.body);
+        return data.body;
       } catch (error) {
         console.error('Fetching user failed', error);
         throw error;
       }
     };
 
-    getUser();
+    getUser().then((user) => {
+      setUser(user);
+      setIsAuthReady(true);
+    });
   }, []);
 
   const login = async (requestData: LogInUserRequest): Promise<boolean> => {
@@ -110,7 +116,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, isAuthReady, setUser, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

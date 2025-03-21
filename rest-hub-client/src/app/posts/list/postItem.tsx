@@ -1,22 +1,71 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 
-import { PROFILE_IMAGE_DEFAULT } from '@/constants';
+import { POST_MENU_ITEM_TYPES, PROFILE_IMAGE_DEFAULT } from '@/constants';
+import { useProtectedUser } from '@/hooks/useProtectedUser';
 import styles from '@/styles/posts/postItem.module.css';
-import { Post } from '@/types';
+import { Post, User } from '@/types';
 import { formatTimeAgo, getFormattedLocation } from '@/utils/format';
 
 interface PostItemProps {
   post: Post;
 }
 
+const POST_MENU_ITEMS = [
+  { label: '삭제하기', value: POST_MENU_ITEM_TYPES.DELETE },
+  { label: '수정하기', value: POST_MENU_ITEM_TYPES.EDIT },
+  { label: '신고하기', value: POST_MENU_ITEM_TYPES.REPORT },
+  { label: '숨기기', value: POST_MENU_ITEM_TYPES.HIDE },
+];
+
 export default function PostItem({ post }: PostItemProps) {
-  const { createdAt, location, user, content, imageUrl, likesCount } = post;
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const dropDownRef = useRef<HTMLUListElement>(null);
+
+  const user = useProtectedUser();
+
+  const { createdAt, location, user: writer, content, imageUrl, likesCount } = post;
 
   const fromNow = formatTimeAgo(createdAt);
-
   const formattedLocation = location ? getFormattedLocation(location) : null;
+
+  /** 외부 클릭 감지하여 드롭다운 메뉴 닫기 */
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  /** 드롭다운 메뉴 클릭 처리 */
+  const handlePostMenuItem = async (value: number) => {
+    console.log(value);
+  };
+
+  /** 드롭다운 메뉴 아이템 필터링 */
+  const getFilteredPostMenuItems = (user: User, writer: Partial<User>) => {
+    const isOwner = user.id === writer.id;
+    return POST_MENU_ITEMS.filter((item) => {
+      if (
+        isOwner &&
+        (item.value === POST_MENU_ITEM_TYPES.REPORT || item.value === POST_MENU_ITEM_TYPES.HIDE)
+      )
+        return false;
+      if (
+        !isOwner &&
+        (item.value === POST_MENU_ITEM_TYPES.EDIT || item.value === POST_MENU_ITEM_TYPES.DELETE)
+      )
+        return false;
+      return true;
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -25,7 +74,7 @@ export default function PostItem({ post }: PostItemProps) {
         <div className={styles.profile}>
           <div className={styles.userInfo}>
             <Image
-              src={user.profileImage || PROFILE_IMAGE_DEFAULT}
+              src={writer.profileImage || PROFILE_IMAGE_DEFAULT}
               alt="User Profile"
               width={40}
               height={40}
@@ -33,7 +82,7 @@ export default function PostItem({ post }: PostItemProps) {
             />
             <div className={styles.userDetails}>
               <div className={styles.userHeader}>
-                <div className={styles.username}>{user.username}</div>
+                <div className={styles.username}>{writer.username}</div>
                 <button className={styles.follow}>팔로우</button>
               </div>
               <div className={styles.userFooter}>
@@ -47,7 +96,7 @@ export default function PostItem({ post }: PostItemProps) {
               </div>
             </div>
           </div>
-          <button className={styles.moreButton}>
+          <button className={styles.moreButton} onClick={() => setIsDropdownOpen((prev) => !prev)}>
             <Image
               src="/posts/ellipsis.svg"
               alt="More"
@@ -55,6 +104,20 @@ export default function PostItem({ post }: PostItemProps) {
               height={24}
               className={styles.moreButtonIcon}
             />
+            {/* 드롭다운 메뉴 */}
+            {isDropdownOpen && (
+              <ul ref={dropDownRef} className={styles.dropdownMenu}>
+                {getFilteredPostMenuItems(user, writer).map((item) => (
+                  <li
+                    key={item.value}
+                    className={styles.dropdownItem}
+                    onClick={() => handlePostMenuItem(item.value)}
+                  >
+                    {item.label}
+                  </li>
+                ))}
+              </ul>
+            )}
           </button>
         </div>
 

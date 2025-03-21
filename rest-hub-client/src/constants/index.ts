@@ -72,6 +72,13 @@ export const ASPECT_RATIO_VALUES = {
   LANDSCAPE_16_9: 16 / 9, // 16:9
 } as const;
 
+export const POST_MENU_ITEM_TYPES = {
+  EDIT: 0,
+  DELETE: 1,
+  REPORT: 2,
+  HIDE: 3,
+} as const;
+
 export const SCROLLTO_BEHAVIOR = {
   INSTANT: 'instant',
 } as const;

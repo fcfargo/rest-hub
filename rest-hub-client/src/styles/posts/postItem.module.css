@@ -24,6 +24,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  position: relative;
 }
 
 .profileIcon {
@@ -93,6 +94,34 @@
 .moreButtonIcon {
   width: 24px;
   height: 24px;
+}
+
+.dropdownMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  right: 0px;
+}
+
+.dropdownItem {
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  padding: 6px 8px;
+  line-height: 1.4;
+  z-index: 10;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .singleImageContainer {
