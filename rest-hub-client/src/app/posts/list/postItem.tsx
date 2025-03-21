@@ -12,19 +12,20 @@ interface PostItemProps {
 }
 
 export default function PostItem({ post }: PostItemProps) {
-  const { createdAt, location } = post;
+  const { createdAt, location, user, content, imageUrl, likesCount } = post;
 
   const fromNow = formatTimeAgo(createdAt);
-  const formattedLoacation = location ? getFormattedLocation(location) : null;
+
+  const formattedLocation = location ? getFormattedLocation(location) : null;
 
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-        {/* 상단 프로필 */}
+        {/* 프로필 영역 */}
         <div className={styles.profile}>
           <div className={styles.userInfo}>
             <Image
-              src={post.user.profileImage || PROFILE_IMAGE_DEFAULT}
+              src={user.profileImage || PROFILE_IMAGE_DEFAULT}
               alt="User Profile"
               width={40}
               height={40}
@@ -32,13 +33,17 @@ export default function PostItem({ post }: PostItemProps) {
             />
             <div className={styles.userDetails}>
               <div className={styles.userHeader}>
-                <div className={styles.username}>{post.user.username}</div>
+                <div className={styles.username}>{user.username}</div>
                 <button className={styles.follow}>팔로우</button>
               </div>
               <div className={styles.userFooter}>
                 <div className={styles.timaAgo}>{fromNow}</div>
-                {location && <span className={styles.seperator}>•</span>}
-                {location && <div className={styles.location}>{formattedLoacation}</div>}
+                {formattedLocation && (
+                  <>
+                    <span className={styles.separator}>•</span>
+                    <div className={styles.location}>{formattedLocation}</div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -53,14 +58,14 @@ export default function PostItem({ post }: PostItemProps) {
           </button>
         </div>
 
-        {/* 게시글 내용 */}
-        <p className={styles.content}>{post.content}</p>
+        {/* 게시글 텍스트 내용 */}
+        <p className={styles.content}>{content}</p>
 
-        {/* 이미지(이미지 개수 여러 개 일 경우를 고려하는 로직은 추후 개선 예정 */}
-        {post.imageUrl && post.imageUrl.trim() ? (
+        {/* 게시글 이미지(여러 장 처리 로직은 추후 추가 예정 */}
+        {imageUrl?.trim() && (
           <div className={styles.singleImageContainer}>
             <Image
-              src={post.imageUrl}
+              src={imageUrl}
               alt="Post Image"
               priority
               width={0}
@@ -74,9 +79,9 @@ export default function PostItem({ post }: PostItemProps) {
               }}
             />
           </div>
-        ) : null}
+        )}
 
-        {/* 하단 아이콘 및 카운트 */}
+        {/* 하단 좋아요 및 댓글 영역 */}
         <div className={styles.footer}>
           {/* 좋아요 버튼 */}
           <button className={styles.likesButton} aria-label="Like post">
@@ -87,7 +92,7 @@ export default function PostItem({ post }: PostItemProps) {
               height={20}
               className={styles.footerIcon}
             />
-            <span className={styles.likesCount}>{post.likesCount}</span>
+            <span className={styles.likesCount}>{likesCount}</span>
           </button>
 
           {/* 댓글 버튼 */}

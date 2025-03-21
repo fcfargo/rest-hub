@@ -71,3 +71,7 @@ export const ASPECT_RATIO_VALUES = {
   LANDSCAPE_4_5: 4 / 5, // 4:5
   LANDSCAPE_16_9: 16 / 9, // 16:9
 } as const;
+
+export const SCROLLTO_BEHAVIOR = {
+  INSTANT: 'instant',
+} as const;

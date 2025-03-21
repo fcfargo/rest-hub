@@ -23,7 +23,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .profileIcon {
@@ -54,7 +54,7 @@
   font-family: 'Inter-Medium', sans-serif;
   font-size: 16px;
   line-height: 20px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .follow {
@@ -69,7 +69,7 @@
 .userFooter {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .timaAgo,
@@ -106,6 +106,7 @@
 }
 
 .content {
+  font-size: 14px;
   margin-right: 4px;
   margin-left: 4px;
 }
