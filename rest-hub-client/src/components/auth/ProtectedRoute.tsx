@@ -20,9 +20,13 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     }
   }, [user, isAuthReady]);
 
-  if (!isAuthReady) return null;
+  if (!isAuthReady) {
+    return null;
+  }
 
-  if (!user) return null;
+  if (!user) {
+    return null;
+  }
 
   return <>{children}</>;
 }

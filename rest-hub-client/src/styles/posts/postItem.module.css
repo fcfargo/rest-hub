@@ -74,7 +74,6 @@
 }
 
 .timaAgo,
-.seperator,
 .location {
   color: #808187;
   text-align: left;
@@ -83,6 +82,13 @@
   line-height: 16px;
   letter-spacing: -0.5px;
   font-weight: 400;
+}
+
+.separator {
+  color: #808187;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .moreButton {

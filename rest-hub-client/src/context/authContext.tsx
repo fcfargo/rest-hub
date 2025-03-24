@@ -22,6 +22,7 @@ interface AuthContextType {
   login: (requestData: LogInUserRequest) => Promise<boolean>;
   signup: (requestData: LogInUserRequest) => Promise<boolean>;
   logout: () => void;
+  getUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,26 +41,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    const getUser = async (): Promise<User> => {
-      try {
-        const { data } = await apiRequest(async (accessToken: string) => {
-          return api.get(API_ENDPOINTS.USER, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
-        }, logout);
+    getUser();
+  }, []);
 
-        return data.body;
-      } catch (error) {
-        console.error('Fetching user failed', error);
-        throw error;
-      }
-    };
+  const getUser = async (): Promise<User> => {
+    try {
+      const { data } = await apiRequest(async (accessToken: string) => {
+        return api.get(API_ENDPOINTS.USER, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      }, logout);
 
-    getUser().then((user) => {
+      const user = data.body;
+
       setUser(user);
       setIsAuthReady(true);
-    });
-  }, []);
+
+      return user;
+    } catch (error) {
+      console.error('Fetching user failed', error);
+      throw error;
+    }
+  };
 
   const login = async (requestData: LogInUserRequest): Promise<boolean> => {
     try {
@@ -116,7 +119,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthReady, setUser, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, isAuthReady, setUser, login, signup, logout, getUser }}>
       {children}
     </AuthContext.Provider>
   );

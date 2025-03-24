@@ -1,9 +1,17 @@
-import PostList from './posts/list/postList';
+'use client';
 
-export default async function Home() {
+import PostList from './posts/list/postList';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { useRouteEffect } from '@/hooks/useRouteEffect';
+
+export default function Home() {
+  useRouteEffect();
+
   return (
     <div className="flex justify-center items-center flex-grow">
-      <PostList />
+      <ProtectedRoute>
+        <PostList />
+      </ProtectedRoute>
     </div>
   );
 }

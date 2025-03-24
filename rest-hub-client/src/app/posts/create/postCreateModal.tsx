@@ -1,16 +1,15 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import PostCreateCrop from './steps/PostCreateCrop';
 import PostCreateDetails from './steps/PostCreateDetails';
 import PostCreateUpload from './steps/PostCreateUpload';
 import { CloseButtonWhite } from '@/components/ui/closeButton';
-import { POST_CREATE_STEPS, ROUTES } from '@/constants';
-import { useAuth } from '@/context/authContext';
+import { POST_CREATE_STEPS } from '@/constants';
 import { useModal } from '@/context/modalContext';
 import { useMounted } from '@/hooks/useMounted';
+import { useProtectedUser } from '@/hooks/useProtectedUser';
 import styles from '@/styles/posts/postCreateModal.module.css';
 import { PostDataProps } from '@/types';
 
@@ -26,14 +25,9 @@ export default function PostCreateModal() {
     croppedUrl: '', //  크롭된 파일 미리보기 URL
   });
 
-  const router = useRouter();
-  const { user } = useAuth();
   const isMounted = useMounted();
 
-  if (!user) {
-    router.push(ROUTES.AUTH.LOGIN);
-    return;
-  }
+  const user = useProtectedUser();
 
   const changeStep = (newStep: number) => {
     setStep(Math.max(POST_CREATE_STEPS.ONE, Math.min(newStep, POST_CREATE_STEPS.THREE)));

@@ -38,6 +38,7 @@ export const SESSION_STATUS = {
 export const MODAL_TYPES = {
   PASSWORD_CHANGE: 'passwordChange',
   POST_CREATE: 'postCreate',
+  POST_UPDATE: 'postUpdate',
 } as const;
 
 export const ERROR_CODES = {
@@ -73,7 +74,7 @@ export const ASPECT_RATIO_VALUES = {
 } as const;
 
 export const POST_MENU_ITEM_TYPES = {
-  EDIT: 0,
+  UPDATE: 0,
   DELETE: 1,
   REPORT: 2,
   HIDE: 3,

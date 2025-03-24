@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
-import { POST_MENU_ITEM_TYPES, PROFILE_IMAGE_DEFAULT } from '@/constants';
+import { MODAL_TYPES, POST_MENU_ITEM_TYPES, PROFILE_IMAGE_DEFAULT } from '@/constants';
+import { useModal } from '@/context/modalContext';
 import { useProtectedUser } from '@/hooks/useProtectedUser';
 import styles from '@/styles/posts/postItem.module.css';
 import { Post, User } from '@/types';
@@ -15,7 +16,7 @@ interface PostItemProps {
 
 const POST_MENU_ITEMS = [
   { label: '삭제하기', value: POST_MENU_ITEM_TYPES.DELETE },
-  { label: '수정하기', value: POST_MENU_ITEM_TYPES.EDIT },
+  { label: '수정하기', value: POST_MENU_ITEM_TYPES.UPDATE },
   { label: '신고하기', value: POST_MENU_ITEM_TYPES.REPORT },
   { label: '숨기기', value: POST_MENU_ITEM_TYPES.HIDE },
 ];
@@ -24,6 +25,8 @@ export default function PostItem({ post }: PostItemProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dropDownRef = useRef<HTMLUListElement>(null);
+
+  const { openModal } = useModal();
 
   const user = useProtectedUser();
 
@@ -46,7 +49,10 @@ export default function PostItem({ post }: PostItemProps) {
 
   /** 드롭다운 메뉴 클릭 처리 */
   const handlePostMenuItem = async (value: number) => {
-    console.log(value);
+    if (value === POST_MENU_ITEM_TYPES.UPDATE) {
+      openModal(MODAL_TYPES.POST_UPDATE, post);
+      return;
+    }
   };
 
   /** 드롭다운 메뉴 아이템 필터링 */
@@ -60,7 +66,7 @@ export default function PostItem({ post }: PostItemProps) {
         return false;
       if (
         !isOwner &&
-        (item.value === POST_MENU_ITEM_TYPES.EDIT || item.value === POST_MENU_ITEM_TYPES.DELETE)
+        (item.value === POST_MENU_ITEM_TYPES.UPDATE || item.value === POST_MENU_ITEM_TYPES.DELETE)
       )
         return false;
       return true;
@@ -89,7 +95,7 @@ export default function PostItem({ post }: PostItemProps) {
                 <div className={styles.timaAgo}>{fromNow}</div>
                 {formattedLocation && (
                   <>
-                    <span className={styles.separator}>•</span>
+                    <div className={styles.separator}>•</div>
                     <div className={styles.location}>{formattedLocation}</div>
                   </>
                 )}

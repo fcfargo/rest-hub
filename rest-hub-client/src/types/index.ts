@@ -2,7 +2,7 @@ import { MEDIA_TYPES } from '@/constants';
 
 export type Post = {
   id: string;
-  content: number;
+  content: string;
   imageUrl: string | null;
   location: string | null;
   likesCount: number;
