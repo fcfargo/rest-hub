@@ -6,19 +6,9 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { AUTH_EFFECT_EXCLUDED_ROUTES, HTTP_STATUS_CODES, ROUTES } from '@/constants';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
+import { User } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 import { removeTokens, saveTokens } from '@/utils/authUtils';
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  profileImage: string | null;
-  deviceToken: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  socialProvider: string | null;
-}
 
 interface LogInUserRequest {
   email: string;
@@ -27,16 +17,20 @@ interface LogInUserRequest {
 
 interface AuthContextType {
   user: User | null;
+  isAuthReady: boolean;
   setUser: (user: User | null) => void;
   login: (requestData: LogInUserRequest) => Promise<boolean>;
   signup: (requestData: LogInUserRequest) => Promise<boolean>;
   logout: () => void;
+  getUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -47,23 +41,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    const getUser = async () => {
-      try {
-        const { data } = await apiRequest(async (accessToken: string) => {
-          return api.get(API_ENDPOINTS.USER, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
-        }, logout);
-
-        setUser(data.body);
-      } catch (error) {
-        console.error('Fetching user failed', error);
-        throw error;
-      }
-    };
-
     getUser();
   }, []);
+
+  const getUser = async (): Promise<User> => {
+    try {
+      const { data } = await apiRequest(async (accessToken: string) => {
+        return api.get(API_ENDPOINTS.USER, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      }, logout);
+
+      const user = data.body;
+
+      setUser(user);
+      setIsAuthReady(true);
+
+      return user;
+    } catch (error) {
+      console.error('Fetching user failed', error);
+      throw error;
+    }
+  };
 
   const login = async (requestData: LogInUserRequest): Promise<boolean> => {
     try {
@@ -120,7 +119,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, isAuthReady, setUser, login, signup, logout, getUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -69,14 +69,22 @@
   align-self: center;
   font-size: 14px;
   color: #ff4d4f;
-  animation: fadeIn 0.3s ease-in-out;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition:
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
 }
 
 .successText {
   align-self: center;
   font-size: 14px;
   color: green;
-  animation: fadeIn 0.3s ease-in-out;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition:
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
 }
 
 .inputErrorText {
@@ -85,5 +93,16 @@
   font-size: 12px;
   font-weight: 500;
   display: block;
-  animation: fadeIn 0.3s ease-in-out;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition:
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+}
+
+.errorText.active,
+.successText.active,
+.inputErrorText.active {
+  opacity: 1;
+  transform: translateX(0);
 }

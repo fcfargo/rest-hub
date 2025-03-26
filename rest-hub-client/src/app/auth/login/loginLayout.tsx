@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 
 import GoogleOAuthHandler from './googleOAuthHandler';
-import AuthButton from '@/components/auth/authButton';
-import Brand from '@/components/ui/brand';
-import Divider from '@/components/ui/divider';
+import AuthButton from '@/components/auth/AuthButton';
+import Brand from '@/components/ui/Brand';
+import Divider from '@/components/ui/Divider';
 import { ROUTES } from '@/constants';
 import styles from '@/styles/auth/login.module.css';
 

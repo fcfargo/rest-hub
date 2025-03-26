@@ -1,9 +1,11 @@
 'use client';
 
+import classNames from 'classnames';
 import Image from 'next/image';
 
 import { MODAL_TYPES } from '@/constants';
 import { useModal } from '@/context/modalContext';
+import { useMounted } from '@/hooks/useMounted';
 import styles from '@/styles/settings/securitySettings.module.css';
 
 interface SecuritySettingsHeaderProps {
@@ -11,8 +13,10 @@ interface SecuritySettingsHeaderProps {
 }
 
 export default function SecuritySettings() {
+  const isMounted = useMounted();
+
   return (
-    <div className={styles.container}>
+    <div className={classNames(styles.container, isMounted ? styles.active : '')}>
       <div className={styles.wrapper}>
         <Header title="비밀번호 및 보안" />
         <div className={styles.content}>

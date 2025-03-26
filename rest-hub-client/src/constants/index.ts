@@ -38,11 +38,13 @@ export const SESSION_STATUS = {
 export const MODAL_TYPES = {
   PASSWORD_CHANGE: 'passwordChange',
   POST_CREATE: 'postCreate',
+  POST_UPDATE: 'postUpdate',
+  POST_DELETE: 'postDelete',
 } as const;
 
 export const ERROR_CODES = {
   INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
-  USER_NOD_FOUND: 'USER_NOT_FOUND',
+  USER_NOT_FOUND: 'USER_NOT_FOUND',
   INVALID__PASSWORD: 'INVALID__PASSWORD',
 } as const;
 
@@ -70,4 +72,15 @@ export const ASPECT_RATIO_VALUES = {
   SQUARE: 1, // 1:1
   LANDSCAPE_4_5: 4 / 5, // 4:5
   LANDSCAPE_16_9: 16 / 9, // 16:9
+} as const;
+
+export const POST_MENU_ITEM_TYPES = {
+  UPDATE: 0,
+  DELETE: 1,
+  REPORT: 2,
+  HIDE: 3,
+} as const;
+
+export const SCROLLTO_BEHAVIOR = {
+  INSTANT: 'instant',
 } as const;

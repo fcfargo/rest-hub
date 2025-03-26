@@ -2,18 +2,16 @@
   flex-grow: 1;
   background: #ffffff;
   position: relative;
-  animation: fadeInSlide 0.3s ease-in forwards;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
 }
 
-@keyframes fadeInSlide {
-  0% {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.container.active {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .wrapper {
@@ -53,6 +51,8 @@
 }
 
 .section {
+  max-width: 550px;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

@@ -1,0 +1,193 @@
+.container {
+  width: 100%;
+  border-bottom: 1px solid #e0e2e9;
+  box-sizing: border-box;
+}
+
+.wrapper {
+  margin: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile {
+  display: flex;
+  margin-left: 4px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.userInfo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.profileIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  border-style: solid;
+  border-color: rgba(90, 91, 97, 0.2);
+  border-width: 0.5px;
+  object-fit: cover;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.userHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.username {
+  color: #00030f;
+  text-align: left;
+  font-family: 'Inter-Medium', sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.follow {
+  color: #0095f6;
+  text-align: left;
+  font-family: 'Inter-Medium', sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.userFooter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timaAgo,
+.location {
+  color: #808187;
+  text-align: left;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.5px;
+  font-weight: 400;
+}
+
+.separator {
+  color: #808187;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.moreButton {
+  flex-shrink: 0;
+  margin-right: 4px;
+  align-self: flex-start;
+}
+
+.moreButtonIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.dropdownMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  right: 0px;
+}
+
+.dropdownItem {
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  padding: 6px 8px;
+  line-height: 1.4;
+  z-index: 10;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.singleImageContainer {
+  display: flex;
+  margin-right: 4px;
+  margin-left: 4px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.content {
+  font-size: 14px;
+  margin-right: 4px;
+  margin-left: 4px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  margin-right: 4px;
+  margin-left: 4px;
+  gap: 32px;
+}
+
+.likesButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.commentsButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.likesCount {
+  color: #808187;
+  text-align: left;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.commentsCount {
+  color: #808187;
+  text-align: left;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.footerIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  overflow: visible;
+}

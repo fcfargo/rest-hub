@@ -2,7 +2,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 import { InputErrorMessage } from '../ui/message';
-
 import { INPUT_TYPES } from '@/constants';
 import styles from '@/styles/forms/input.module.css';
 

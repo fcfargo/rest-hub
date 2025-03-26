@@ -1,10 +1,10 @@
 'use client';
 
+import classNames from 'classnames';
 import EmojiPicker from 'emoji-picker-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { MediaTypes } from '../postCreateModal';
 import MediaPreview from '@/components/media/mediaPreview';
 import { CloseButtonBlack } from '@/components/ui/closeButton';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
@@ -16,6 +16,7 @@ import api from '@/libs/axiosInstance';
 import { uploadImageToS3 } from '@/libs/upload';
 import detailsStyles from '@/styles/posts/postCreateDetails.module.css';
 import modalStyles from '@/styles/posts/postCreateModal.module.css';
+import { MediaTypes } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 
 interface PostCreateDetailsProps {
@@ -88,7 +89,7 @@ export default function PostCreateDetails({
       };
 
       const { data } = await apiRequest(async (accessToken: string) => {
-        return api.post(API_ENDPOINTS.POST_CREATE, formData, {
+        return api.post(API_ENDPOINTS.POST, formData, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
       }, logout);
@@ -174,16 +175,20 @@ export default function PostCreateDetails({
               </button>
 
               {/* ✨ 이모지 피커 */}
-              {showPicker && (
-                <div ref={pickerRef} className={detailsStyles.emojiPickerContainer}>
-                  <EmojiPicker
-                    searchDisabled={true}
-                    width={300}
-                    height={360}
-                    onEmojiClick={addEmoji}
-                  />
-                </div>
-              )}
+              <div
+                ref={pickerRef}
+                className={classNames(
+                  detailsStyles.emojiPickerContainer,
+                  showPicker && detailsStyles.active,
+                )}
+              >
+                <EmojiPicker
+                  searchDisabled={true}
+                  width={300}
+                  height={360}
+                  onEmojiClick={addEmoji}
+                />
+              </div>
 
               {/* 글자 수 표시 */}
               <div className={detailsStyles.contentLength}>{postContent.length}/2200</div>

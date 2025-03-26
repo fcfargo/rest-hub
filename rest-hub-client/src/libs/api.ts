@@ -6,7 +6,7 @@ export const API_ENDPOINTS = {
   REFRESH_TOKEN: '/users/auth/refresh',
   RESET_PASSWORD: '/users/auth/reset-password',
   CHANGE_PASSWORD: '/users/auth/change-password',
-  POST_CREATE: '/posts',
+  POST: '/posts',
   PLACES_AUTOCOMPLETE: '/places/autocomplete',
   PRESIGNED_URL: '/upload/presigned-url',
 };

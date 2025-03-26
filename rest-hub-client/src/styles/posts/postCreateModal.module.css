@@ -29,6 +29,19 @@
   margin-top: -40px;
 }
 
+.stepContainer {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition:
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+}
+
+.stepContainer.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 .wrapper {
   width: 500px;
   height: 600px;
@@ -90,7 +103,6 @@
   padding: 16px 13px 16px 16px;
   border: 1px dashed #dbdbdb;
   cursor: pointer;
-  transition: background 0.3s ease-in-out;
 }
 
 .icon {

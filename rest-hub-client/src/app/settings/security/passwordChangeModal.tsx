@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,6 +13,7 @@ import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
 import { ERROR_CODES, HTTP_STATUS_CODES, INPUT_TYPES, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import styles from '@/styles/settings/passwordChangeModal.module.css';
@@ -49,6 +51,7 @@ export default function PasswordChangeModal() {
     mode: 'onChange',
   });
 
+  const isMounted = useMounted();
   const { closeModal } = useModal();
   const { logout } = useAuth();
 
@@ -93,7 +96,7 @@ export default function PasswordChangeModal() {
     } else if (status === HTTP_STATUS_CODES.UNAUTHORIZED) {
       if (code === ERROR_CODES.INVALID__PASSWORD) {
         errorMessage = '현재 비밀번호가 틀렸습니다. 비밀번호를 정확히 입력해 주세요.';
-      } else if (code === ERROR_CODES.USER_NOD_FOUND) {
+      } else if (code === ERROR_CODES.USER_NOT_FOUND) {
         closeModal();
         logout();
         router.push(ROUTES.AUTH.LOGIN);
@@ -106,7 +109,7 @@ export default function PasswordChangeModal() {
 
   return (
     <div className={styles.overlay}>
-      <div className={styles.container}>
+      <div className={classNames(styles.container, isMounted ? styles.active : '')}>
         <div className={styles.wrapper}>
           {/* 모달 창 닫기 버튼 */}
           <CloseButtonBlack onClick={() => closeModal()} className={'mt-[16px] -mr-[32px]'} />
