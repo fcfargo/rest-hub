@@ -78,7 +78,7 @@ export class AuthService {
 
     const user = await this.usersService.findOneUserByEmail(email);
     if (user) {
-      throw new BadRequestException('email in use');
+      throw new BadRequestException('Email in use');
     }
 
     const hashedPassword = await this._hashPassword(password);
@@ -98,17 +98,17 @@ export class AuthService {
 
     const user = await this.usersService.findOneUserByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('user not found');
+      throw new UnauthorizedException('User not found');
     }
 
     const { socialProvider } = user;
     if (socialProvider) {
-      throw new BadRequestException('not available for social login accounts.');
+      throw new BadRequestException('Not available for social login accounts.');
     }
 
     const isPasswordValid = await this._checkPassword(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('invalid password');
+      throw new UnauthorizedException('Invalid password');
     }
 
     const payload: jwtPayLoad = { sub: user.id, email: user.email };
@@ -139,7 +139,7 @@ export class AuthService {
 
       const payload = ticket.getPayload();
       if (!payload) {
-        throw new UnauthorizedException('invalid Google ID token');
+        throw new UnauthorizedException('Invalid Google ID token');
       }
       return payload;
     } catch (error) {
@@ -176,12 +176,12 @@ export class AuthService {
 
     const user = await this.usersService.findOneUserByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('user not found');
+      throw new UnauthorizedException('User not found');
     }
 
     const { id, socialProvider } = user;
     if (socialProvider) {
-      throw new BadRequestException('not available for social login accounts.');
+      throw new BadRequestException('Not available for social login accounts.');
     }
 
     const tempPassword = uuidv4().slice(0, 8);
@@ -205,20 +205,20 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException({
         code: ERROR_CODE.USER_NOT_FOUND,
-        message: 'user not found',
+        message: 'User not found',
       });
     }
 
     const { socialProvider } = user;
     if (socialProvider) {
-      throw new BadRequestException('not available for social login accounts.');
+      throw new BadRequestException('Not available for social login accounts.');
     }
 
     const isPasswordValid = await this._checkPassword(oldPassword, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException({
         code: ERROR_CODE.INVALID__PASSWORD,
-        message: 'invalid password',
+        message: 'Invalid password',
       });
     }
 

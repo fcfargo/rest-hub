@@ -29,7 +29,7 @@ export class Post {
   location?: string;
 
   @Column({ default: 0 })
-  likeCount: number;
+  likesCount: number;
 
   @CreateDateColumn()
   createdAt: Date;
