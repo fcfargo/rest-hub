@@ -12,6 +12,8 @@ import { formatTimeAgo, getFormattedLocation } from '@/utils/format';
 
 interface PostItemProps {
   post: Post;
+  onPostUpdated: (updatedPost: Post) => void;
+  onPostDeleted: (deletedPostId: string) => void;
 }
 
 const POST_MENU_ITEMS = [
@@ -21,7 +23,7 @@ const POST_MENU_ITEMS = [
   { label: '숨기기', value: POST_MENU_ITEM_TYPES.HIDE },
 ];
 
-export default function PostItem({ post }: PostItemProps) {
+export default function PostItem({ post, onPostUpdated, onPostDeleted }: PostItemProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dropDownRef = useRef<HTMLUListElement>(null);
@@ -50,7 +52,12 @@ export default function PostItem({ post }: PostItemProps) {
   /** 드롭다운 메뉴 클릭 처리 */
   const handlePostMenuItem = async (value: number) => {
     if (value === POST_MENU_ITEM_TYPES.UPDATE) {
-      openModal(MODAL_TYPES.POST_UPDATE, post);
+      openModal(MODAL_TYPES.POST_UPDATE, { post, onPostUpdated });
+      return;
+    }
+
+    if (value === POST_MENU_ITEM_TYPES.DELETE) {
+      openModal(MODAL_TYPES.POST_DELETE, { postId: post.id, onPostDeleted });
       return;
     }
   };

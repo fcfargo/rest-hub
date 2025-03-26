@@ -39,6 +39,7 @@ export const MODAL_TYPES = {
   PASSWORD_CHANGE: 'passwordChange',
   POST_CREATE: 'postCreate',
   POST_UPDATE: 'postUpdate',
+  POST_DELETE: 'postDelete',
 } as const;
 
 export const ERROR_CODES = {

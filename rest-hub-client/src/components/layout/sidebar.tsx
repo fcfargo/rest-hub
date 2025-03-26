@@ -85,13 +85,7 @@ export default function Sidebar() {
             onClick={item.onClick}
             disabled={!item.onClick}
           >
-            <Image
-              src={item.src}
-              width={24}
-              height={24}
-              alt={item.alt}
-              className={styles.menuIcon}
-            />
+            <Image src={item.src} width={0} height={0} alt={item.alt} className={styles.menuIcon} />
             {expanded && <span className={styles.textWrapper}>{item.label}</span>}{' '}
           </button>
         ))}

@@ -8,67 +8,102 @@ import LocationField from '@/components/forms/locationField';
 import { CloseButtonWhite } from '@/components/ui/closeButton';
 import { ErrorMessage } from '@/components/ui/message';
 import TextContent from '@/components/ui/textContent';
+import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
 import { useMounted } from '@/hooks/useMounted';
-import modalStyles from '@/styles/posts/postCreateModal.module.css';
-import updateStyles from '@/styles/posts/postUpdateModal.module.css';
+import { API_ENDPOINTS } from '@/libs/api';
+import api from '@/libs/axiosInstance';
+import styles from '@/styles/posts/postUpdate.module.css';
 import { Post } from '@/types';
+import { apiRequest } from '@/utils/apiRequest';
 
 interface PostUpdateModalProps {
   post: Post;
+  onPostUpdated: (updatedPost: Post) => void;
 }
 
-export default function PostUpdateModal({ post }: PostUpdateModalProps) {
+export default function PostUpdateModal({ post, onPostUpdated }: PostUpdateModalProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [postContent, setPostContent] = useState(post.content);
-  const [location, setLocation] = useState('');
-  const [showLocationOption, setShowLocationOption] = useState(false);
+  const [location, setLocation] = useState(post.location || '');
+  const [showLocationOption, setShowLocationOption] = useState(Boolean(post.location?.trim()));
+  const [isLoading, setIsLoading] = useState(false);
 
   const { closeModal } = useModal();
-
   const isMounted = useMounted();
+  const { logout } = useAuth();
 
+  /**
+   * 게시글 수정 요청 처리
+   */
   const handlePostUpdate = async () => {
-    console.log('handlePostUdpate');
+    if (!postContent.trim()) {
+      setMessage('게시물 내용을 입력해주세요.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setMessage(null);
+
+      const payload = {
+        content: postContent,
+        location: showLocationOption ? location : null,
+      };
+
+      const { data } = await apiRequest(async (accessToken: string) => {
+        return api.patch(`${API_ENDPOINTS.POST}/${post.id}`, payload, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      }, logout);
+
+      closeModal();
+      onPostUpdated(data.body);
+    } catch (error) {
+      console.error('Failed to update post:', error);
+      setMessage('게시글 수정 중 문제가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className={modalStyles.overlay}>
-      {/* 모달 창 닫기 버튼 */}
+    <div className={styles.overlay}>
       <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
 
-      <div className={updateStyles.container}>
-        <div className={classNames(updateStyles.wrapper, isMounted ? updateStyles.active : '')}>
+      <div className={styles.container}>
+        <div className={classNames(styles.wrapper, isMounted && styles.active)}>
           {/* 헤더 */}
-          <div className={updateStyles.header}>
-            <h2 className={modalStyles.title}>게시물 수정하기</h2>
-            <button onClick={handlePostUpdate} className={updateStyles.doneButton}>
-              공유하기
+          <div className={styles.header}>
+            <h2 className={styles.title}>게시물 수정하기</h2>
+            <button onClick={handlePostUpdate} className={styles.doneButton} disabled={isLoading}>
+              수정 완료
             </button>
           </div>
-          {/* 게시글 수정 */}
-          <div className={updateStyles.postContainer}>
+
+          {/* 게시글 내용 수정 */}
+          <div className={styles.postContainer}>
             <TextContent textContent={postContent} setTextContent={setPostContent} />
           </div>
 
-          {/* 기타 옵션 입력 영역 */}
+          {/* 기타 정보 입력 영역 */}
           {showLocationOption && (
-            <div className={updateStyles.postLocation}>
-              <div className={updateStyles.postExtrasLabel}>위치 정보 입력</div>
+            <div className={styles.postLocation}>
+              <div className={styles.postExtrasLabel}>위치 정보 입력</div>
               <LocationField location={location} setLocation={setLocation} />
             </div>
           )}
 
-          {/* 기타 옵션 토글 버튼 */}
-          <div className={updateStyles.extraOptions}>
-            <span className={updateStyles.extraOptionsText}>게시물에 추가</span>
+          {/* 기타 옵션 추가 버튼 */}
+          <div className={styles.extraOptions}>
+            <span className={styles.extraOptionsText}>게시물에 추가</span>
             <button
-              className={updateStyles.extraLocationButton}
+              className={styles.extraLocationButton}
               onClick={() => setShowLocationOption((prev) => !prev)}
               title="위치 정보 추가"
             >
               <Image
-                className={updateStyles.locationIcon}
+                className={styles.locationIcon}
                 src="/posts/location-red.svg"
                 alt="Emoji Icon"
                 width={18}
@@ -76,9 +111,7 @@ export default function PostUpdateModal({ post }: PostUpdateModalProps) {
               />
             </button>
           </div>
-
-          {/* 에러 메시지 출력 */}
-          {message && <ErrorMessage message={message} />}
+          {message && <ErrorMessage message={message} className="mb-[16px]" />}
         </div>
       </div>
     </div>

@@ -89,7 +89,7 @@ export default function PostCreateDetails({
       };
 
       const { data } = await apiRequest(async (accessToken: string) => {
-        return api.post(API_ENDPOINTS.POST_CREATE, formData, {
+        return api.post(API_ENDPOINTS.POST, formData, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
       }, logout);

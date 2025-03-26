@@ -103,7 +103,7 @@
 
 .profileDefault {
   width: 48px;
-  height: 48px;
+  height: auto;
   object-fit: cover;
 }
 
@@ -117,6 +117,7 @@
 }
 
 .logoutButton {
+  overflow: hidden;
   flex-shrink: 0;
   display: flex;
   align-items: center;

@@ -1,3 +1,13 @@
+.overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .container {
   flex-grow: 1;
   display: flex;
@@ -43,6 +53,17 @@
   padding: 9px 0px 9px 0px;
 }
 
+.title {
+  flex-grow: 1;
+  align-self: center;
+  color: #262626;
+  text-align: center;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
 .doneButton {
   position: absolute;
   right: 16px;
@@ -53,6 +74,11 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;
+}
+
+.doneButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .postContainer {

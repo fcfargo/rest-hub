@@ -1,0 +1,111 @@
+.overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex;
+  justify-content: center;
+  margin-top: -40px;
+}
+
+.wrapper {
+  width: 400px;
+  min-height: 190px;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 12px;
+  box-shadow: 0px 9px 24px 0px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+  gap: 22px;
+  opacity: 0;
+  padding-top: 32px;
+  transform: translateX(-10px);
+  transition:
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+}
+
+.wrapper.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.title {
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111;
+  text-align: center;
+  margin-bottom: -2px;
+}
+
+.description {
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 14px;
+  color: #5f6368;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: -8px;
+}
+
+.deleteButton {
+  flex-basis: 43%;
+  background-color: #ed4956;
+  color: white;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter-SemiBold', sans-serif;
+
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background-color: #d73745;
+}
+
+.doneButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  flex-basis: 43%;
+  background-color: #eaeaea;
+  color: #333;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter-SemiBold', sans-serif;
+
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  background-color: #d5d5d5;
+}
