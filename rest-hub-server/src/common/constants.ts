@@ -14,3 +14,8 @@ export const ERROR_CODE = {
   USER_NOT_FOUND: 'USER_NOT_FOUND',
   INVALID__PASSWORD: 'INVALID__PASSWORD',
 } as const;
+
+export const ORDER_TYPES = {
+  DESC: 'DESC',
+  ASC: 'ASC',
+} as const;
