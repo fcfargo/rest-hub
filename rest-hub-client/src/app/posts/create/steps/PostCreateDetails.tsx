@@ -1,16 +1,13 @@
 'use client';
 
-import classNames from 'classnames';
-import EmojiPicker from 'emoji-picker-react';
 import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 
+import LocationField from '@/components/forms/locationField';
 import MediaPreview from '@/components/media/mediaPreview';
-import { CloseButtonBlack } from '@/components/ui/closeButton';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
-import { INPUT_TYPES } from '@/constants';
+import TextContent from '@/components/ui/textContent';
 import { useAuth } from '@/context/authContext';
-import { usePlacesAutocomplete } from '@/hooks/usePlacesAutocomplete';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import { uploadImageToS3 } from '@/libs/upload';
@@ -36,36 +33,10 @@ export default function PostCreateDetails({
 }: PostCreateDetailsProps) {
   const [postContent, setPostContent] = useState('');
   const [location, setLocation] = useState('');
-  const [showPicker, setShowPicker] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const { logout } = useAuth();
-  const { suggestions, loading } = usePlacesAutocomplete(location);
-
-  const pickerRef = useRef<HTMLDivElement>(null);
-  const suggestionsRef = useRef<HTMLUListElement>(null);
-
-  /** 이모지 추가 */
-  const addEmoji = useCallback((emojiObject: { emoji: string }) => {
-    setPostContent((prev) => prev + emojiObject.emoji);
-  }, []);
-
-  /** 게시글 작성 */
-  const handleTextWrite = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPostContent(e.target.value);
-  }, []);
-
-  /** 위치 입력 */
-  const handleLocationInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(e.target.value);
-  }, []);
-
-  /** 위치 선택 */
-  const handleSelectLocation = useCallback((place: string) => {
-    setLocation(place);
-  }, []);
 
   /**  게시글 업로드 */
   const handlePostCreate = useCallback(async () => {
@@ -110,22 +81,6 @@ export default function PostCreateDetails({
     }
   }, [croppedFile, postContent, location, closeModal, logout]);
 
-  /** 외부 클릭 감지하여 이모지 & 추천 리스트 닫기 */
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
-        setShowPicker(false);
-      }
-
-      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   return (
     <div className={detailsStyles.wrapper}>
       {/* 헤더 */}
@@ -150,103 +105,15 @@ export default function PostCreateDetails({
 
         <div className={detailsStyles.postInfo}>
           {/* 게시물 입력 */}
-          <div className={detailsStyles.postContent}>
-            <textarea
-              className={detailsStyles.postContentText}
-              value={postContent}
-              onChange={handleTextWrite}
-              placeholder="Write a post..."
-              maxLength={2200}
-            />
-
-            <div className={detailsStyles.postContentFooter}>
-              {/* 이모지 버튼 */}
-              <button
-                onClick={() => setShowPicker((prev) => !prev)}
-                className={modalStyles.emojiButton}
-              >
-                <Image
-                  className={detailsStyles.emojiIcon}
-                  src="/posts/emoji.svg"
-                  alt="Emoji Icon"
-                  width={20}
-                  height={20}
-                />
-              </button>
-
-              {/* ✨ 이모지 피커 */}
-              <div
-                ref={pickerRef}
-                className={classNames(
-                  detailsStyles.emojiPickerContainer,
-                  showPicker && detailsStyles.active,
-                )}
-              >
-                <EmojiPicker
-                  searchDisabled={true}
-                  width={300}
-                  height={360}
-                  onEmojiClick={addEmoji}
-                />
-              </div>
-
-              {/* 글자 수 표시 */}
-              <div className={detailsStyles.contentLength}>{postContent.length}/2200</div>
-            </div>
+          <div className={detailsStyles.postContentContainer}>
+            <TextContent textContent={postContent} setTextContent={setPostContent} />
           </div>
 
-          {/*  위치 입력*/}
+          {/* 기타 정보 입력 */}
           <div className={detailsStyles.postMeta}>
-            <div className={detailsStyles.locationContainer}>
-              <input
-                className={detailsStyles.locationInput}
-                type={INPUT_TYPES.TEXT}
-                value={location}
-                placeholder="Add location"
-                onChange={handleLocationInput}
-                onFocus={() => setShowSuggestions(true)}
-              />
-
-              {location ? (
-                <CloseButtonBlack
-                  className={detailsStyles.closeButton}
-                  onClick={() => setLocation('')}
-                />
-              ) : (
-                <Image
-                  className={detailsStyles.locationIcon}
-                  src="/posts/location.svg"
-                  alt="Location Icon"
-                  width={18}
-                  height={18}
-                />
-              )}
-
-              {/* 자동완성된 주소 목록 표시 */}
-              {location && showSuggestions && (
-                <ul ref={suggestionsRef} className={detailsStyles.suggestionsList}>
-                  {loading ? (
-                    <Image
-                      className={detailsStyles.loadingIcon}
-                      src="/posts/loading.gif"
-                      alt="Location loading Icon"
-                      width={24}
-                      height={24}
-                    />
-                  ) : (
-                    suggestions.length > 0 &&
-                    suggestions.map((place) => (
-                      <li
-                        key={place.placeId}
-                        className={detailsStyles.suggestionItem}
-                        onClick={() => handleSelectLocation(place.description)}
-                      >
-                        {place.description}
-                      </li>
-                    ))
-                  )}
-                </ul>
-              )}
+            {/*  위치  정보 입력*/}
+            <div className={detailsStyles.postLocation}>
+              <LocationField location={location} setLocation={setLocation} />
             </div>
           </div>
         </div>
