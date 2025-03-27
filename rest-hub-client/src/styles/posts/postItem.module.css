@@ -130,16 +130,6 @@
   background-color: rgba(255, 255, 255, 0.08);
 }
 
-.singleImageContainer {
-  display: flex;
-  margin-right: 4px;
-  margin-left: 4px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
 .content {
   font-size: 14px;
   margin-right: 4px;
@@ -190,4 +180,8 @@
   height: 16px;
   position: relative;
   overflow: visible;
+}
+
+.imageButton {
+  width: 100%;
 }

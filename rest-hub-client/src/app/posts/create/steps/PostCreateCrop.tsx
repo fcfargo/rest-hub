@@ -7,7 +7,6 @@ import MediaCrop from '@/components/media/mediaCrop';
 import { ErrorMessage } from '@/components/ui/message';
 import { ASPECT_RATIO_VALUES, INPUT_TYPES } from '@/constants';
 import cropStyles from '@/styles/posts/postCreateCrop.module.css';
-import modalStyles from '@/styles/posts/postCreateModal.module.css';
 import { PostDataProps } from '@/types';
 import { getCroppedImgFile, getImageAspectRatio } from '@/utils/imageUtils';
 
@@ -112,20 +111,20 @@ export default function PostCreateCrop({
   };
 
   return (
-    <div className={modalStyles.wrapper}>
+    <div className={cropStyles.wrapper}>
       {/* 헤더 */}
-      <div className={modalStyles.header}>
-        <button onClick={prevStep} className={modalStyles.backButton}>
+      <div className={cropStyles.header}>
+        <button onClick={prevStep} className={cropStyles.backButton}>
           <Image
-            className={modalStyles.backButtonIcon}
+            className={cropStyles.backButtonIcon}
             src="/posts/arrow-back.svg"
             alt="Back Button Icon"
             width={24}
             height={24}
           />
         </button>
-        <h2 className={modalStyles.title}>게시물 자르기</h2>
-        <button onClick={handleCropDone} className={modalStyles.doneButton}>
+        <h2 className={cropStyles.title}>게시물 자르기</h2>
+        <button onClick={handleCropDone} className={cropStyles.doneButton}>
           다음
         </button>
       </div>

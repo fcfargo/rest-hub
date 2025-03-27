@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
-import { MODAL_TYPES, POST_MENU_ITEM_TYPES, PROFILE_IMAGE_DEFAULT } from '@/constants';
+import { PostMediaViewer } from '@/components/media/mediaPreview';
+import { MEDIA_TYPES, MODAL_TYPES, POST_MENU_ITEM_TYPES, PROFILE_IMAGE_DEFAULT } from '@/constants';
 import { useModal } from '@/context/modalContext';
 import { useProtectedUser } from '@/hooks/useProtectedUser';
 import styles from '@/styles/posts/postItem.module.css';
@@ -60,6 +61,12 @@ export default function PostItem({ post, onPostUpdated, onPostDeleted }: PostIte
       openModal(MODAL_TYPES.POST_DELETE, { postId: post.id, onPostDeleted });
       return;
     }
+  };
+
+  /** 이미지 클릭 처리 */
+  const handleOpenImageModal = async () => {
+    openModal(MODAL_TYPES.POST_DETAIL, { post });
+    return;
   };
 
   /** 드롭다운 메뉴 아이템 필터링 */
@@ -139,22 +146,9 @@ export default function PostItem({ post, onPostUpdated, onPostDeleted }: PostIte
 
         {/* 게시글 이미지(여러 장 처리 로직은 추후 추가 예정 */}
         {imageUrl?.trim() && (
-          <div className={styles.singleImageContainer}>
-            <Image
-              src={imageUrl}
-              alt="Post Image"
-              priority
-              width={0}
-              height={0}
-              sizes="100vw"
-              style={{
-                objectFit: 'contain',
-                width: '100%',
-                height: 'auto',
-                display: 'flex',
-              }}
-            />
-          </div>
+          <button type="button" onClick={handleOpenImageModal} className={styles.imageButton}>
+            <PostMediaViewer url={imageUrl} className="rounded-lg" mediaType={MEDIA_TYPES.IMAGE} />
+          </button>
         )}
 
         {/* 하단 좋아요 및 댓글 영역 */}

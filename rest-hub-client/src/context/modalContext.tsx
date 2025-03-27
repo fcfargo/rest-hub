@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 import PostCreateModal from '@/app/posts/create/postCreateModal';
 import PostDeleteModal from '@/app/posts/delete/postDeleteModal';
+import PostDetailModal from '@/app/posts/detail/postDetailModal';
 import PostUpdateModal from '@/app/posts/update/postUpdateModal';
 import PasswordChangeModal from '@/app/settings/security/passwordChangeModal';
 import { MODAL_TYPES } from '@/constants';
@@ -24,11 +25,16 @@ type PostDelete = {
   onPostDeleted: (deletedPostId: string) => void;
 };
 
+type PostDetail = {
+  post: Post;
+};
+
 type ModalDataMap = {
   [MODAL_TYPES.POST_CREATE]: undefined;
   [MODAL_TYPES.PASSWORD_CHANGE]: undefined;
   [MODAL_TYPES.POST_UPDATE]: PostUpdate;
   [MODAL_TYPES.POST_DELETE]: PostDelete;
+  [MODAL_TYPES.POST_DETAIL]: PostDetail;
 };
 
 /**
@@ -82,6 +88,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
       {activeModal === MODAL_TYPES.POST_DELETE && data && (
         <PostDeleteModal postId={data.postId} onPostDeleted={data.onPostDeleted} />
       )}
+      {activeModal === MODAL_TYPES.POST_DETAIL && data && <PostDetailModal post={data.post} />}
     </ModalContext.Provider>
   );
 };

@@ -2,11 +2,10 @@ import axios from 'axios';
 
 import { API_ENDPOINTS } from './api';
 import api from './axiosInstance';
-
 import { apiRequest } from '@/utils/apiRequest';
 import { getAccessToken } from '@/utils/authUtils';
 
-export async function uploadImageToS3(file: File, logout: () => void): Promise<string> {
+export async function uploadMediaToS3(file: File, logout: () => void): Promise<string> {
   const accessToken = getAccessToken();
   if (!accessToken) {
     logout();
