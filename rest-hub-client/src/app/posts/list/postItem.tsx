@@ -147,6 +147,13 @@ export default function PostItem({ post, onPostUpdated, onPostDeleted }: PostIte
         {/* 게시글 이미지(여러 장 처리 로직은 추후 추가 예정 */}
         {imageUrl?.trim() && (
           <button type="button" onClick={handleOpenImageModal} className={styles.imageButton}>
+            {/* 후속 작업
+             * 1) 이미지 어려 개 업로드
+             * 2) .gif 파일 업로드
+             * 3) 비디오 파일 업로드
+             * 현재는 이미지 파일만 처리하기 때문에, mediaType을 고정값으로 넘겨주고 있지만
+             * 나중에 mediaType 정보를 DB에서 받아서 넘겨주도록 수정 예정
+             */}
             <PostMediaViewer url={imageUrl} className="rounded-lg" mediaType={MEDIA_TYPES.IMAGE} />
           </button>
         )}

@@ -9,6 +9,7 @@ import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
 import TextContent from '@/components/ui/textContent';
 import { MEDIA_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
+import { usePost } from '@/context/postContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import { uploadMediaToS3 } from '@/libs/upload';
@@ -35,7 +36,9 @@ export default function PostCreateDetails({
   const [location, setLocation] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const { addPost } = usePost();
   const { logout } = useAuth();
 
   /**  게시글 업로드 */
@@ -51,9 +54,20 @@ export default function PostCreateDetails({
     }
 
     try {
+      setIsLoading(true);
+
       const imageUrl =
         mediaType === MEDIA_TYPES.IMAGE ? await uploadMediaToS3(croppedFile, logout) : null;
 
+      {
+        /* 후속 작업
+         * 1) 이미지 어려 개 업로드
+         * 2) .gif 파일 업로드
+         * 3) 비디오 파일 업로드
+         * 현재 imageUrl로 api 요청을 보내는 방식이에서
+         * mediaData 변수에 [{url: '', mediaType: ''}] 형태로 api 요청 보내는 방식으로 수정 예정
+         */
+      }
       const formData = {
         imageUrl,
         content: postContent.trim(),
@@ -66,10 +80,12 @@ export default function PostCreateDetails({
         });
       }, logout);
 
-      if (!data.body) {
+      const newPost = data.body;
+      if (!newPost) {
         throw new Error('failed to create a post from the server');
       }
 
+      addPost(newPost);
       setPostContent('');
       setLocation('');
       setMessage('게시물이 성공적으로 업로드되었습니다.');
@@ -79,6 +95,8 @@ export default function PostCreateDetails({
     } catch (error) {
       console.error('Post Create failed:', error);
       setMessage('게시물 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    } finally {
+      setIsLoading(false);
     }
   }, [croppedFile, postContent, location, closeModal, logout]);
 
@@ -97,7 +115,7 @@ export default function PostCreateDetails({
           />
         </button>
         <h2 className={styles.title}>게시물 내용 작성</h2>
-        <button onClick={handlePostCreate} className={styles.doneButton}>
+        <button onClick={handlePostCreate} className={styles.doneButton} disabled={isLoading}>
           공유하기
         </button>
       </div>

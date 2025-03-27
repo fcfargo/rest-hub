@@ -9,6 +9,7 @@ import PostItem from './postItem';
 import { ErrorMessage } from '@/components/ui/message';
 import { SCROLLTO_BEHAVIOR } from '@/constants';
 import { useAuth } from '@/context/authContext';
+import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
@@ -18,12 +19,12 @@ import { apiRequest } from '@/utils/apiRequest';
 import { mergeUniqueById } from '@/utils/array';
 
 export default function PostList() {
-  const [posts, setPosts] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [latestTotalPages, setLatestTotalPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  const { posts, setPosts } = usePost();
   const isMounted = useMounted();
   const { logout } = useAuth();
 
