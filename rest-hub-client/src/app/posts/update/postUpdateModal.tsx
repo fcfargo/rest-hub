@@ -104,7 +104,7 @@ export default function PostUpdateModal({ post, onPostUpdated }: PostUpdateModal
             >
               <Image
                 className={styles.locationIcon}
-                src="/posts/location-red.svg"
+                src="/posts/location-full.svg"
                 alt="Emoji Icon"
                 width={18}
                 height={20}

@@ -130,9 +130,10 @@
 }
 
 .locationIcon {
-  opacity: 0.75;
   width: 18px;
   height: 20px;
+  filter: brightness(0) saturate(100%) invert(41%) sepia(100%) saturate(518%) hue-rotate(-13deg)
+    brightness(100%) contrast(94%);
 }
 
 .postLocation {

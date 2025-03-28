@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useCallback, useState } from 'react';
 
 import LocationField from '@/components/forms/locationField';
-import { PostMediaPreview } from '@/components/media/mediaPreview';
+import { PostCreateMediaPreview } from '@/components/media/mediaPreview';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
 import TextContent from '@/components/ui/textContent';
 import { MEDIA_TYPES } from '@/constants';
@@ -121,7 +121,7 @@ export default function PostCreateDetails({
       </div>
       {/* 미디어 미리보기 & 게시글 작성  */}
       <div className={styles.postDetailsContainer}>
-        <PostMediaPreview url={croppedUrl} mediaType={mediaType} />
+        <PostCreateMediaPreview url={croppedUrl} mediaType={mediaType} />
 
         <div className={styles.postInfo}>
           {/* 게시물 입력 */}

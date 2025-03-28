@@ -18,8 +18,11 @@
 }
 
 .wrapper {
-  min-width: 500px;
-  min-height: 600px;
+  width: 100%;
+  max-width: 600px;
+  min-width: 320px;
+  height: auto;
+  min-height: 400px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
@@ -40,10 +43,13 @@
 }
 
 .wrapper.withMedia {
-  width: 75vw;
-  height: 80vh;
-  max-height: none;
-  max-width: none;
+  width: 100%;
+  max-width: 85vw;
+  min-width: 75vw;
+  height: auto;
+  max-height: 90vh;
+  min-height: 80vh;
+  overflow: auto;
 }
 
 .header {
@@ -78,7 +84,9 @@
 }
 
 .mediaContentSection {
-  flex-basis: 65%;
+  position: relative;
+  flex-basis: 60%;
+  overflow: hidden;
   background-color: rgba(0, 0, 0, 0.92);
   display: flex;
   justify-content: center;
@@ -87,7 +95,42 @@
 }
 
 .extraContentSection {
-  flex-grow: 1;
+  flex-basis: 40%;
   display: flex;
   flex-direction: column;
+  gap: 12px;
+}
+
+.postProfileContainer {
+  flex-shrink: 0;
+  margin-top: 16px;
+  margin-left: 8px;
+  margin-right: 8px;
+  overflow-x: scroll;
+}
+
+.postContentContainer {
+  max-height: 30vh;
+  flex-shrink: 0;
+  margin-left: 8px;
+  margin-right: 8px;
+  overflow-y: auto;
+}
+
+.postActionBarContainer {
+  flex-shrink: 0;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.postCommentListContainer {
+  flex-grow: 1;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.postCommentInputContainer {
+  flex-shrink: 0;
+  margin-left: 8px;
+  margin-right: 8px;
 }

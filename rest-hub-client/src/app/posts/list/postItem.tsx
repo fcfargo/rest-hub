@@ -1,9 +1,10 @@
 'use client';
 
+import classNames from 'classnames';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
-import { PostMediaViewer } from '@/components/media/mediaPreview';
+import { PostItemMediaViewer } from '@/components/media/mediaPreview';
 import { MEDIA_TYPES, MODAL_TYPES, POST_MENU_ITEM_TYPES, PROFILE_IMAGE_DEFAULT } from '@/constants';
 import { useModal } from '@/context/modalContext';
 import { useProtectedUser } from '@/hooks/useProtectedUser';
@@ -26,6 +27,7 @@ const POST_MENU_ITEMS = [
 
 export default function PostItem({ post, onPostUpdated, onPostDeleted }: PostItemProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const dropDownRef = useRef<HTMLUListElement>(null);
 
@@ -37,6 +39,15 @@ export default function PostItem({ post, onPostUpdated, onPostDeleted }: PostIte
 
   const fromNow = formatTimeAgo(createdAt);
   const formattedLocation = location ? getFormattedLocation(location) : null;
+
+  // 게시글에 미디어 데이터 포함됐는지 여부
+  const hasMediaData = Boolean(imageUrl?.trim());
+
+  // 게시글에 더보기 버튼 표시 여부: 미디어 데이터 포함된 경우 1줄, 포함되지 않았을 경우 5줄 이상일 때
+  const showMoreButton =
+    !isExpanded &&
+    ((hasMediaData && content.length > 50) || // 예: 50자 이상이면 1줄 넘는다고 가정
+      (!hasMediaData && content.length > 300)); // 예: 300자 이상이면 5줄 넘는다고 가정
 
   /** 외부 클릭 감지하여 드롭다운 메뉴 닫기 */
   useEffect(() => {
@@ -142,20 +153,42 @@ export default function PostItem({ post, onPostUpdated, onPostDeleted }: PostIte
         </div>
 
         {/* 게시글 텍스트 내용 */}
-        <p className={styles.content}>{content}</p>
+        <div className={styles.contentContainer}>
+          <p
+            className={classNames(
+              styles.content,
+              !isExpanded && (hasMediaData ? styles.clamp1 : styles.clamp5),
+            )}
+          >
+            {content}
+          </p>
+
+          {/* 게시글 텍스트 더보기 버튼 */}
+          {showMoreButton && (
+            <button onClick={() => setIsExpanded(true)} className={styles.readMoreButton}>
+              더 보기
+            </button>
+          )}
+        </div>
 
         {/* 게시글 이미지(여러 장 처리 로직은 추후 추가 예정 */}
         {imageUrl?.trim() && (
-          <button type="button" onClick={handleOpenImageModal} className={styles.imageButton}>
-            {/* 후속 작업
-             * 1) 이미지 어려 개 업로드
-             * 2) .gif 파일 업로드
-             * 3) 비디오 파일 업로드
-             * 현재는 이미지 파일만 처리하기 때문에, mediaType을 고정값으로 넘겨주고 있지만
-             * 나중에 mediaType 정보를 DB에서 받아서 넘겨주도록 수정 예정
-             */}
-            <PostMediaViewer url={imageUrl} className="rounded-lg" mediaType={MEDIA_TYPES.IMAGE} />
-          </button>
+          <div className={styles.mediaContainer}>
+            <button type="button" onClick={handleOpenImageModal} className={styles.mediaButton}>
+              {/* 후속 작업
+               * 1) 이미지 어려 개 업로드
+               * 2) .gif 파일 업로드
+               * 3) 비디오 파일 업로드
+               * 현재는 이미지 파일만 처리하기 때문에, mediaType을 고정값으로 넘겨주고 있지만
+               * 나중에 mediaType 정보를 DB에서 받아서 넘겨주도록 수정 예정
+               */}
+              <PostItemMediaViewer
+                url={imageUrl}
+                className="rounded-lg"
+                mediaType={MEDIA_TYPES.IMAGE}
+              />
+            </button>
+          </div>
         )}
 
         {/* 하단 좋아요 및 댓글 영역 */}

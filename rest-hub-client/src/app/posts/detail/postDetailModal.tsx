@@ -2,7 +2,11 @@
 
 import classNames from 'classnames';
 
-import { PostMediaViewer } from '@/components/media/mediaPreview';
+import PostActionBarSection from './sections/PostActionBarSection';
+import PostContentSection from './sections/PostContentSection';
+import PostDetailMediaSection from './sections/PostDetailMediaSection';
+import PostProfileSection from './sections/PostProfileSection';
+
 import { CloseButtonWhite } from '@/components/ui/closeButton';
 import { MEDIA_TYPES } from '@/constants';
 import { useModal } from '@/context/modalContext';
@@ -18,7 +22,10 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
   const isMounted = useMounted();
   const { closeModal } = useModal();
 
-  const { imageUrl } = post;
+  const { imageUrl, content, likesCount, commentsCount } = post;
+
+  // 게시글에 미디어 데이터 포함됐는지 여부
+  const hasMediaData = Boolean(imageUrl?.trim());
 
   return (
     <div className={styles.overlay}>
@@ -38,16 +45,43 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
           </div>
 
           <div className={styles.body}>
+            {/* 게시글 미디어 파일 정보 */}
             {imageUrl && (
               <div className={styles.mediaContentSection}>
-                <PostMediaViewer
-                  url={imageUrl}
-                  mediaType={MEDIA_TYPES.IMAGE}
-                  className="shadow-2xl"
-                />
+                <PostDetailMediaSection url={imageUrl} mediaType={MEDIA_TYPES.IMAGE} />
               </div>
             )}
-            <div className={styles.extraContentSection}></div>
+
+            <div className={styles.extraContentSection}>
+              {/* 게시글 작성 유저 정보 */}
+              <div className={styles.postProfileContainer}>
+                <PostProfileSection post={post} />
+              </div>
+
+              {/* 게시글 내용 */}
+              <div className={styles.postContentContainer}>
+                <PostContentSection
+                  content={content}
+                  hasMediaData={hasMediaData}
+                  showToggleButton={false}
+                />
+              </div>
+
+              {/* 게시글 좋아요 및 댓글 정보 */}
+              <div className={styles.postActionBarContainer}>
+                <PostActionBarSection
+                  likesCount={likesCount}
+                  commentsCount={commentsCount}
+                  isLiked={false}
+                />
+              </div>
+
+              {/* 게시글 댓글 리스트 */}
+              <div className={styles.postCommentListContainer}></div>
+
+              {/* 게시글 댓글 입력 창 */}
+              <div className={styles.postCommentInputContainer}></div>
+            </div>
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ export type Post = {
   imageUrl: string | null;
   location: string | null;
   likesCount: number;
+  commentsCount: number;
   user: {
     id: number;
     username: string;
