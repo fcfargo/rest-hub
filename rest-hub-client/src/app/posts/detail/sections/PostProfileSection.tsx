@@ -24,7 +24,8 @@ const POST_MENU_ITEMS = [
 
 export default function PostProfileSection({ post }: PostProfileSectionProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropDownRef = useRef<HTMLUListElement>(null);
+  const dropdownRef = useRef<HTMLUListElement>(null);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
 
   const { openModal } = useModal();
   const { updatePost, deletePost } = usePost();
@@ -37,7 +38,12 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        moreButtonRef.current &&
+        !moreButtonRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     };
@@ -46,38 +52,35 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 드롭다운 클릭 핸들링
+  // 드롭다운 메뉴 클릭 처리
   const handlePostMenuItem = (value: number) => {
-    if (value === POST_MENU_ITEM_TYPES.UPDATE) {
-      openModal(MODAL_TYPES.POST_UPDATE, { post, onPostUpdated: updatePost });
-      return;
+    switch (value) {
+      case POST_MENU_ITEM_TYPES.UPDATE:
+        openModal(MODAL_TYPES.POST_UPDATE, { post, onPostUpdated: updatePost });
+        break;
+      case POST_MENU_ITEM_TYPES.DELETE:
+        openModal(MODAL_TYPES.POST_DELETE, { postId: post.id, onPostDeleted: deletePost });
+        break;
+      default:
+        break;
     }
-
-    if (value === POST_MENU_ITEM_TYPES.DELETE) {
-      openModal(MODAL_TYPES.POST_DELETE, { postId: post.id, onPostDeleted: deletePost });
-      return;
-    }
+    setIsDropdownOpen(false);
   };
 
+  // 사용자 권한에 따른 메뉴 필터링
   const getFilteredPostMenuItems = (user: User, writer: Partial<User>) => {
     const isOwner = user.id === writer.id;
-    return POST_MENU_ITEMS.filter((item) => {
-      if (
-        isOwner &&
-        (item.value === POST_MENU_ITEM_TYPES.REPORT || item.value === POST_MENU_ITEM_TYPES.HIDE)
-      )
-        return false;
-      if (
-        !isOwner &&
-        (item.value === POST_MENU_ITEM_TYPES.UPDATE || item.value === POST_MENU_ITEM_TYPES.DELETE)
-      )
-        return false;
-      return true;
+    return POST_MENU_ITEMS.filter(({ value }) => {
+      if (isOwner) {
+        return value !== POST_MENU_ITEM_TYPES.REPORT && value !== POST_MENU_ITEM_TYPES.HIDE;
+      } else {
+        return value !== POST_MENU_ITEM_TYPES.UPDATE && value !== POST_MENU_ITEM_TYPES.DELETE;
+      }
     });
   };
 
   return (
-    <div className={styles.profile}>
+    <section className={styles.profile} aria-label="Post profile">
       <div className={styles.userInfo}>
         <Image
           src={writer.profileImage || PROFILE_IMAGE_DEFAULT}
@@ -103,28 +106,42 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
         </div>
       </div>
 
-      <button className={styles.moreButton} onClick={() => setIsDropdownOpen((prev) => !prev)}>
-        <Image
-          src="/posts/ellipsis.svg"
-          alt="More"
-          width={24}
-          height={24}
-          className={styles.moreButtonIcon}
-        />
-        {isDropdownOpen && (
-          <ul ref={dropDownRef} className={styles.dropdownMenu}>
-            {getFilteredPostMenuItems(user, writer).map((item) => (
-              <li
-                key={item.value}
-                className={styles.dropdownItem}
-                onClick={() => handlePostMenuItem(item.value)}
-              >
-                {item.label}
-              </li>
-            ))}
-          </ul>
-        )}
-      </button>
-    </div>
+      <div className={styles.menuWrapper}>
+        <button
+          ref={moreButtonRef}
+          className={styles.moreButton}
+          onClick={() => setIsDropdownOpen((prev) => !prev)}
+          aria-label="Post menu"
+          aria-expanded={isDropdownOpen}
+        >
+          <Image
+            src="/posts/ellipsis.svg"
+            alt="More"
+            width={24}
+            height={24}
+            className={styles.moreButtonIcon}
+          />
+          {isDropdownOpen && (
+            <ul
+              ref={dropdownRef}
+              className={styles.dropdownMenu}
+              role="menu"
+              aria-label="Post action menu"
+            >
+              {getFilteredPostMenuItems(user, writer).map((item) => (
+                <li
+                  key={item.value}
+                  className={styles.dropdownItem}
+                  role="menuitem"
+                  onClick={() => handlePostMenuItem(item.value)}
+                >
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+          )}
+        </button>
+      </div>
+    </section>
   );
 }

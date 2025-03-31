@@ -24,14 +24,15 @@ export default function PostActionBarSection({
   commentsCount,
   isLiked,
 }: PostActionBarSectionProps) {
-  const [currentLikesCount, setcurrentLikesCount] = useState(likesCount);
+  const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
   const [currentIsLiked, setCurrentIsLiked] = useState(isLiked);
 
   const { logout } = useAuth();
   const { posts, updatePost } = usePost();
 
+  /** 좋아요 버튼 클릭 핸들러 */
   const handleLikeButtonClick = async () => {
-    const requestFn = isLiked
+    const requestFn = currentIsLiked
       ? async (accessToken: string) => {
           return api.delete(`${API_ENDPOINTS.POST}/${postId}/like`, {
             headers: { Authorization: `Bearer ${accessToken}` },
@@ -49,12 +50,13 @@ export default function PostActionBarSection({
 
     try {
       const { data } = await apiRequest(requestFn, logout);
-
       const { isLiked, likesCount } = data.body;
 
+      // 로컬 상태 업데이트
       setCurrentIsLiked(!currentIsLiked);
-      setcurrentLikesCount(likesCount);
+      setCurrentLikesCount(likesCount);
 
+      // 전역 상태(PostContext) 업데이트
       const targetPost = posts.find((post) => post.id === postId);
       if (targetPost) {
         updatePost({ ...targetPost, isLiked, likesCount });
@@ -65,14 +67,20 @@ export default function PostActionBarSection({
   };
 
   return (
-    <div className={styles.contianer}>
+    <section className={styles.contianer} aria-label="Post actions">
       {/* 좋아요 버튼 */}
       <button
         onClick={handleLikeButtonClick}
         className={classNames(styles.likesButton, currentIsLiked && styles.liked)}
-        aria-label="Like post"
+        aria-label={currentIsLiked ? 'Unlike post' : 'Like post'}
       >
-        <Image src="/posts/heart.svg" alt="Likes" width={18} height={18} className={styles.icon} />
+        <Image
+          src="/posts/heart.svg"
+          alt="Likes icon"
+          width={18}
+          height={18}
+          className={styles.icon}
+        />
         <span className={styles.likesCount}>{currentLikesCount}</span>
       </button>
 
@@ -80,13 +88,13 @@ export default function PostActionBarSection({
       <button className={styles.commentsButton} aria-label="View comments">
         <Image
           src="/posts/message-square-text.svg"
-          alt="Comments"
+          alt="Comments icon"
           width={18}
           height={18}
           className={styles.icon}
         />
         <span className={styles.commentsCount}>{commentsCount}</span>
       </button>
-    </div>
+    </section>
   );
 }

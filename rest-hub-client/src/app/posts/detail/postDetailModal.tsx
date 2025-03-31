@@ -24,7 +24,7 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
 
   const { id, imageUrl, content, likesCount, commentsCount, isLiked } = post;
 
-  // 게시글에 미디어 데이터 포함됐는지 여부
+  // 게시글에 미디어 데이터 포함 여부
   const hasMediaData = Boolean(imageUrl?.trim());
 
   return (
@@ -48,7 +48,11 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
             {/* 게시글 미디어 파일 정보 */}
             {imageUrl && (
               <div className={styles.mediaContentsSection}>
-                <PostDetailMediaSection url={imageUrl} mediaType={MEDIA_TYPES.IMAGE} />
+                <PostDetailMediaSection
+                  url={imageUrl}
+                  mediaType={MEDIA_TYPES.IMAGE}
+                  className="drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] rounded-xl"
+                />
               </div>
             )}
 

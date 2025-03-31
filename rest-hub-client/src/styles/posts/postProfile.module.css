@@ -78,10 +78,13 @@
   font-weight: 500;
 }
 
-.moreButton {
+.menuWrapper {
   flex-shrink: 0;
-  margin-right: 4px;
   align-self: flex-start;
+}
+
+.moreButton {
+  margin-right: 4px;
 }
 
 .moreButtonIcon {
@@ -97,7 +100,7 @@
   position: absolute;
   background: rgba(0, 0, 0, 0.4);
   border-radius: 6px;
-  right: 0px;
+  right: 8px;
 }
 
 .dropdownItem {

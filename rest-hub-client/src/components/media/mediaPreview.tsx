@@ -12,7 +12,7 @@ interface PostMediaPreviewProps {
 
 interface PostMediaViewerProps {
   url: string;
-  mediaType: string;
+  mediaType: MediaTypes;
   className?: MediaTypes;
 }
 
