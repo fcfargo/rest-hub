@@ -1,4 +1,4 @@
-.mediaPreviewContainer {
+.postCreateMediaPreviewContainer {
   position: relative;
   flex-basis: 62.5%;
   height: 100%;
@@ -8,7 +8,19 @@
   overflow: hidden;
 }
 
-.mediaViewerContainer {
+.postItemMediaViewerContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding-left: 0.5px;
+  padding-right: 0.5px;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.postDetailMediaViewerContainer {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;

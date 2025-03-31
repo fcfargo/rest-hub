@@ -18,7 +18,7 @@ interface PostMediaViewerProps {
 
 export function PostCreateMediaPreview({ url, mediaType }: PostMediaPreviewProps) {
   return (
-    <div className={styles.mediaPreviewContainer}>
+    <div className={styles.postCreateMediaPreviewContainer}>
       {mediaType.startsWith(MEDIA_TYPES.IMAGE) ? (
         <Image style={{ objectFit: 'contain' }} src={url} alt="Image Preview" fill priority />
       ) : (
@@ -30,7 +30,7 @@ export function PostCreateMediaPreview({ url, mediaType }: PostMediaPreviewProps
 
 export function PostItemMediaViewer({ url, mediaType, className }: PostMediaViewerProps) {
   return (
-    <div className={classNames(styles.mediaViewerContainer, className)}>
+    <div className={classNames(styles.postItemMediaViewerContainer, className)}>
       {mediaType.startsWith(MEDIA_TYPES.IMAGE) ? (
         <Image
           src={url}
@@ -55,7 +55,7 @@ export function PostItemMediaViewer({ url, mediaType, className }: PostMediaView
 
 export function PostDetailMediaViewer({ url, mediaType, className }: PostMediaViewerProps) {
   return (
-    <div className={classNames(styles.mediaViewerContainer, className)}>
+    <div className={classNames(styles.postDetailMediaViewerContainer, className)}>
       {mediaType.startsWith(MEDIA_TYPES.IMAGE) ? (
         <Image
           src={url}

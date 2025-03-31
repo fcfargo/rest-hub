@@ -35,7 +35,16 @@ export default function PostItem({ post, onPostUpdated, onPostDeleted }: PostIte
 
   const user = useProtectedUser();
 
-  const { createdAt, location, user: writer, content, imageUrl, likesCount } = post;
+  const {
+    createdAt,
+    location,
+    user: writer,
+    content,
+    imageUrl,
+    likesCount,
+    commentsCount,
+    isLiked,
+  } = post;
 
   const fromNow = formatTimeAgo(createdAt);
   const formattedLocation = location ? getFormattedLocation(location) : null;
@@ -214,7 +223,7 @@ export default function PostItem({ post, onPostUpdated, onPostDeleted }: PostIte
               height={20}
               className={styles.fotterIcon}
             />
-            <span className={styles.commentsCount}>0</span>
+            <span className={styles.commentsCount}>{commentsCount}</span>
           </button>
         </div>
       </div>

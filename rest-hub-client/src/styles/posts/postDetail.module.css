@@ -83,8 +83,7 @@
   display: flex;
 }
 
-.mediaContentSection {
-  position: relative;
+.mediaContentsSection {
   flex-basis: 60%;
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0.92);
@@ -94,7 +93,7 @@
   border-bottom-left-radius: 12px;
 }
 
-.extraContentSection {
+.extraContentsSection {
   flex-basis: 40%;
   display: flex;
   flex-direction: column;
@@ -127,10 +126,13 @@
   flex-grow: 1;
   margin-left: 8px;
   margin-right: 8px;
+  border-top: 1px solid #dbdbdb;
 }
 
 .postCommentInputContainer {
   flex-shrink: 0;
   margin-left: 8px;
   margin-right: 8px;
+  border-top: 1px solid #dbdbdb;
+  height: 20px;
 }

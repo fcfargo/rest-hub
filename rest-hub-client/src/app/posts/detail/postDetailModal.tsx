@@ -22,7 +22,7 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
   const isMounted = useMounted();
   const { closeModal } = useModal();
 
-  const { imageUrl, content, likesCount, commentsCount } = post;
+  const { id, imageUrl, content, likesCount, commentsCount, isLiked } = post;
 
   // 게시글에 미디어 데이터 포함됐는지 여부
   const hasMediaData = Boolean(imageUrl?.trim());
@@ -47,12 +47,12 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
           <div className={styles.body}>
             {/* 게시글 미디어 파일 정보 */}
             {imageUrl && (
-              <div className={styles.mediaContentSection}>
+              <div className={styles.mediaContentsSection}>
                 <PostDetailMediaSection url={imageUrl} mediaType={MEDIA_TYPES.IMAGE} />
               </div>
             )}
 
-            <div className={styles.extraContentSection}>
+            <div className={styles.extraContentsSection}>
               {/* 게시글 작성 유저 정보 */}
               <div className={styles.postProfileContainer}>
                 <PostProfileSection post={post} />
@@ -70,9 +70,10 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
               {/* 게시글 좋아요 및 댓글 정보 */}
               <div className={styles.postActionBarContainer}>
                 <PostActionBarSection
+                  postId={id}
                   likesCount={likesCount}
                   commentsCount={commentsCount}
-                  isLiked={false}
+                  isLiked={isLiked}
                 />
               </div>
 

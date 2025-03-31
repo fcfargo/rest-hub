@@ -4,26 +4,66 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import { useState } from 'react';
 
+import { useAuth } from '@/context/authContext';
+import { usePost } from '@/context/postContext';
+import { API_ENDPOINTS } from '@/libs/api';
+import api from '@/libs/axiosInstance';
 import styles from '@/styles/posts/postActionBar.module.css';
+import { apiRequest } from '@/utils/apiRequest';
 
 interface PostActionBarSectionProps {
+  postId: string;
   likesCount: number;
   commentsCount: number;
   isLiked: boolean;
 }
 
 export default function PostActionBarSection({
+  postId,
   likesCount,
   commentsCount,
   isLiked,
 }: PostActionBarSectionProps) {
+  const [currentLikesCount, setcurrentLikesCount] = useState(likesCount);
   const [currentIsLiked, setCurrentIsLiked] = useState(isLiked);
 
-  const handleLikeButtonClick = () => {
-    // TODO: 좋아요 추가 or 취소 API 요청 처리
+  const { logout } = useAuth();
+  const { posts, updatePost } = usePost();
 
-    setCurrentIsLiked((prev) => !prev);
+  const handleLikeButtonClick = async () => {
+    const requestFn = isLiked
+      ? async (accessToken: string) => {
+          return api.delete(`${API_ENDPOINTS.POST}/${postId}/like`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+        }
+      : async (accessToken: string) => {
+          return api.post(
+            `${API_ENDPOINTS.POST}/${postId}/like`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            },
+          );
+        };
+
+    try {
+      const { data } = await apiRequest(requestFn, logout);
+
+      const { isLiked, likesCount } = data.body;
+
+      setCurrentIsLiked(!currentIsLiked);
+      setcurrentLikesCount(likesCount);
+
+      const targetPost = posts.find((post) => post.id === postId);
+      if (targetPost) {
+        updatePost({ ...targetPost, isLiked, likesCount });
+      }
+    } catch (error) {
+      console.error('Like request failed:', error);
+    }
   };
+
   return (
     <div className={styles.contianer}>
       {/* 좋아요 버튼 */}
@@ -33,7 +73,7 @@ export default function PostActionBarSection({
         aria-label="Like post"
       >
         <Image src="/posts/heart.svg" alt="Likes" width={18} height={18} className={styles.icon} />
-        <span className={styles.likesCount}>{likesCount}</span>
+        <span className={styles.likesCount}>{currentLikesCount}</span>
       </button>
 
       {/* 댓글 버튼 */}
