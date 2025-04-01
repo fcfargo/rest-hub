@@ -9,6 +9,7 @@
 }
 
 .container {
+  width: 100%;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -22,7 +23,7 @@
   max-width: 600px;
   min-width: 320px;
   height: auto;
-  min-height: 400px;
+  min-height: 80vh;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
@@ -93,8 +94,17 @@
   border-bottom-left-radius: 12px;
 }
 
-.extraContentsSection {
+.extraContentsSectionWithMedia {
+  margin: 2px 4px;
   flex-basis: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.extraContentsSection {
+  margin: 2px 8px;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 12px;

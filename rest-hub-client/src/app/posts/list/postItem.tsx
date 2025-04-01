@@ -17,14 +17,14 @@ interface PostItemProps {
 export default function PostItem({ post }: PostItemProps) {
   const { openModal } = useModal();
 
-  const { id, content, imageUrl, likesCount, commentsCount, isLiked } = post;
+  const { content, imageUrl, id } = post;
 
   // 게시글에 미디어 데이터 포함됐는지 여부
   const hasMediaData = Boolean(imageUrl?.trim());
 
   /** 이미지 클릭 처리 */
   const handleOpenImageModal = async () => {
-    openModal(MODAL_TYPES.POST_DETAIL, { post });
+    openModal(MODAL_TYPES.POST_DETAIL, { postId: id });
     return;
   };
 
@@ -35,7 +35,6 @@ export default function PostItem({ post }: PostItemProps) {
         <div className={styles.postProfileContainer}>
           <PostProfileSection post={post} />
         </div>
-
         {/* 게시글 내용 */}
         <div className={styles.postContentContainer}>
           <PostContentSection
@@ -44,7 +43,6 @@ export default function PostItem({ post }: PostItemProps) {
             showToggleButton={true}
           />
         </div>
-
         {/* 게시글 이미지(여러 장 처리 로직은 추후 추가 예정 */}
         {imageUrl?.trim() && (
           <div className={styles.mediaContainer}>
@@ -64,15 +62,9 @@ export default function PostItem({ post }: PostItemProps) {
             </button>
           </div>
         )}
-
         {/* 게시글 좋아요 및 댓글 정보 */}
         <div className={styles.postActionBarContainer}>
-          <PostActionBarSection
-            postId={id}
-            likesCount={likesCount}
-            commentsCount={commentsCount}
-            isLiked={isLiked}
-          />
+          <PostActionBarSection post={post} />
         </div>
       </div>
     </div>

@@ -10,19 +10,26 @@ import PostProfileSection from './sections/PostProfileSection';
 import { CloseButtonWhite } from '@/components/ui/closeButton';
 import { MEDIA_TYPES } from '@/constants';
 import { useModal } from '@/context/modalContext';
+import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
 import styles from '@/styles/posts/postDetail.module.css';
-import { Post } from '@/types';
 
 interface PostDetailModalProps {
-  post: Post;
+  postId: string;
 }
 
-export default function PostDetailModal({ post }: PostDetailModalProps) {
+export default function PostDetailModal({ postId }: PostDetailModalProps) {
   const isMounted = useMounted();
   const { closeModal } = useModal();
+  const { posts } = usePost();
 
-  const { id, imageUrl, content, likesCount, commentsCount, isLiked } = post;
+  const post = posts.find((p) => p.id === postId);
+
+  if (!post || !postId) {
+    return null;
+  }
+
+  const { imageUrl, content } = post;
 
   // 게시글에 미디어 데이터 포함 여부
   const hasMediaData = Boolean(imageUrl?.trim());
@@ -36,7 +43,7 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
           className={classNames(
             styles.wrapper,
             isMounted && styles.active,
-            imageUrl && styles.withMedia,
+            hasMediaData && styles.withMedia,
           )}
         >
           {/* 헤더 */}
@@ -46,7 +53,7 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
 
           <div className={styles.body}>
             {/* 게시글 미디어 파일 정보 */}
-            {imageUrl && (
+            {hasMediaData && imageUrl && (
               <div className={styles.mediaContentsSection}>
                 <PostDetailMediaSection
                   url={imageUrl}
@@ -56,7 +63,11 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
               </div>
             )}
 
-            <div className={styles.extraContentsSection}>
+            <div
+              className={
+                hasMediaData ? styles.extraContentsSectionWithMedia : styles.extraContentsSection
+              }
+            >
               {/* 게시글 작성 유저 정보 */}
               <div className={styles.postProfileContainer}>
                 <PostProfileSection post={post} />
@@ -73,12 +84,7 @@ export default function PostDetailModal({ post }: PostDetailModalProps) {
 
               {/* 게시글 좋아요 및 댓글 정보 */}
               <div className={styles.postActionBarContainer}>
-                <PostActionBarSection
-                  postId={id}
-                  likesCount={likesCount}
-                  commentsCount={commentsCount}
-                  isLiked={isLiked}
-                />
+                <PostActionBarSection post={post} />
               </div>
 
               {/* 게시글 댓글 리스트 */}

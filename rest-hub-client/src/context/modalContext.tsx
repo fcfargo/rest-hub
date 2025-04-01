@@ -24,7 +24,7 @@ type PostDelete = {
 };
 
 type PostDetail = {
-  post: Post;
+  postId: string;
 };
 
 type ModalDataMap = {
@@ -83,7 +83,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
       {activeModal === MODAL_TYPES.POST_CREATE && <PostCreateModal />}
       {activeModal === MODAL_TYPES.POST_UPDATE && data && <PostUpdateModal post={data.post} />}
       {activeModal === MODAL_TYPES.POST_DELETE && data && <PostDeleteModal postId={data.postId} />}
-      {activeModal === MODAL_TYPES.POST_DETAIL && data && <PostDetailModal post={data.post} />}
+      {activeModal === MODAL_TYPES.POST_DETAIL && data && <PostDetailModal postId={data.postId} />}
     </ModalContext.Provider>
   );
 };

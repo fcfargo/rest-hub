@@ -2,45 +2,39 @@
 
 import classNames from 'classnames';
 import Image from 'next/image';
-import { useState } from 'react';
 
+import { MODAL_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
+import { useModal } from '@/context/modalContext';
 import { usePost } from '@/context/postContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import styles from '@/styles/posts/postActionBar.module.css';
+import { Post } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 
 interface PostActionBarSectionProps {
-  postId: string;
-  likesCount: number;
-  commentsCount: number;
-  isLiked: boolean;
+  post: Post;
 }
 
-export default function PostActionBarSection({
-  postId,
-  likesCount,
-  commentsCount,
-  isLiked,
-}: PostActionBarSectionProps) {
-  const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
-  const [currentIsLiked, setCurrentIsLiked] = useState(isLiked);
+export default function PostActionBarSection({ post }: PostActionBarSectionProps) {
+  const { id, commentsCount, isLiked, likesCount } = post;
 
+  const { openModal } = useModal();
   const { logout } = useAuth();
   const { posts, updatePost } = usePost();
 
   /** 좋아요 버튼 클릭 핸들러 */
   const handleLikeButtonClick = async () => {
-    const requestFn = currentIsLiked
+    const requestFn = isLiked
       ? async (accessToken: string) => {
-          return api.delete(`${API_ENDPOINTS.POST}/${postId}/like`, {
+          return api.delete(`${API_ENDPOINTS.POST}/${id}/like`, {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
         }
       : async (accessToken: string) => {
           return api.post(
-            `${API_ENDPOINTS.POST}/${postId}/like`,
+            `${API_ENDPOINTS.POST}/${id}/like`,
             {},
             {
               headers: { Authorization: `Bearer ${accessToken}` },
@@ -52,12 +46,8 @@ export default function PostActionBarSection({
       const { data } = await apiRequest(requestFn, logout);
       const { isLiked, likesCount } = data.body;
 
-      // 로컬 상태 업데이트
-      setCurrentIsLiked(!currentIsLiked);
-      setCurrentLikesCount(likesCount);
-
       // 전역 상태(PostContext) 업데이트
-      const targetPost = posts.find((post) => post.id === postId);
+      const targetPost = posts.find((post) => post.id === id);
       if (targetPost) {
         updatePost({ ...targetPost, isLiked, likesCount });
       }
@@ -66,13 +56,19 @@ export default function PostActionBarSection({
     }
   };
 
+  /** 댓글 버튼 클릭 핸들러 */
+  const handleCommentButtonClick = async () => {
+    openModal(MODAL_TYPES.POST_DETAIL, { postId: id });
+    return;
+  };
+
   return (
     <section className={styles.contianer} aria-label="Post actions">
       {/* 좋아요 버튼 */}
       <button
         onClick={handleLikeButtonClick}
-        className={classNames(styles.likesButton, currentIsLiked && styles.liked)}
-        aria-label={currentIsLiked ? 'Unlike post' : 'Like post'}
+        className={classNames(styles.likesButton, isLiked && styles.liked)}
+        aria-label={isLiked ? 'Unlike post' : 'Like post'}
       >
         <Image
           src="/posts/heart.svg"
@@ -81,11 +77,15 @@ export default function PostActionBarSection({
           height={18}
           className={styles.icon}
         />
-        <span className={styles.likesCount}>{currentLikesCount}</span>
+        <span className={styles.likesCount}>{likesCount}</span>
       </button>
 
       {/* 댓글 버튼 */}
-      <button className={styles.commentsButton} aria-label="View comments">
+      <button
+        onClick={handleCommentButtonClick}
+        className={styles.commentsButton}
+        aria-label="View comments"
+      >
         <Image
           src="/posts/message-square-text.svg"
           alt="Comments icon"
