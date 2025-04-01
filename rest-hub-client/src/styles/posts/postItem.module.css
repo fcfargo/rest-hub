@@ -5,225 +5,43 @@
 }
 
 .wrapper {
-  margin: 18px 16px;
+  margin: 12px 8px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.profile {
-  display: flex;
+.postProfileContainer {
+  flex-shrink: 0;
+  margin-top: 6px;
   margin-left: 4px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.userInfo {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  position: relative;
-}
-
-.profileIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: 100px;
-  border-style: solid;
-  border-color: rgba(90, 91, 97, 0.2);
-  border-width: 0.5px;
-  object-fit: cover;
-}
-
-.userDetails {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.userHeader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.username {
-  color: #00030f;
-  text-align: left;
-  font-family: 'Inter-Medium', sans-serif;
-  font-size: 16px;
-  line-height: 20px;
-  font-weight: 600;
-}
-
-.follow {
-  color: #0095f6;
-  text-align: left;
-  font-family: 'Inter-Medium', sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 600;
-}
-
-.userFooter {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.timaAgo,
-.location {
-  color: #808187;
-  text-align: left;
-  font-family: 'Inter-Regular', sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: -0.5px;
-  font-weight: 400;
-}
-
-.separator {
-  color: #808187;
-  font-family: 'Inter-Regular', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.moreButton {
-  flex-shrink: 0;
   margin-right: 4px;
-  align-self: flex-start;
+  overflow-x: scroll;
 }
 
-.moreButtonIcon {
-  width: 24px;
-  height: 24px;
-}
-
-.dropdownMenu {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 6px;
-  right: 0px;
-}
-
-.dropdownItem {
-  font-family: 'Inter-SemiBold', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: white;
-  padding: 6px 8px;
-  line-height: 1.4;
-  z-index: 10;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.dropdownItem:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.contentContainer {
-  display: flex;
-  align-items: center;
-}
-
-.content {
-  flex-grow: 1;
-  font-size: 14px;
-  margin-right: 4px;
-  margin-left: 4px;
-}
-
-.clamp1 {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.clamp5 {
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.readMoreButton {
+.postContentContainer {
+  max-height: 30vh;
   flex-shrink: 0;
-  color: #0095f6;
-  font-size: 14px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  letter-spacing: -0.8px;
-}
-
-.footer {
-  display: flex;
-  align-items: center;
-  margin-right: 4px;
-  margin-left: 4px;
-  gap: 32px;
-}
-
-.likesButton {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.commentsButton {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.likesCount {
-  color: #808187;
-  text-align: left;
-  font-family: 'Inter-Regular', sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-}
-
-.commentsCount {
-  color: #808187;
-  text-align: left;
-  font-family: 'Inter-Regular', sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-}
-
-.footerIcon {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  position: relative;
-  overflow: visible;
-  filter: brightness(0) saturate(100%) invert(70%) sepia(4%) saturate(150%) hue-rotate(180deg)
-    brightness(97%) contrast(90%);
+  margin-left: 8px;
+  margin-right: 8px;
+  overflow-y: auto;
 }
 
 .mediaContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
+  margin-left: 8px;
+  margin-right: 3px;
 }
 
 .mediaButton {
   width: 100%;
   height: 100%;
+}
+
+.postActionBarContainer {
+  flex-shrink: 0;
+  margin-left: 8px;
+  margin-right: 8px;
 }

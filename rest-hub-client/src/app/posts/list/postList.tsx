@@ -33,16 +33,6 @@ export default function PostList() {
   const scrollPositionRef = useRef(0);
   const isFetchingRef = useRef(false);
 
-  /** 게시글 데이터 상태 업데이트 */
-  const handlePostUpdated = (updatedPost: Post) => {
-    setPosts((prevPosts) => prevPosts.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
-  };
-
-  /** 게시글 데이터 상태 삭제 */
-  const handlePostDeleted = (deletedPostId: string) => {
-    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== deletedPostId));
-  };
-
   /** 현재 스크롤 위치 저장 */
   const saveScrollPosition = () => {
     if (scrollContainerRef.current) {
@@ -158,16 +148,7 @@ export default function PostList() {
     <div ref={scrollContainerRef} className={styles.scrollContainer}>
       <div className={classNames(styles.container, isMounted ? styles.active : '')}>
         {message && <ErrorMessage message={message} />}
-        {!loading &&
-          !message &&
-          posts.map((post: Post) => (
-            <PostItem
-              key={post.id}
-              post={post}
-              onPostUpdated={handlePostUpdated}
-              onPostDeleted={handlePostDeleted}
-            />
-          ))}
+        {!loading && !message && posts.map((post: Post) => <PostItem key={post.id} post={post} />)}
 
         {/* 로딩 인디케이터 */}
         <div ref={observerRef} className={styles.loadingIndicator}>

@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { PROFILE_IMAGE_DEFAULT, POST_MENU_ITEM_TYPES, MODAL_TYPES } from '@/constants';
 import { useModal } from '@/context/modalContext';
-import { usePost } from '@/context/postContext';
 import { useProtectedUser } from '@/hooks/useProtectedUser';
 import styles from '@/styles/posts/postProfile.module.css';
 import { User, Post } from '@/types';
@@ -28,7 +27,6 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
   const moreButtonRef = useRef<HTMLButtonElement>(null);
 
   const { openModal } = useModal();
-  const { updatePost, deletePost } = usePost();
   const user = useProtectedUser();
 
   const { user: writer, createdAt, location } = post;
@@ -56,10 +54,10 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
   const handlePostMenuItem = (value: number) => {
     switch (value) {
       case POST_MENU_ITEM_TYPES.UPDATE:
-        openModal(MODAL_TYPES.POST_UPDATE, { post, onPostUpdated: updatePost });
+        openModal(MODAL_TYPES.POST_UPDATE, { post });
         break;
       case POST_MENU_ITEM_TYPES.DELETE:
-        openModal(MODAL_TYPES.POST_DELETE, { postId: post.id, onPostDeleted: deletePost });
+        openModal(MODAL_TYPES.POST_DELETE, { postId: post.id });
         break;
       default:
         break;
