@@ -1,0 +1,17 @@
+.container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  max-height: 30vh;
+  overflow-y: auto;
+}
+
+.empty {
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+}

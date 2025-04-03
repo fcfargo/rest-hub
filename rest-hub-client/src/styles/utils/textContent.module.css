@@ -19,6 +19,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   color: #333;
+  resize: none;
 }
 
 .postContentFooter {
@@ -33,19 +34,6 @@
   padding-right: 8px;
 }
 
-.emojiButton {
-  flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 4px;
-}
-
-.emojiIcon {
-  width: 20px;
-  height: 20px;
-}
-
 .contentLength {
   display: flex;
   justify-content: center;
@@ -56,20 +44,4 @@
   line-height: 16px;
   font-weight: 400;
   padding-top: 2px;
-}
-
-.emojiPickerContainer {
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  visibility: hidden;
-  top: -48px;
-  left: -5px;
-  position: absolute;
-  z-index: 20;
-  transform: scale(0.7);
-}
-
-.emojiPickerContainer.active {
-  opacity: 1;
-  visibility: visible;
 }

@@ -85,3 +85,7 @@ export const POST_MENU_ITEM_TYPES = {
 export const SCROLLTO_BEHAVIOR = {
   INSTANT: 'instant',
 } as const;
+
+export const KEY_DOWNS = {
+  ENTER: 'Enter',
+} as const;

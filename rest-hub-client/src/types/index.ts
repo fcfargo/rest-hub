@@ -28,6 +28,21 @@ export type User = {
   socialProvider: string | null;
 };
 
+export type Comment = {
+  id: string;
+  content: string;
+  parentId: string | null;
+  user: {
+    id: number;
+    username: string;
+    profileImage: string | null;
+  };
+  post: {
+    id: string;
+  };
+  children?: Comment[];
+};
+
 export interface PostDataProps {
   media: File | null;
   mediaType: MediaTypes;

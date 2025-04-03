@@ -2,6 +2,7 @@
 
 import classNames from 'classnames';
 
+import CommentSection from './\bcomment/CommentSection';
 import PostActionBarSection from './sections/PostActionBarSection';
 import PostContentSection from './sections/PostContentSection';
 import PostDetailMediaSection from './sections/PostDetailMediaSection';
@@ -29,7 +30,7 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
     return null;
   }
 
-  const { imageUrl, content } = post;
+  const { id, imageUrl, content } = post;
 
   // 게시글에 미디어 데이터 포함 여부
   const hasMediaData = Boolean(imageUrl?.trim());
@@ -87,11 +88,10 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
                 <PostActionBarSection post={post} />
               </div>
 
-              {/* 게시글 댓글 리스트 */}
-              <div className={styles.postCommentListContainer}></div>
-
-              {/* 게시글 댓글 입력 창 */}
-              <div className={styles.postCommentInputContainer}></div>
+              {/* 게시글 댓글 리스트 및 입력 창 */}
+              <div className={styles.postCommentContainer}>
+                <CommentSection postId={id} />
+              </div>
             </div>
           </div>
         </div>
