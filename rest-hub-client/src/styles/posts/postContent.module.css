@@ -8,6 +8,9 @@
   font-size: 14px;
   margin-right: 4px;
   margin-left: 4px;
+  white-space: pre-line;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .clamp1 {

@@ -17,6 +17,10 @@ import styles from '@/styles/posts/postList.module.css';
 import { Post } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 import { mergeUniqueById } from '@/utils/array';
+import {
+  EndOfContentMessage,
+  InfiniteScrollLoader,
+} from '@/components/ui/ScrollBoundaryIndicators';
 
 export default function PostList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,6 +36,8 @@ export default function PostList() {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const scrollPositionRef = useRef(0);
   const isFetchingRef = useRef(false);
+
+  const hasMore = !!latestTotalPages && currentPage < latestTotalPages;
 
   /** 현재 스크롤 위치 저장 */
   const saveScrollPosition = () => {
@@ -148,27 +154,17 @@ export default function PostList() {
     <div ref={scrollContainerRef} className={styles.scrollContainer}>
       <div className={classNames(styles.container, isMounted ? styles.active : '')}>
         {message && <ErrorMessage message={message} />}
+
+        {posts.length === 0 && !loading && !message && (
+          <div className={styles.empty}>아직 게시글이 없습니다.</div>
+        )}
+
         {!loading && !message && posts.map((post: Post) => <PostItem key={post.id} post={post} />)}
 
-        {/* 로딩 인디케이터 */}
-        <div ref={observerRef} className={styles.loadingIndicator}>
-          {loading && (
-            <Image
-              className={styles.loadingIcon}
-              src="/posts/loading.gif"
-              alt="Location loading Icon"
-              width={24}
-              height={24}
-              priority
-            />
-          )}
-        </div>
+        <InfiniteScrollLoader isLoading={loading} observerRef={observerRef} />
 
-        {/* 더 이상 데이터가 없을 때 표시되는 메시지 */}
-        {latestTotalPages !== null && currentPage >= latestTotalPages && (
-          <div className={styles.noMorePosts}>
-            <p>더 이상 게시글이 없습니다.</p>
-          </div>
+        {!hasMore && posts.length > 0 && (
+          <EndOfContentMessage message="더 이상 게시글이 없습니다." />
         )}
       </div>
     </div>

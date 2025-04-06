@@ -118,22 +118,10 @@
   overflow-x: scroll;
 }
 
-.postContentContainer {
-  max-height: 30vh;
-  flex-shrink: 0;
-  margin-left: 8px;
-  margin-right: 8px;
-  overflow-y: scroll;
-}
-
-.postActionBarContainer {
-  flex-shrink: 0;
-  margin-left: 8px;
-  margin-right: 8px;
-}
-
-.postCommentContainer {
+.postBodyContainer {
   flex-grow: 1;
-  margin: 0px 8px;
-  border-top: 1px solid #dbdbdb;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  overflow-y: scroll;
 }

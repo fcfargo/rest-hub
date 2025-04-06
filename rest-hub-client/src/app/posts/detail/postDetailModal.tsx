@@ -74,23 +74,15 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
                 <PostProfileSection post={post} />
               </div>
 
-              {/* 게시글 내용 */}
-              <div className={styles.postContentContainer}>
-                <PostContentSection
-                  content={content}
-                  hasMediaData={hasMediaData}
-                  showToggleButton={false}
-                />
-              </div>
-
-              {/* 게시글 좋아요 및 댓글 정보 */}
-              <div className={styles.postActionBarContainer}>
-                <PostActionBarSection post={post} />
-              </div>
-
-              {/* 게시글 댓글 리스트 및 입력 창 */}
-              <div className={styles.postCommentContainer}>
-                <CommentSection postId={id} />
+              {/* 게시글 내용 및 댓글 정보 */}
+              <div className={styles.postBodyContainer}>
+                <CommentSection post={post}>
+                  <PostContentSection
+                    content={content}
+                    hasMediaData={hasMediaData}
+                    showToggleButton={false}
+                  />
+                </CommentSection>
               </div>
             </div>
           </div>

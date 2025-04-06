@@ -40,7 +40,10 @@ export type Comment = {
   post: {
     id: string;
   };
+  likesCount: number;
   children?: Comment[];
+  createdAt: string;
+  updatedAt: string;
 };
 
 export interface PostDataProps {

@@ -1,21 +1,153 @@
-.item {
+.container {
+  width: 100%;
+  justify-content: space-between;
   display: flex;
-  flex-direction: column;
-  padding: 8px 12px;
+  gap: 10px;
+  padding: 6px 4px;
   border-radius: 8px;
-  background-color: #f8f8f8;
   font-family: 'Inter', sans-serif;
 }
 
-.author {
+.writerProfileImageContainer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.profileIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  border-style: solid;
+  border-color: rgba(90, 91, 97, 0.2);
+  border-width: 0.5px;
+  object-fit: cover;
+}
+
+.contentContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.writerProfileInfoContainer {
+  width: 100%;
+  gap: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.username {
+  color: #00030f;
+  text-align: left;
+  font-family: 'Inter-Medium', sans-serif;
+  font-size: 14px;
+  line-height: 20px;
   font-weight: 600;
-  font-size: 13px;
-  color: #333;
-  margin-bottom: 4px;
+}
+
+.timaAgo {
+  padding-top: 2px;
+  color: #808187;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: -0.5px;
+  font-weight: 400;
+}
+
+.writerContentContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .content {
-  font-size: 14px;
+  width: 100%;
+  font-size: 13px;
   color: #222;
-  white-space: pre-line; /* 줄바꿈 유지 */
+  white-space: pre-line;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.commentActionBarContainer {
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.likesButton {
+  display: flex;
+  align-items: center;
+}
+
+.likesButton img {
+  filter: brightness(0) saturate(100%) invert(70%) sepia(4%) saturate(150%) hue-rotate(180deg)
+    brightness(97%) contrast(90%);
+}
+
+.likesButton.liked {
+  background-color: transparent;
+}
+
+.likesButton.liked img {
+  filter: invert(29%) sepia(79%) saturate(7481%) hue-rotate(-9deg) brightness(98%) contrast(103%);
+}
+
+.likesCount {
+  color: #808187;
+  text-align: left;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  position: relative;
+  overflow: visible;
+}
+
+.replyButton {
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reply {
+  color: #808187;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.5px;
+  font-weight: 400;
+}
+
+.menuContainer {
+  flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.moreButton {
+  opacity: 0.8;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.moreButtonIcon {
+  width: 16px;
+  height: 16px;
 }

@@ -12,12 +12,13 @@ import styles from '@/styles/comment/commentInput.module.css';
 import { Comment } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 
-interface CommentSectionProps {
+interface CommentInputProps {
   postId: string;
+  parentId?: string;
   onAddComment: (newComment: Comment) => void;
 }
 
-export default function CommentInput({ postId, onAddComment }: CommentSectionProps) {
+export default function CommentInput({ postId, parentId, onAddComment }: CommentInputProps) {
   const [comment, setComment] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +41,7 @@ export default function CommentInput({ postId, onAddComment }: CommentSectionPro
     try {
       setIsLoading(true);
 
-      const payload = {};
+      const payload = { content: comment, parentId: parentId ? parentId : null };
 
       const { data } = await apiRequest(async (accessToken: string) => {
         return api.post(`${API_ENDPOINTS.POST}/${postId}/comment`, payload, {
@@ -57,9 +58,8 @@ export default function CommentInput({ postId, onAddComment }: CommentSectionPro
     }
   };
 
-  /** 키 입력 감지 함수 */
+  /** Enter 키 입력 시 제출 (Shift + Enter는 줄바꿈 허용) */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // 사용자가 Enter 키를 누를 경우
     if (e.key === KEY_DOWNS.ENTER && !e.shiftKey) {
       e.preventDefault();
       handleCommentCreate();
@@ -68,6 +68,7 @@ export default function CommentInput({ postId, onAddComment }: CommentSectionPro
 
   return (
     <div className={styles.container}>
+      {/* 댓글 입력창 */}
       <div className={styles.commentText}>
         {comment.length === 0 && <p className={styles.placeholder}>댓글을 입력하세요...</p>}
         <textarea
@@ -79,11 +80,16 @@ export default function CommentInput({ postId, onAddComment }: CommentSectionPro
           onKeyDown={handleKeyDown}
         />
       </div>
+
+      {/* 이모지 + 등록 버튼 */}
       <div className={styles.commentFooter}>
         <EmojiButton setTextContent={setComment} className="bottom-[-8px] left-[-244px]" />
-
-        {/* 게시글 등록 버튼 */}
-        <button className={styles.button} onClick={handleCommentCreate} disabled={!comment.trim()}>
+        <button
+          className={styles.button}
+          onClick={handleCommentCreate}
+          disabled={!comment.trim() || isLoading}
+          aria-label="Add comment"
+        >
           <Image
             className={styles.icon}
             src="/comment/share.svg"
