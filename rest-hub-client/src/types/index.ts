@@ -39,6 +39,7 @@ export type Comment = {
   };
   post: {
     id: string;
+    commentsCount: number;
   };
   likesCount: number;
   children?: Comment[];

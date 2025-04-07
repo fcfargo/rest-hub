@@ -11,6 +11,7 @@ import api from '@/libs/axiosInstance';
 import styles from '@/styles/comment/commentInput.module.css';
 import { Comment } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
+import { usePost } from '@/context/postContext';
 
 interface CommentInputProps {
   postId: string;
@@ -23,6 +24,7 @@ export default function CommentInput({ postId, parentId, onAddComment }: Comment
   const [isLoading, setIsLoading] = useState(false);
 
   const { logout } = useAuth();
+  const { updatePostCommentsCount } = usePost();
 
   const maxLength = 250;
   const rows = 1;
@@ -49,7 +51,10 @@ export default function CommentInput({ postId, parentId, onAddComment }: Comment
         });
       }, logout);
 
+      const { post } = data.body;
+
       onAddComment(data.body);
+      updatePostCommentsCount(post.id, post.commentsCount);
     } catch (error) {
       console.error('Failed to create comment:', error);
     } finally {

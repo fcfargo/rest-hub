@@ -41,7 +41,7 @@ export default function CommentSection({ post, children }: CommentSectionProps) 
 
   /** 댓글 추가 */
   const handleAddComment = (newComment: Comment) => {
-    setComments((prev) => [...prev, newComment]);
+    setComments((prev) => [newComment, ...prev]);
   };
 
   /** 현재 스크롤 위치 저장 */

@@ -10,6 +10,7 @@ interface PostContextValue {
   addPost: (post: Post) => void;
   updatePost: (post: Post) => void;
   deletePost: (postId: string) => void;
+  updatePostCommentsCount: (postId: string, newCount: number) => void;
 }
 
 const PostContext = createContext<PostContextValue | null>(null);
@@ -32,8 +33,17 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== deletedPostId));
   };
 
+  /** 게시글 댓글 수 업데이트 */
+  const updatePostCommentsCount = (postId: string, newCount: number) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((p) => (p.id === postId ? { ...p, commentsCount: newCount } : p)),
+    );
+  };
+
   return (
-    <PostContext.Provider value={{ posts, setPosts, addPost, updatePost, deletePost }}>
+    <PostContext.Provider
+      value={{ posts, setPosts, addPost, updatePost, deletePost, updatePostCommentsCount }}
+    >
       {children}
     </PostContext.Provider>
   );
