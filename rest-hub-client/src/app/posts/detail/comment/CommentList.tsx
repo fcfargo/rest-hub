@@ -1,15 +1,16 @@
 'use client';
 
-import { ErrorMessage } from '@/components/ui/message';
+import { Dispatch, SetStateAction } from 'react';
+
 import CommentItem from './CommentItem';
 
-import styles from '@/styles/comment/commentList.module.css';
-import { Comment } from '@/types';
-import { Dispatch, SetStateAction } from 'react';
+import { ErrorMessage } from '@/components/ui/message';
 import {
   EndOfContentMessage,
   InfiniteScrollLoader,
 } from '@/components/ui/ScrollBoundaryIndicators';
+import styles from '@/styles/comment/commentList.module.css';
+import { Comment } from '@/types';
 
 interface CommentListProps {
   comments: Comment[];

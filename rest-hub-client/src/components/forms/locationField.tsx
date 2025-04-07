@@ -4,11 +4,11 @@ import Image from 'next/image';
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
 import { CloseButtonBlack } from '../ui/closeButton';
+import { InfiniteScrollLoader } from '../ui/ScrollBoundaryIndicators';
 
 import { INPUT_TYPES } from '@/constants';
 import { usePlacesAutocomplete } from '@/hooks/usePlacesAutocomplete';
 import styles from '@/styles/forms/locationField.module.css';
-import { InfiniteScrollLoader } from '../ui/ScrollBoundaryIndicators';
 
 interface LocationFieldProps {
   location: string;

@@ -1,10 +1,12 @@
-import { PROFILE_IMAGE_DEFAULT } from '@/constants';
+import Image from 'next/image';
+import { useState } from 'react';
+
+import CommentDropdownMenu from '@/components/ui/dropdownMenu/CommentDropdownMenu';
+import { COMMENT_MENU_ITEM_TYPES, PROFILE_IMAGE_DEFAULT } from '@/constants';
+import { useProtectedUser } from '@/hooks/useProtectedUser';
 import styles from '@/styles/comment/commentItem.module.css';
 import { Comment } from '@/types';
 import { formatTimeAgo } from '@/utils/format';
-import classNames from 'classnames';
-import Image from 'next/image';
-import { useRef, useState } from 'react';
 
 interface CommentItemProps {
   comment: Comment;
@@ -25,9 +27,8 @@ export default function CommentItem({
 }: CommentItemProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const moreButtonRef = useRef<HTMLButtonElement>(null);
-
-  const { user, content, createdAt, likesCount } = comment;
+  const { user: writer, content, createdAt, likesCount } = comment;
+  const currentUser = useProtectedUser();
 
   const fromNow = formatTimeAgo(createdAt);
 
@@ -37,12 +38,27 @@ export default function CommentItem({
   /** 답글 버튼 클릭 핸들러 */
   const handleReplyButtonClick = async () => {};
 
+  /** 드롭다운 메뉴 클릭 처리 */
+  const handleCommentMenuItem = (value: number) => {
+    switch (value) {
+      case COMMENT_MENU_ITEM_TYPES.UPDATE:
+        console.log('update');
+        break;
+      case COMMENT_MENU_ITEM_TYPES.DELETE:
+        console.log('delete');
+        break;
+      default:
+        break;
+    }
+    setIsDropdownOpen(false);
+  };
+
   return (
     <div className={styles.container}>
       {/* 댓글 작성 유저 프로필 */}
       <div className={styles.writerProfileImageContainer}>
         <Image
-          src={user.profileImage || PROFILE_IMAGE_DEFAULT}
+          src={writer.profileImage || PROFILE_IMAGE_DEFAULT}
           alt="User Profile"
           width={40}
           height={40}
@@ -52,7 +68,7 @@ export default function CommentItem({
       <div className={styles.contentContainer}>
         {/* 댓글 작성 유저 정보 */}
         <div className={styles.writerProfileInfoContainer}>
-          <div className={styles.username}>{user.username}</div>
+          <div className={styles.username}>{writer.username}</div>
           <div className={styles.timaAgo}>{fromNow}</div>
         </div>
 
@@ -64,7 +80,7 @@ export default function CommentItem({
         {/* 댓글 액션 바 */}
         <div className={styles.commentActionBarContainer}>
           {/* 좋아요 버튼 */}
-          <button onClick={handleLikeButtonClick} className={classNames(styles.likesButton)}>
+          <button onClick={handleLikeButtonClick} className={styles.likesButton}>
             <Image
               src="/post/heart.svg"
               alt="Likes icon"
@@ -77,29 +93,20 @@ export default function CommentItem({
           <p className={styles.likesCount}>{likesCount}</p>
 
           {/* 답글 버튼 */}
-          <button onClick={handleReplyButtonClick} className={classNames(styles.replyButton)}>
+          <button onClick={handleReplyButtonClick} className={styles.replyButton}>
             <p className={styles.reply}>답글</p>
           </button>
         </div>
       </div>
+
       {/* 댓글 메뉴 버튼 */}
-      <div className={styles.menuContainer}>
-        <button
-          ref={moreButtonRef}
-          className={styles.moreButton}
-          onClick={() => setIsDropdownOpen((prev) => !prev)}
-          aria-label="Post menu"
-          aria-expanded={isDropdownOpen}
-        >
-          <Image
-            src="/comment/menu.svg"
-            alt="More"
-            width={16}
-            height={16}
-            className={styles.moreButtonIcon}
-          />
-        </button>
-      </div>
+      <CommentDropdownMenu
+        userId={currentUser.id}
+        writerId={writer.id}
+        open={isDropdownOpen}
+        setOpen={setIsDropdownOpen}
+        onSelectMenuItem={handleCommentMenuItem}
+      />
     </div>
   );
 }

@@ -6,12 +6,12 @@ import { useCallback, useState } from 'react';
 import EmojiButton from '@/components/ui/EmojiButton';
 import { KEY_DOWNS } from '@/constants';
 import { useAuth } from '@/context/authContext';
+import { usePost } from '@/context/postContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import styles from '@/styles/comment/commentInput.module.css';
 import { Comment } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
-import { usePost } from '@/context/postContext';
 
 interface CommentInputProps {
   postId: string;

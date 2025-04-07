@@ -113,7 +113,7 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
           aria-expanded={isDropdownOpen}
         >
           <Image
-            src="/post/ellipsis.svg"
+            src="/post/menu.svg"
             alt="More"
             width={24}
             height={24}

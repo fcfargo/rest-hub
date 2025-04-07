@@ -6,6 +6,10 @@ import { useEffect, useRef, useState } from 'react';
 import PostItem from './postItem';
 
 import { ErrorMessage } from '@/components/ui/message';
+import {
+  EndOfContentMessage,
+  InfiniteScrollLoader,
+} from '@/components/ui/ScrollBoundaryIndicators';
 import { SCROLLTO_BEHAVIOR } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { usePost } from '@/context/postContext';
@@ -16,10 +20,6 @@ import styles from '@/styles/post/postList.module.css';
 import { Post } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 import { mergeUniqueById } from '@/utils/array';
-import {
-  EndOfContentMessage,
-  InfiniteScrollLoader,
-} from '@/components/ui/ScrollBoundaryIndicators';
 
 export default function PostList() {
   const [currentPage, setCurrentPage] = useState(1);
