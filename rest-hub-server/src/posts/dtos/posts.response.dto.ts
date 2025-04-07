@@ -28,11 +28,59 @@ export class PostResponseDto {
   likesCount: number;
 
   @Expose()
+  commentsCount: number;
+
+  @Expose()
   @Type(() => PostUserResponseDto)
   user: PostUserResponseDto;
 
   @Expose()
   createdAt: string;
+
+  @Expose()
+  updatedAt: string;
+
+  @Expose()
+  isLiked: boolean;
+}
+
+export class PostSummaryResponseDto {
+  @Expose()
+  id: string;
+
+  @Expose()
+  commentsCount: number;
+}
+
+export class PostCommentResponseDto {
+  @Expose()
+  id: string;
+
+  @Expose()
+  content: string;
+
+  @Expose()
+  parentId: string | null;
+
+  @Expose()
+  @Type(() => PostUserResponseDto)
+  user: PostUserResponseDto;
+
+  @Expose()
+  @Type(() => PostSummaryResponseDto)
+  post: PostSummaryResponseDto;
+
+  @Expose()
+  likesCount: number;
+
+  @Expose()
+  children: Comment[];
+
+  @Expose()
+  createdAt: string;
+
+  @Expose()
+  updatedAt: string;
 }
 
 export class metaDataResponseDto {
@@ -53,7 +101,25 @@ export class GetPostsResponseDto {
   meta: metaDataResponseDto;
 }
 
+export class GetPostCommentsResponseDto {
+  @Expose()
+  @Type(() => PostCommentResponseDto)
+  comments: PostCommentResponseDto[];
+
+  @Expose()
+  @Type(() => metaDataResponseDto)
+  meta: metaDataResponseDto;
+}
+
 export class CommonMessageResponseDto {
   @Expose()
   message: string;
+}
+
+export class PostLikeStatusResponseDto {
+  @Expose()
+  isLiked: boolean;
+
+  @Expose()
+  likesCount: number;
 }

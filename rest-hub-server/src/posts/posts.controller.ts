@@ -10,8 +10,19 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { CreatePostRequestDto, GetPostsRequestDto, UpdatePostRequestDto } from './dtos/posts.dto';
-import { GetPostsResponseDto, PostResponseDto } from './dtos/posts.response.dto';
+import {
+  CreateCommentDto,
+  CreatePostRequestDto,
+  GetPostsRequestDto,
+  UpdatePostRequestDto,
+} from './dtos/posts.dto';
+import {
+  GetPostCommentsResponseDto,
+  GetPostsResponseDto,
+  PostCommentResponseDto,
+  PostLikeStatusResponseDto,
+  PostResponseDto,
+} from './dtos/posts.response.dto';
 import { PostsService } from './posts.service';
 
 import { Serialize } from '@/common/decorators/serialize.decorator';
@@ -22,21 +33,22 @@ import { jwtPayLoad } from '@/users/jwt/guards/jwt.payload';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postService: PostsService) {}
+  constructor(private readonly postsService: PostsService) {}
 
-  @Serialize(CreatePostRequestDto)
+  @Serialize(PostResponseDto)
   @UseGuards(JwtAuthGuard)
   @Post()
   async createPost(@CurrentUser() currentUser: jwtPayLoad, @Body() body: CreatePostRequestDto) {
     const userId = currentUser.sub;
-    return this.postService.createPost(userId, body);
+    return this.postsService.createPost(userId, body);
   }
 
   @Serialize(GetPostsResponseDto)
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getPosts(@Query() query: GetPostsRequestDto) {
-    return this.postService.getPaginatedPosts(query);
+  async getPosts(@CurrentUser() currentUser: jwtPayLoad, @Query() query: GetPostsRequestDto) {
+    const userId = currentUser.sub;
+    return this.postsService.getPaginatedPosts(userId, query);
   }
 
   @Serialize(PostResponseDto)
@@ -48,7 +60,7 @@ export class PostsController {
     @Body() body: UpdatePostRequestDto,
   ) {
     const userId = currentUser.sub;
-    return this.postService.updatePost(userId, postId, body);
+    return this.postsService.updatePost(userId, postId, body);
   }
 
   @Serialize(CommonMessageResponseDto)
@@ -56,6 +68,46 @@ export class PostsController {
   @Delete(':postId')
   async deletePost(@CurrentUser() currentUser: jwtPayLoad, @Param('postId') postId: string) {
     const userId = currentUser.sub;
-    return this.postService.deletePost(userId, postId);
+    return this.postsService.deletePost(userId, postId);
+  }
+
+  @Serialize(PostLikeStatusResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Post(':postId/like')
+  async likePost(@CurrentUser() currentUser: jwtPayLoad, @Param('postId') postId: string) {
+    const userId = currentUser.sub;
+    return this.postsService.likePost(postId, userId);
+  }
+
+  @Serialize(PostLikeStatusResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':postId/like')
+  async unlikePost(@CurrentUser() currentUser: jwtPayLoad, @Param('postId') postId: string) {
+    const userId = currentUser.sub;
+    return this.postsService.unlikePost(postId, userId);
+  }
+
+  @Serialize(PostCommentResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Post(':postId/comment')
+  async createComment(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Body() body: CreateCommentDto,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.createComment(userId, postId, body);
+  }
+
+  @Serialize(GetPostCommentsResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Get(':postId/comments')
+  async getComments(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Query() query: GetPostsRequestDto,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.getCommentsByPostId(userId, postId, query);
   }
 }

@@ -9,6 +9,8 @@ import {
 } from 'typeorm';
 
 import { Post } from './post.entity';
+import { PostComment } from './postComment.entity';
+import { PostLike } from './postLike.entity';
 
 import { SOCIAL_PROVIDERS, SocialProvider } from '@/users/interfaces/users.interface';
 
@@ -46,4 +48,10 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user, { cascade: true })
   posts: Post[];
+
+  @OneToMany(() => PostLike, (like) => like.user)
+  likes: PostLike[];
+
+  @OneToMany(() => PostComment, (comment) => comment.user)
+  comments: PostComment[];
 }
