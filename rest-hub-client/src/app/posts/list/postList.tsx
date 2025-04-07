@@ -1,7 +1,6 @@
 'use client';
 
 import classNames from 'classnames';
-import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 import PostItem from './postItem';
@@ -13,7 +12,7 @@ import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import styles from '@/styles/posts/postList.module.css';
+import styles from '@/styles/post/postList.module.css';
 import { Post } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 import { mergeUniqueById } from '@/utils/array';

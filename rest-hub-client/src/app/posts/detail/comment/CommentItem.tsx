@@ -66,7 +66,7 @@ export default function CommentItem({
           {/* 좋아요 버튼 */}
           <button onClick={handleLikeButtonClick} className={classNames(styles.likesButton)}>
             <Image
-              src="/posts/heart.svg"
+              src="/post/heart.svg"
               alt="Likes icon"
               width={14}
               height={14}

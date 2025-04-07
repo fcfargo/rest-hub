@@ -3,7 +3,7 @@
 import classNames from 'classnames';
 import { useState } from 'react';
 
-import styles from '@/styles/posts/postContent.module.css';
+import styles from '@/styles/post/postContent.module.css';
 
 interface PostContentSectionProps {
   content: string;

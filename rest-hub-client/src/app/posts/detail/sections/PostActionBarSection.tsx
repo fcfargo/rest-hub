@@ -9,7 +9,7 @@ import { useModal } from '@/context/modalContext';
 import { usePost } from '@/context/postContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import styles from '@/styles/posts/postActionBar.module.css';
+import styles from '@/styles/post/postActionBar.module.css';
 import { Post } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 
@@ -71,7 +71,7 @@ export default function PostActionBarSection({ post }: PostActionBarSectionProps
         aria-label={isLiked ? 'Unlike post' : 'Like post'}
       >
         <Image
-          src="/posts/heart.svg"
+          src="/post/heart.svg"
           alt="Likes icon"
           width={18}
           height={18}
@@ -87,7 +87,7 @@ export default function PostActionBarSection({ post }: PostActionBarSectionProps
         aria-label="View comments"
       >
         <Image
-          src="/posts/message-square-text.svg"
+          src="/post/message-square-text.svg"
           alt="Comments icon"
           width={18}
           height={18}

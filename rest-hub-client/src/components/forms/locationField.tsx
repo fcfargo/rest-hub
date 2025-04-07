@@ -8,6 +8,7 @@ import { CloseButtonBlack } from '../ui/closeButton';
 import { INPUT_TYPES } from '@/constants';
 import { usePlacesAutocomplete } from '@/hooks/usePlacesAutocomplete';
 import styles from '@/styles/forms/locationField.module.css';
+import { InfiniteScrollLoader } from '../ui/ScrollBoundaryIndicators';
 
 interface LocationFieldProps {
   location: string;
@@ -63,7 +64,7 @@ export default function LocationField({ location, setLocation }: LocationFieldPr
         ) : (
           <Image
             className={styles.locationIcon}
-            src="/posts/location.svg"
+            src="/post/location.svg"
             alt="Location Icon"
             width={16}
             height={18}
@@ -75,13 +76,7 @@ export default function LocationField({ location, setLocation }: LocationFieldPr
       {location && showSuggestions && (
         <ul ref={suggestionsRef} className={styles.suggestionsList}>
           {loading ? (
-            <Image
-              className={styles.loadingIcon}
-              src="/posts/loading.gif"
-              alt="Location loading Icon"
-              width={24}
-              height={24}
-            />
+            <InfiniteScrollLoader isLoading={loading} />
           ) : (
             suggestions.length > 0 &&
             suggestions.map((place) => (

@@ -5,7 +5,7 @@ import styles from '@/styles/utils/scrollBoundaryIndicators.module.css';
 
 interface InfiniteScrollLoaderProps {
   isLoading: boolean;
-  observerRef: React.RefObject<HTMLDivElement | null>;
+  observerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 interface EndOfContentMessageProps {
@@ -21,11 +21,12 @@ export function InfiniteScrollLoader({ isLoading, observerRef }: InfiniteScrollL
       {isLoading && (
         <Image
           className={styles.icon}
-          src="/posts/loading.gif"
+          src="/post/loading.gif"
           alt="Loading more content"
           width={24}
           height={24}
           priority
+          unoptimized
         />
       )}
     </div>

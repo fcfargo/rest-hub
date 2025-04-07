@@ -10,7 +10,7 @@ import { POST_CREATE_STEPS } from '@/constants';
 import { useModal } from '@/context/modalContext';
 import { useMounted } from '@/hooks/useMounted';
 import { useProtectedUser } from '@/hooks/useProtectedUser';
-import styles from '@/styles/posts/postCreate.module.css';
+import styles from '@/styles/post/postCreate.module.css';
 import { PostDataProps } from '@/types';
 
 export default function PostCreateModal() {

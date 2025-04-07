@@ -6,7 +6,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 
 import FileUploadField from '@/components/forms/FileUploadField';
 import { MEDIA_TYPES } from '@/constants';
-import styles from '@/styles/posts/postCreate.module.css';
+import styles from '@/styles/post/postCreate.module.css';
 import { PostDataProps } from '@/types';
 
 interface PostCreateUploadProps {
@@ -82,7 +82,7 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
         <div className={styles.imageWrapper}>
           <Image
             className={styles.icon}
-            src="/posts/upload-icon.svg"
+            src="/post/upload-icon.svg"
             alt="Upload Icon"
             width={96}
             height={77}

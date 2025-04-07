@@ -11,7 +11,7 @@ import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import styles from '@/styles/posts/postDelete.module.css';
+import styles from '@/styles/post/postDelete.module.css';
 import { apiRequest } from '@/utils/apiRequest';
 
 interface PostDeleteModalProps {
