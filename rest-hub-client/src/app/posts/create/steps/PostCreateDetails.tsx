@@ -1,21 +1,19 @@
 'use client';
 
-import classNames from 'classnames';
-import EmojiPicker from 'emoji-picker-react';
 import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import MediaPreview from '@/components/media/mediaPreview';
-import { CloseButtonBlack } from '@/components/ui/closeButton';
+import LocationField from '@/components/forms/locationField';
+import { PostCreateMediaPreview } from '@/components/media/mediaPreview';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
-import { INPUT_TYPES } from '@/constants';
+import TextContent from '@/components/ui/textContent';
+import { MEDIA_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
-import { usePlacesAutocomplete } from '@/hooks/usePlacesAutocomplete';
+import { usePost } from '@/context/postContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import { uploadImageToS3 } from '@/libs/upload';
-import detailsStyles from '@/styles/posts/postCreateDetails.module.css';
-import modalStyles from '@/styles/posts/postCreateModal.module.css';
+import { uploadMediaToS3 } from '@/libs/upload';
+import styles from '@/styles/posts/postCreateDetails.module.css';
 import { MediaTypes } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 
@@ -36,41 +34,17 @@ export default function PostCreateDetails({
 }: PostCreateDetailsProps) {
   const [postContent, setPostContent] = useState('');
   const [location, setLocation] = useState('');
-  const [showPicker, setShowPicker] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const { addPost } = usePost();
   const { logout } = useAuth();
-  const { suggestions, loading } = usePlacesAutocomplete(location);
-
-  const pickerRef = useRef<HTMLDivElement>(null);
-  const suggestionsRef = useRef<HTMLUListElement>(null);
-
-  /** 이모지 추가 */
-  const addEmoji = useCallback((emojiObject: { emoji: string }) => {
-    setPostContent((prev) => prev + emojiObject.emoji);
-  }, []);
-
-  /** 게시글 작성 */
-  const handleTextWrite = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPostContent(e.target.value);
-  }, []);
-
-  /** 위치 입력 */
-  const handleLocationInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(e.target.value);
-  }, []);
-
-  /** 위치 선택 */
-  const handleSelectLocation = useCallback((place: string) => {
-    setLocation(place);
-  }, []);
 
   /**  게시글 업로드 */
   const handlePostCreate = useCallback(async () => {
     if (!croppedFile) {
-      setMessage('이미지가 필요합니다.');
+      setMessage('미디어 파일이 필요합니다.');
       return;
     }
 
@@ -80,8 +54,20 @@ export default function PostCreateDetails({
     }
 
     try {
-      const imageUrl = await uploadImageToS3(croppedFile, logout);
+      setIsLoading(true);
 
+      const imageUrl =
+        mediaType === MEDIA_TYPES.IMAGE ? await uploadMediaToS3(croppedFile, logout) : null;
+
+      {
+        /* 후속 작업
+         * 1) 이미지 어려 개 업로드
+         * 2) .gif 파일 업로드
+         * 3) 비디오 파일 업로드
+         * 현재 imageUrl로 api 요청을 보내는 방식이에서
+         * mediaData 변수에 [{url: '', mediaType: ''}] 형태로 api 요청 보내는 방식으로 수정 예정
+         */
+      }
       const formData = {
         imageUrl,
         content: postContent.trim(),
@@ -94,10 +80,12 @@ export default function PostCreateDetails({
         });
       }, logout);
 
-      if (!data.body) {
+      const newPost = data.body;
+      if (!newPost) {
         throw new Error('failed to create a post from the server');
       }
 
+      addPost(newPost);
       setPostContent('');
       setLocation('');
       setMessage('게시물이 성공적으로 업로드되었습니다.');
@@ -107,146 +95,45 @@ export default function PostCreateDetails({
     } catch (error) {
       console.error('Post Create failed:', error);
       setMessage('게시물 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    } finally {
+      setIsLoading(false);
     }
   }, [croppedFile, postContent, location, closeModal, logout]);
 
-  /** 외부 클릭 감지하여 이모지 & 추천 리스트 닫기 */
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
-        setShowPicker(false);
-      }
-
-      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   return (
-    <div className={detailsStyles.wrapper}>
+    <div className={styles.wrapper}>
       {/* 헤더 */}
-      <div className={modalStyles.header}>
-        <button onClick={prevStep} className={modalStyles.backButton}>
+      <div className={styles.header}>
+        <button onClick={prevStep} className={styles.backButton}>
           <Image
-            className={modalStyles.backButtonIcon}
+            className={styles.backButtonIcon}
             src="/posts/arrow-back.svg"
             alt="Back Button Icon"
+            priority
             width={24}
             height={24}
           />
         </button>
-        <h2 className={modalStyles.title}>게시물 내용 작성</h2>
-        <button onClick={handlePostCreate} className={modalStyles.doneButton}>
+        <h2 className={styles.title}>게시물 내용 작성</h2>
+        <button onClick={handlePostCreate} className={styles.doneButton} disabled={isLoading}>
           공유하기
         </button>
       </div>
       {/* 미디어 미리보기 & 게시글 작성  */}
-      <div className={detailsStyles.postDetailsContainer}>
-        <MediaPreview preview={croppedUrl} mediaType={mediaType} />
+      <div className={styles.postDetailsContainer}>
+        <PostCreateMediaPreview url={croppedUrl} mediaType={mediaType} />
 
-        <div className={detailsStyles.postInfo}>
+        <div className={styles.postInfo}>
           {/* 게시물 입력 */}
-          <div className={detailsStyles.postContent}>
-            <textarea
-              className={detailsStyles.postContentText}
-              value={postContent}
-              onChange={handleTextWrite}
-              placeholder="Write a post..."
-              maxLength={2200}
-            />
-
-            <div className={detailsStyles.postContentFooter}>
-              {/* 이모지 버튼 */}
-              <button
-                onClick={() => setShowPicker((prev) => !prev)}
-                className={modalStyles.emojiButton}
-              >
-                <Image
-                  className={detailsStyles.emojiIcon}
-                  src="/posts/emoji.svg"
-                  alt="Emoji Icon"
-                  width={20}
-                  height={20}
-                />
-              </button>
-
-              {/* ✨ 이모지 피커 */}
-              <div
-                ref={pickerRef}
-                className={classNames(
-                  detailsStyles.emojiPickerContainer,
-                  showPicker && detailsStyles.active,
-                )}
-              >
-                <EmojiPicker
-                  searchDisabled={true}
-                  width={300}
-                  height={360}
-                  onEmojiClick={addEmoji}
-                />
-              </div>
-
-              {/* 글자 수 표시 */}
-              <div className={detailsStyles.contentLength}>{postContent.length}/2200</div>
-            </div>
+          <div className={styles.postContentContainer}>
+            <TextContent textContent={postContent} setTextContent={setPostContent} />
           </div>
 
-          {/*  위치 입력*/}
-          <div className={detailsStyles.postMeta}>
-            <div className={detailsStyles.locationContainer}>
-              <input
-                className={detailsStyles.locationInput}
-                type={INPUT_TYPES.TEXT}
-                value={location}
-                placeholder="Add location"
-                onChange={handleLocationInput}
-                onFocus={() => setShowSuggestions(true)}
-              />
-
-              {location ? (
-                <CloseButtonBlack
-                  className={detailsStyles.closeButton}
-                  onClick={() => setLocation('')}
-                />
-              ) : (
-                <Image
-                  className={detailsStyles.locationIcon}
-                  src="/posts/location.svg"
-                  alt="Location Icon"
-                  width={18}
-                  height={18}
-                />
-              )}
-
-              {/* 자동완성된 주소 목록 표시 */}
-              {location && showSuggestions && (
-                <ul ref={suggestionsRef} className={detailsStyles.suggestionsList}>
-                  {loading ? (
-                    <Image
-                      className={detailsStyles.loadingIcon}
-                      src="/posts/loading.gif"
-                      alt="Location loading Icon"
-                      width={24}
-                      height={24}
-                    />
-                  ) : (
-                    suggestions.length > 0 &&
-                    suggestions.map((place) => (
-                      <li
-                        key={place.placeId}
-                        className={detailsStyles.suggestionItem}
-                        onClick={() => handleSelectLocation(place.description)}
-                      >
-                        {place.description}
-                      </li>
-                    ))
-                  )}
-                </ul>
-              )}
+          {/* 기타 정보 입력 */}
+          <div className={styles.postMeta}>
+            {/*  위치  정보 입력*/}
+            <div className={styles.postLocation}>
+              <LocationField location={location} setLocation={setLocation} />
             </div>
           </div>
         </div>

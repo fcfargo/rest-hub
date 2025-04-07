@@ -1,0 +1,26 @@
+.loader {
+  width: 100%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  align-self: center;
+  width: 24px;
+  height: 24px;
+}
+
+.endMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -16px;
+  padding: 4px 16px;
+  font-size: 12px;
+  color: #808187;
+  font-weight: 300;
+  text-align: center;
+  border-radius: 10px;
+}

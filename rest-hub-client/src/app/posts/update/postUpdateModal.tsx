@@ -10,6 +10,7 @@ import { ErrorMessage } from '@/components/ui/message';
 import TextContent from '@/components/ui/textContent';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
@@ -19,10 +20,9 @@ import { apiRequest } from '@/utils/apiRequest';
 
 interface PostUpdateModalProps {
   post: Post;
-  onPostUpdated: (updatedPost: Post) => void;
 }
 
-export default function PostUpdateModal({ post, onPostUpdated }: PostUpdateModalProps) {
+export default function PostUpdateModal({ post }: PostUpdateModalProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [postContent, setPostContent] = useState(post.content);
   const [location, setLocation] = useState(post.location || '');
@@ -30,6 +30,7 @@ export default function PostUpdateModal({ post, onPostUpdated }: PostUpdateModal
   const [isLoading, setIsLoading] = useState(false);
 
   const { closeModal } = useModal();
+  const { updatePost } = usePost();
   const isMounted = useMounted();
   const { logout } = useAuth();
 
@@ -58,7 +59,7 @@ export default function PostUpdateModal({ post, onPostUpdated }: PostUpdateModal
       }, logout);
 
       closeModal();
-      onPostUpdated(data.body);
+      updatePost(data.body);
     } catch (error) {
       console.error('Failed to update post:', error);
       setMessage('게시글 수정 중 문제가 발생했습니다.');
@@ -104,7 +105,7 @@ export default function PostUpdateModal({ post, onPostUpdated }: PostUpdateModal
             >
               <Image
                 className={styles.locationIcon}
-                src="/posts/location-red.svg"
+                src="/posts/location-full.svg"
                 alt="Emoji Icon"
                 width={18}
                 height={20}

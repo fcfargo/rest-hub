@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 import PostCreateModal from '@/app/posts/create/postCreateModal';
 import PostDeleteModal from '@/app/posts/delete/postDeleteModal';
+import PostDetailModal from '@/app/posts/detail/postDetailModal';
 import PostUpdateModal from '@/app/posts/update/postUpdateModal';
 import PasswordChangeModal from '@/app/settings/security/passwordChangeModal';
 import { MODAL_TYPES } from '@/constants';
@@ -16,12 +17,14 @@ type ModalType = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES];
 
 type PostUpdate = {
   post: Post;
-  onPostUpdated: (updatedPost: Post) => void;
 };
 
 type PostDelete = {
   postId: string;
-  onPostDeleted: (deletedPostId: string) => void;
+};
+
+type PostDetail = {
+  postId: string;
 };
 
 type ModalDataMap = {
@@ -29,6 +32,7 @@ type ModalDataMap = {
   [MODAL_TYPES.PASSWORD_CHANGE]: undefined;
   [MODAL_TYPES.POST_UPDATE]: PostUpdate;
   [MODAL_TYPES.POST_DELETE]: PostDelete;
+  [MODAL_TYPES.POST_DETAIL]: PostDetail;
 };
 
 /**
@@ -56,6 +60,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
    */
   const openModal = <T extends ModalType>(
     modalType: T,
+    // 파라미터를 (data?)로 설정하면, 모달 창을 열 때 data 값을 넘기지 않아도 error 검출이 안된다.
     ...args: ModalDataMap[T] extends undefined ? [] : [ModalDataMap[T]]
   ) => {
     const data = (args[0] || null) as ModalDataMap[T];
@@ -76,12 +81,9 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
       {children}
       {activeModal === MODAL_TYPES.PASSWORD_CHANGE && <PasswordChangeModal />}
       {activeModal === MODAL_TYPES.POST_CREATE && <PostCreateModal />}
-      {activeModal === MODAL_TYPES.POST_UPDATE && data && (
-        <PostUpdateModal post={data.post} onPostUpdated={data.onPostUpdated} />
-      )}
-      {activeModal === MODAL_TYPES.POST_DELETE && data && (
-        <PostDeleteModal postId={data.postId} onPostDeleted={data.onPostDeleted} />
-      )}
+      {activeModal === MODAL_TYPES.POST_UPDATE && data && <PostUpdateModal post={data.post} />}
+      {activeModal === MODAL_TYPES.POST_DELETE && data && <PostDeleteModal postId={data.postId} />}
+      {activeModal === MODAL_TYPES.POST_DETAIL && data && <PostDetailModal postId={data.postId} />}
     </ModalContext.Provider>
   );
 };

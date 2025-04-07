@@ -6,6 +6,7 @@ export type Post = {
   imageUrl: string | null;
   location: string | null;
   likesCount: number;
+  commentsCount: number;
   user: {
     id: number;
     username: string;
@@ -13,6 +14,7 @@ export type Post = {
   };
   createdAt: string;
   updatedAt: string;
+  isLiked: boolean;
 };
 
 export type User = {
@@ -24,6 +26,25 @@ export type User = {
   createdAt: Date;
   updatedAt: Date;
   socialProvider: string | null;
+};
+
+export type Comment = {
+  id: string;
+  content: string;
+  parentId: string | null;
+  user: {
+    id: number;
+    username: string;
+    profileImage: string | null;
+  };
+  post: {
+    id: string;
+    commentsCount: number;
+  };
+  likesCount: number;
+  children?: Comment[];
+  createdAt: string;
+  updatedAt: string;
 };
 
 export interface PostDataProps {

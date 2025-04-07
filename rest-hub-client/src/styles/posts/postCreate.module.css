@@ -66,10 +66,6 @@
   padding: 9px 0px 9px 0px;
 }
 
-.header:has(:only-child) {
-  justify-content: center;
-}
-
 .title {
   flex-grow: 1;
   align-self: center;

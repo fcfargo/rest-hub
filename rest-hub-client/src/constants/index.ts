@@ -40,6 +40,7 @@ export const MODAL_TYPES = {
   POST_CREATE: 'postCreate',
   POST_UPDATE: 'postUpdate',
   POST_DELETE: 'postDelete',
+  POST_DETAIL: 'postDetail',
 } as const;
 
 export const ERROR_CODES = {
@@ -83,4 +84,8 @@ export const POST_MENU_ITEM_TYPES = {
 
 export const SCROLLTO_BEHAVIOR = {
   INSTANT: 'instant',
+} as const;
+
+export const KEY_DOWNS = {
+  ENTER: 'Enter',
 } as const;

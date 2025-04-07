@@ -7,6 +7,7 @@ import { CloseButtonWhite } from '@/components/ui/closeButton';
 import { ErrorMessage } from '@/components/ui/message';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
@@ -15,15 +16,15 @@ import { apiRequest } from '@/utils/apiRequest';
 
 interface PostDeleteModalProps {
   postId: string;
-  onPostDeleted: (deletedPostId: string) => void;
 }
 
-export default function PostDeleteModal({ postId, onPostDeleted }: PostDeleteModalProps) {
+export default function PostDeleteModal({ postId }: PostDeleteModalProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const { closeModal } = useModal();
   const { logout } = useAuth();
+  const { deletePost } = usePost();
   const isMounted = useMounted();
 
   /**
@@ -41,7 +42,7 @@ export default function PostDeleteModal({ postId, onPostDeleted }: PostDeleteMod
       }, logout);
 
       closeModal();
-      onPostDeleted(postId);
+      deletePost(postId);
     } catch (err) {
       console.error('Failed to delete post:', err);
       setMessage('게시글 삭제 중 문제가 발생했습니다.');

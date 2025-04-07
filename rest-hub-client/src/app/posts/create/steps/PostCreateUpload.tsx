@@ -6,7 +6,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 
 import FileUploadField from '@/components/forms/FileUploadField';
 import { MEDIA_TYPES } from '@/constants';
-import styles from '@/styles/posts/postCreateModal.module.css';
+import styles from '@/styles/posts/postCreate.module.css';
 import { PostDataProps } from '@/types';
 
 interface PostCreateUploadProps {

@@ -1,0 +1,39 @@
+.contentContainer {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  flex-grow: 1;
+  font-size: 14px;
+  margin-right: 4px;
+  margin-left: 4px;
+  white-space: pre-line;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.clamp1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.clamp5 {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.readMoreButton {
+  flex-shrink: 0;
+  color: #0095f6;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  letter-spacing: -0.8px; /* 조금만 좁게 */
+}
