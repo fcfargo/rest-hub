@@ -41,3 +41,13 @@ export class DeletePostRequestDto {
   @IsString()
   postId: string;
 }
+
+export class CreateCommentDto {
+  @IsString()
+  @IsNotEmpty()
+  content: string;
+
+  @IsString()
+  @IsOptional()
+  parentId?: string;
+}
