@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 import PostCreateModal from '@/app/posts/create/postCreateModal';
 import PostDeleteModal from '@/app/posts/delete/postDeleteModal';
+import CommentDeleteModal from '@/app/posts/detail/\bcomment/CommentDeleteModal';
 import PostDetailModal from '@/app/posts/detail/postDetailModal';
 import PostUpdateModal from '@/app/posts/update/postUpdateModal';
 import PasswordChangeModal from '@/app/settings/security/passwordChangeModal';
@@ -14,6 +15,11 @@ import { Post } from '@/types';
  * 열 수 있는 모달 타입들의 유니언 타입
  */
 type ModalType = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES];
+
+type ModalInstance = {
+  type: ModalType;
+  data: any;
+};
 
 type PostUpdate = {
   post: Post;
@@ -27,12 +33,19 @@ type PostDetail = {
   postId: string;
 };
 
+type CommentDelete = {
+  postId: string;
+  commentId: string;
+  deleteComment: (commentId: string) => void;
+};
+
 type ModalDataMap = {
   [MODAL_TYPES.POST_CREATE]: undefined;
   [MODAL_TYPES.PASSWORD_CHANGE]: undefined;
   [MODAL_TYPES.POST_UPDATE]: PostUpdate;
   [MODAL_TYPES.POST_DELETE]: PostDelete;
   [MODAL_TYPES.POST_DETAIL]: PostDetail;
+  [MODAL_TYPES.COMMENT_DELETE]: CommentDelete;
 };
 
 /**
@@ -49,8 +62,7 @@ interface ModalContextType {
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
-  const [activeModal, setActiveModal] = useState<ModalType | null>(null);
-  const [data, setData] = useState<any>(null);
+  const [modalStack, setModalStack] = useState<ModalInstance[]>([]);
 
   /**
    * 모달 열기 함수
@@ -64,26 +76,46 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     ...args: ModalDataMap[T] extends undefined ? [] : [ModalDataMap[T]]
   ) => {
     const data = (args[0] || null) as ModalDataMap[T];
-
-    setActiveModal(modalType);
-    setData(data);
+    setModalStack((prev) => [...prev, { type: modalType, data }]);
   };
 
   /**
    * 모달 닫기 함수
    */
   const closeModal = () => {
-    setActiveModal(null);
-    setData(null);
+    setModalStack((prev) => prev.slice(0, -1));
   };
   return (
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {children}
-      {activeModal === MODAL_TYPES.PASSWORD_CHANGE && <PasswordChangeModal />}
-      {activeModal === MODAL_TYPES.POST_CREATE && <PostCreateModal />}
-      {activeModal === MODAL_TYPES.POST_UPDATE && data && <PostUpdateModal post={data.post} />}
-      {activeModal === MODAL_TYPES.POST_DELETE && data && <PostDeleteModal postId={data.postId} />}
-      {activeModal === MODAL_TYPES.POST_DETAIL && data && <PostDetailModal postId={data.postId} />}
+
+      {modalStack.map((modal, index) => {
+        const { type, data } = modal;
+
+        switch (type) {
+          case MODAL_TYPES.POST_CREATE:
+            return <PostCreateModal key={index} />;
+          case MODAL_TYPES.PASSWORD_CHANGE:
+            return <PasswordChangeModal key={index} />;
+          case MODAL_TYPES.POST_UPDATE:
+            return <PostUpdateModal key={index} post={data.post} />;
+          case MODAL_TYPES.POST_DELETE:
+            return <PostDeleteModal key={index} postId={data.postId} />;
+          case MODAL_TYPES.POST_DETAIL:
+            return <PostDetailModal key={index} postId={data.postId} />;
+          case MODAL_TYPES.COMMENT_DELETE:
+            return (
+              <CommentDeleteModal
+                key={index}
+                postId={data.postId}
+                commentId={data.commentId}
+                deleteComment={data.deleteComment}
+              />
+            );
+          default:
+            return null;
+        }
+      })}
     </ModalContext.Provider>
   );
 };

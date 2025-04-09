@@ -41,6 +41,7 @@ export const MODAL_TYPES = {
   POST_UPDATE: 'postUpdate',
   POST_DELETE: 'postDelete',
   POST_DETAIL: 'postDetail',
+  COMMENT_DELETE: 'commentDelete',
 } as const;
 
 export const ERROR_CODES = {

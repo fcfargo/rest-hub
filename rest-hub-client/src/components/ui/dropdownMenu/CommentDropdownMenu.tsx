@@ -75,26 +75,30 @@ export default function CommentDropdownMenu({
           height={16}
           className={styles.moreButtonIcon}
         />
-        {open && (
-          <ul
-            ref={dropdownRef}
-            className={styles.dropdownMenu}
-            role="menu"
-            aria-label="Comment action menu"
-          >
-            {getFilteredCommentMenuItems(userId, writerId).map((item) => (
-              <li
-                key={item.value}
-                className={styles.dropdownItem}
-                role="menuItem"
-                onClick={() => onSelectMenuItem(item.value)}
-              >
-                {item.label}
-              </li>
-            ))}
-          </ul>
-        )}
       </button>
+
+      {open && (
+        <ul
+          ref={dropdownRef}
+          className={styles.dropdownMenu}
+          role="menu"
+          aria-label="Comment action menu"
+        >
+          {getFilteredCommentMenuItems(userId, writerId).map((item) => (
+            <li
+              key={item.value}
+              className={styles.dropdownItem}
+              role="menuItem"
+              onClick={() => {
+                setOpen(false);
+                onSelectMenuItem(item.value);
+              }}
+            >
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

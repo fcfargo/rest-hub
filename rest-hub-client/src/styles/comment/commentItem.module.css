@@ -1,4 +1,5 @@
 .container {
+  position: relative;
   width: 100%;
   justify-content: space-between;
   display: flex;
@@ -6,6 +7,7 @@
   padding: 6px 4px;
   border-radius: 8px;
   font-family: 'Inter', sans-serif;
+  margin-bottom: 2px;
 }
 
 .writerProfileImageContainer {
@@ -25,15 +27,95 @@
   object-fit: cover;
 }
 
-.contentContainer {
+.commentContainer {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.writerProfileInfoContainer {
+.editContainer {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom:;
+}
+
+.textarea {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  resize: none;
+  font-size: 14px;
+  background: transparent;
+  color: #222;
+  font-family: 'Inter', sans-serif;
+  padding: 2px 0;
+  transition: border-color 0.2s;
+}
+
+.textarea:focus {
+  border-bottom: 1px solid #0095f6;
+}
+
+.editControls {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.actionButtons {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 3px;
+}
+
+.confirmButton {
+  font-size: 13px;
+  color: #999;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+}
+
+.confirmButton:hover {
+  color: #333;
+}
+
+.cancelButton {
+  font-size: 13px;
+  color: #999;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 8px;
+}
+
+.cancelButton:hover {
+  color: #333;
+}
+
+.contentContainer {
+  width: 100%;
+}
+
+.writerProfileInfoContainer {
   gap: 8px;
   display: flex;
   align-items: center;
