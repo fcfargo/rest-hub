@@ -112,6 +112,13 @@ export class PostsRepository {
       : this.postsRepository.increment(where, 'commentsCount', 1);
   }
 
+  async decrementPostCommentsCount(postId: string, manager?: EntityManager): Promise<UpdateResult> {
+    const where = { id: postId };
+    return manager
+      ? manager.decrement(this.post, where, 'commentsCount', 1)
+      : this.postsRepository.decrement(where, 'commentsCount', 1);
+  }
+
   async getPostLikeByPostIdAndUserId(
     postId: string,
     userId: number,
