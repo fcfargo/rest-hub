@@ -3,7 +3,6 @@
 import classNames from 'classnames';
 
 import CommentSection from './\bcomment/CommentSection';
-import PostActionBarSection from './sections/PostActionBarSection';
 import PostContentSection from './sections/PostContentSection';
 import PostDetailMediaSection from './sections/PostDetailMediaSection';
 import PostProfileSection from './sections/PostProfileSection';
@@ -13,7 +12,7 @@ import { MEDIA_TYPES } from '@/constants';
 import { useModal } from '@/context/modalContext';
 import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
-import styles from '@/styles/posts/postDetail.module.css';
+import styles from '@/styles/post/postDetail.module.css';
 
 interface PostDetailModalProps {
   postId: string;

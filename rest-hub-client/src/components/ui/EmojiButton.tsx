@@ -53,7 +53,7 @@ export default function EmojiButton({ setTextContent, className }: EmojiButtonPr
       >
         <Image
           className={styles.emojiIcon}
-          src="/posts/emoji.svg"
+          src="/post/emoji.svg"
           alt="Emoji Icon"
           width={20}
           height={20}

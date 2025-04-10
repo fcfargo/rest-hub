@@ -13,7 +13,7 @@ import { usePost } from '@/context/postContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import { uploadMediaToS3 } from '@/libs/upload';
-import styles from '@/styles/posts/postCreateDetails.module.css';
+import styles from '@/styles/post/postCreateDetails.module.css';
 import { MediaTypes } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 
@@ -107,7 +107,7 @@ export default function PostCreateDetails({
         <button onClick={prevStep} className={styles.backButton}>
           <Image
             className={styles.backButtonIcon}
-            src="/posts/arrow-back.svg"
+            src="/post/arrow-back.svg"
             alt="Back Button Icon"
             priority
             width={24}

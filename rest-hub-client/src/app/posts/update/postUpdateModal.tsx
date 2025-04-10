@@ -14,7 +14,7 @@ import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import styles from '@/styles/posts/postUpdate.module.css';
+import styles from '@/styles/post/postUpdate.module.css';
 import { Post } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 
@@ -105,7 +105,7 @@ export default function PostUpdateModal({ post }: PostUpdateModalProps) {
             >
               <Image
                 className={styles.locationIcon}
-                src="/posts/location-full.svg"
+                src="/post/location-full.svg"
                 alt="Emoji Icon"
                 width={18}
                 height={20}

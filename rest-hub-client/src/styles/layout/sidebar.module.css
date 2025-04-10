@@ -1,5 +1,5 @@
 .sidebar {
-  overflow: hidden;
+  overflow: auto;
   flex-grow: 0;
   position: relative;
   width: 260px;
@@ -91,6 +91,7 @@
 }
 
 .profileWrapper {
+  flex-shrink: 0;
   width: 48px;
   height: 48px;
   border-radius: 50%;

@@ -7,7 +7,7 @@ import PostProfileSection from '../detail/sections/PostProfileSection';
 import { PostItemMediaViewer } from '@/components/media/mediaPreview';
 import { MEDIA_TYPES, MODAL_TYPES } from '@/constants';
 import { useModal } from '@/context/modalContext';
-import styles from '@/styles/posts/postItem.module.css';
+import styles from '@/styles/post/postItem.module.css';
 import { Post } from '@/types';
 
 interface PostItemProps {

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PROFILE_IMAGE_DEFAULT, POST_MENU_ITEM_TYPES, MODAL_TYPES } from '@/constants';
 import { useModal } from '@/context/modalContext';
 import { useProtectedUser } from '@/hooks/useProtectedUser';
-import styles from '@/styles/posts/postProfile.module.css';
+import styles from '@/styles/post/postProfile.module.css';
 import { User, Post } from '@/types';
 import { formatTimeAgo, getFormattedLocation } from '@/utils/format';
 
@@ -113,7 +113,7 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
           aria-expanded={isDropdownOpen}
         >
           <Image
-            src="/posts/ellipsis.svg"
+            src="/post/menu.svg"
             alt="More"
             width={24}
             height={24}

@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import MediaCrop from '@/components/media/mediaCrop';
 import { ErrorMessage } from '@/components/ui/message';
 import { ASPECT_RATIO_VALUES, INPUT_TYPES } from '@/constants';
-import cropStyles from '@/styles/posts/postCreateCrop.module.css';
+import cropStyles from '@/styles/post/postCreateCrop.module.css';
 import { PostDataProps } from '@/types';
 import { getCroppedImgFile, getImageAspectRatio } from '@/utils/imageUtils';
 
@@ -117,7 +117,7 @@ export default function PostCreateCrop({
         <button onClick={prevStep} className={cropStyles.backButton}>
           <Image
             className={cropStyles.backButtonIcon}
-            src="/posts/arrow-back.svg"
+            src="/post/arrow-back.svg"
             alt="Back Button Icon"
             width={24}
             height={24}
@@ -184,7 +184,7 @@ const AspectRatioControls = ({
       onClick={() => setIsDropdownOpen((prev) => !prev)}
     >
       <Image
-        src={'/posts/aspect-ratio.svg'}
+        src={'/post/aspect-ratio.svg'}
         width={24}
         height={24}
         alt="Aspect Ratio Image"

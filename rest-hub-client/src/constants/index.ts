@@ -41,6 +41,7 @@ export const MODAL_TYPES = {
   POST_UPDATE: 'postUpdate',
   POST_DELETE: 'postDelete',
   POST_DETAIL: 'postDetail',
+  COMMENT_DELETE: 'commentDelete',
 } as const;
 
 export const ERROR_CODES = {
@@ -88,4 +89,10 @@ export const SCROLLTO_BEHAVIOR = {
 
 export const KEY_DOWNS = {
   ENTER: 'Enter',
+} as const;
+
+export const COMMENT_MENU_ITEM_TYPES = {
+  UPDATE: 0,
+  DELETE: 1,
+  REPORT: 2,
 } as const;

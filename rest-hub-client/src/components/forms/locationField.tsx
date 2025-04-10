@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
 import { CloseButtonBlack } from '../ui/closeButton';
+import { InfiniteScrollLoader } from '../ui/ScrollBoundaryIndicators';
 
 import { INPUT_TYPES } from '@/constants';
 import { usePlacesAutocomplete } from '@/hooks/usePlacesAutocomplete';
@@ -63,7 +64,7 @@ export default function LocationField({ location, setLocation }: LocationFieldPr
         ) : (
           <Image
             className={styles.locationIcon}
-            src="/posts/location.svg"
+            src="/post/location.svg"
             alt="Location Icon"
             width={16}
             height={18}
@@ -75,13 +76,7 @@ export default function LocationField({ location, setLocation }: LocationFieldPr
       {location && showSuggestions && (
         <ul ref={suggestionsRef} className={styles.suggestionsList}>
           {loading ? (
-            <Image
-              className={styles.loadingIcon}
-              src="/posts/loading.gif"
-              alt="Location loading Icon"
-              width={24}
-              height={24}
-            />
+            <InfiniteScrollLoader isLoading={loading} />
           ) : (
             suggestions.length > 0 &&
             suggestions.map((place) => (

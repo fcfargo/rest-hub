@@ -4,17 +4,16 @@ import { useEffect, useRef, useState } from 'react';
 
 import CommentInput from './CommentInput';
 import CommentList from './CommentList';
-
-import { Comment, Post } from '@/types';
-import { useAuth } from '@/context/authContext';
-import { apiRequest } from '@/utils/apiRequest';
-import { API_ENDPOINTS } from '@/libs/api';
-import api from '@/libs/axiosInstance';
-import { mergeUniqueById } from '@/utils/array';
-import { SCROLLTO_BEHAVIOR } from '@/constants';
 import PostActionBarSection from '../sections/PostActionBarSection';
 
+import { SCROLLTO_BEHAVIOR } from '@/constants';
+import { useAuth } from '@/context/authContext';
+import { API_ENDPOINTS } from '@/libs/api';
+import api from '@/libs/axiosInstance';
 import styles from '@/styles/comment/commentSection.module.css';
+import { Comment, Post } from '@/types';
+import { apiRequest } from '@/utils/apiRequest';
+import { mergeUniqueById } from '@/utils/array';
 
 interface CommentSectionProps {
   post: Post;

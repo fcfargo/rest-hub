@@ -45,8 +45,8 @@
 
 .wrapper.withMedia {
   width: 100%;
-  max-width: 85vw;
-  min-width: 75vw;
+  max-width: 75vw;
+  min-width: 65vw;
   height: auto;
   max-height: 90vh;
   min-height: 80vh;
