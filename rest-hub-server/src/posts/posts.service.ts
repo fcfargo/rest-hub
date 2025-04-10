@@ -12,14 +12,17 @@ import { DataSource } from 'typeorm';
 import { Logger } from 'winston';
 
 import {
-  CreateCommentDto,
+  CreateCommentReuestDto,
   CreatePostRequestDto,
   GetPostsRequestDto,
+  UpdateCommentRequestDto,
   UpdatePostRequestDto,
 } from './dtos/posts.dto';
 import { CommonMessageResponseDto } from './dtos/posts.response.dto';
 import {
+  GetPaginatedPostCommentsResponse,
   GetPaginatedPostsResponse,
+  PostCommentDetail,
   PostLikeStatusResponse,
   PostWithUser,
   PostWithUserAndIsLiked,
@@ -112,7 +115,7 @@ export class PostsService {
       throw new NotFoundException('Post not found');
     }
 
-    this._validatePostOwnership(userId, post.user.id);
+    this._validatePostOwnership(userId, post.userId);
 
     post.content = content;
     post.location = location;
@@ -130,12 +133,12 @@ export class PostsService {
   }
 
   async deletePost(userId: number, postId: string): Promise<CommonMessageResponseDto> {
-    const post = await this.postsRepository.getPostWithUserById(postId);
+    const post = await this.postsRepository.getPostById(postId);
     if (!post) {
       throw new NotFoundException('Post not found');
     }
 
-    this._validatePostOwnership(userId, post.user.id);
+    this._validatePostOwnership(userId, post.userId);
 
     try {
       await this.postsRepository.removePost(post);
@@ -252,7 +255,7 @@ export class PostsService {
   async createComment(
     userId: number,
     postId: string,
-    requestData: CreateCommentDto,
+    requestData: CreateCommentReuestDto,
   ): Promise<PostComment> {
     return this._runCreateCommentTransaction(userId, postId, requestData);
   }
@@ -260,7 +263,7 @@ export class PostsService {
   async _runCreateCommentTransaction(
     userId: number,
     postId: string,
-    requestData: CreateCommentDto,
+    requestData: CreateCommentReuestDto,
   ): Promise<PostComment> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -310,7 +313,11 @@ export class PostsService {
     }
   }
 
-  async getCommentsByPostId(userId: number, postId: string, query: GetPostsRequestDto) {
+  async getCommentsByPostId(
+    userId: number,
+    postId: string,
+    query: GetPostsRequestDto,
+  ): Promise<GetPaginatedPostCommentsResponse> {
     const { page, limit } = query;
 
     const order = ORDER_TYPES.DESC;
@@ -340,5 +347,84 @@ export class PostsService {
         currentPage: page,
       },
     };
+  }
+
+  private _validateCommentOwnership(userId: number, commentUserId: number) {
+    if (userId !== commentUserId) {
+      throw new ForbiddenException('You are not authorized to modify this post');
+    }
+  }
+
+  async updateComment(
+    userId: number,
+    postId: string,
+    commentId: string,
+    requestData: UpdateCommentRequestDto,
+  ): Promise<PostCommentDetail> {
+    const { content } = requestData;
+
+    const post = await this.postsRepository.getPostWithUserById(postId);
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    const comment = await this.postCommentsService.getPostCommentByIdAndPostId(commentId, post.id);
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    this._validateCommentOwnership(userId, comment.userId);
+
+    comment.content = content;
+
+    try {
+      const [updated] = await Promise.all([this.postCommentsService.savePostComment(comment)]);
+      return { ...updated, user: post.user, post };
+    } catch (err) {
+      this.logger.error(`updatePost`, err);
+      throw new InternalServerErrorException('Failed to update the post. Please try again');
+    }
+  }
+
+  async deleteComment(
+    userId: number,
+    postId: string,
+    commentId: string,
+  ): Promise<CommonMessageResponseDto> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const manager = queryRunner.manager;
+
+      const post = await this.postsRepository.getPostById(postId, manager);
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+
+      const comment = await this.postCommentsService.getPostCommentByIdAndPostId(
+        commentId,
+        post.id,
+        manager,
+      );
+      if (!comment) {
+        throw new NotFoundException('Comment not found');
+      }
+
+      this._validateCommentOwnership(userId, comment.userId);
+
+      await this.postCommentsService.removePostComment(comment, manager);
+      await this.postsRepository.decrementPostCommentsCount(postId, manager);
+
+      await queryRunner.commitTransaction();
+      return { message: 'Comment deleted successfully' };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.logger.error(`deleteComment`, error);
+      throw new InternalServerErrorException('Failed to delete the comment. Please try again');
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

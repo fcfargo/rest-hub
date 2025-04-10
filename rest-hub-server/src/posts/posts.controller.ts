@@ -11,9 +11,10 @@ import {
 } from '@nestjs/common';
 
 import {
-  CreateCommentDto,
+  CreateCommentReuestDto,
   CreatePostRequestDto,
   GetPostsRequestDto,
+  UpdateCommentRequestDto,
   UpdatePostRequestDto,
 } from './dtos/posts.dto';
 import {
@@ -93,7 +94,7 @@ export class PostsController {
   async createComment(
     @CurrentUser() currentUser: jwtPayLoad,
     @Param('postId') postId: string,
-    @Body() body: CreateCommentDto,
+    @Body() body: CreateCommentReuestDto,
   ) {
     const userId = currentUser.sub;
     return this.postsService.createComment(userId, postId, body);
@@ -109,5 +110,30 @@ export class PostsController {
   ) {
     const userId = currentUser.sub;
     return this.postsService.getCommentsByPostId(userId, postId, query);
+  }
+
+  @Serialize(PostResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Patch(':postId/comments/:commentId')
+  async updateComment(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Body() body: UpdateCommentRequestDto,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.updateComment(userId, postId, commentId, body);
+  }
+
+  @Serialize(CommonMessageResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':postId/comments/:commentId')
+  async deleteComment(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.deleteComment(userId, postId, commentId);
   }
 }

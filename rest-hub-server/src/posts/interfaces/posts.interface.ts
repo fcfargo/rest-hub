@@ -1,6 +1,7 @@
 import { metaDataResponseDto } from '../dtos/posts.response.dto';
 
 import { Post } from '@/model/post.entity';
+import { PostComment } from '@/model/postComment.entity';
 import { User } from '@/model/user.entity';
 
 export interface CreatePostRequest {
@@ -15,9 +16,16 @@ export interface GetPaginatedPostsResponse {
   meta: metaDataResponseDto;
 }
 
+export interface GetPaginatedPostCommentsResponse {
+  comments: PostComment[];
+  meta: metaDataResponseDto;
+}
+
 export type PostWithUser = Post & { user: User };
 
 export type PostWithUserAndIsLiked = PostWithUser & { isLiked: boolean };
+
+export type PostCommentDetail = PostComment & { user: User } & { post: Post };
 
 export interface PostLikeStatusResponse {
   isLiked: boolean;

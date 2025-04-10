@@ -42,7 +42,7 @@ export class DeletePostRequestDto {
   postId: string;
 }
 
-export class CreateCommentDto {
+export class CreateCommentReuestDto {
   @IsString()
   @IsNotEmpty()
   content: string;
@@ -50,4 +50,9 @@ export class CreateCommentDto {
   @IsString()
   @IsOptional()
   parentId?: string;
+}
+
+export class UpdateCommentRequestDto {
+  @IsString()
+  content: string;
 }

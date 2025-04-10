@@ -1,7 +1,10 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 
-import { CreatePostCommentRequest } from './interfaces/ponst-comments.interface';
+import {
+  CreatePostCommentRequest,
+  GetPaginatedPostCommentsResponse,
+} from './interfaces/ponst-comments.interface';
 import { PostCommentsRepository } from './post-comments.repository';
 
 import { OrderTypes } from '@/common/interfaces/common.interface';
@@ -26,6 +29,14 @@ export class PostCommentsService {
     return created;
   }
 
+  async savePostComment(comment: PostComment): Promise<PostComment> {
+    return this.postCommentRepository.savePostComment(comment);
+  }
+
+  async removePostComment(comment: PostComment, manager?: EntityManager): Promise<PostComment> {
+    return this.postCommentRepository.removePostComment(comment, manager);
+  }
+
   async getPostCommentWithUserAndRepliesById(
     commentId: string,
     manager?: EntityManager,
@@ -40,13 +51,21 @@ export class PostCommentsService {
     return this.postCommentRepository.getPostCommentById(commentId, manager);
   }
 
+  async getPostCommentByIdAndPostId(
+    commentId: string,
+    postId: string,
+    manager?: EntityManager,
+  ): Promise<PostComment | null> {
+    return this.postCommentRepository.getPostCommentByIdAndPostId(commentId, postId, manager);
+  }
+
   async getPaginatedPostCommentsByPostId(
     userId: number,
     postId: string,
     limit: number,
     offset: number,
     order: OrderTypes,
-  ) {
+  ): Promise<GetPaginatedPostCommentsResponse> {
     return this.postCommentRepository.getPaginatedPostCommentsByPostId(
       userId,
       postId,

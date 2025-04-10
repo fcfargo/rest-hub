@@ -25,6 +25,16 @@ export class PostCommentsRepository {
     return repo.save(postComment);
   }
 
+  async savePostComment(requestData: PostComment): Promise<PostComment> {
+    return this.postCommentsRepository.save(requestData);
+  }
+
+  async removePostComment(requestData: PostComment, manager?: EntityManager): Promise<PostComment> {
+    return manager
+      ? manager.remove(this.postComment, requestData)
+      : this.postCommentsRepository.remove(requestData);
+  }
+
   async getPostCommentById(
     commentId: string,
     manager?: EntityManager,
@@ -33,6 +43,17 @@ export class PostCommentsRepository {
     return manager
       ? manager.findOneBy(this.postComment, where)
       : this.postCommentsRepository.findOneBy(where);
+  }
+
+  async getPostCommentByIdAndPostId(
+    commentId: string,
+    postId: string,
+    manager?: EntityManager,
+  ): Promise<PostComment | null> {
+    const where = { id: commentId, postId };
+    return manager
+      ? manager.findOne(this.postComment, { where })
+      : this.postCommentsRepository.findOne({ where });
   }
 
   async getPostCommentWithUserAndRepliesById(
@@ -63,7 +84,7 @@ export class PostCommentsRepository {
       order: { createdAt: order },
       take: limit,
       skip: offset,
-      relations: ['user', 'children', 'children.user'],
+      relations: ['user', 'children', 'children.user', 'post'],
     });
 
     if (!comments.length) {
