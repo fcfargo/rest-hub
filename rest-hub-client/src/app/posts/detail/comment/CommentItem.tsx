@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
 
+import CommentActionBar from './CommentActionBar';
+
 import CommentDropdownMenu from '@/components/ui/dropdownMenu/CommentDropdownMenu';
 import EmojiButton from '@/components/ui/EmojiButton';
 import { ErrorMessage } from '@/components/ui/message';
@@ -24,6 +26,7 @@ interface CommentItemProps {
   comment: Comment;
   onUpdateComment: (updated: Comment) => void;
   onDeleteComment: (commentId: string) => void;
+  onUpdateCommentLikeStatus: (commentId: string, isLiked: boolean, likesCount: number) => void;
   onAddReply: (parentId: string, reply: Comment) => void;
   onUpdateReply: (parentId: string, reply: Comment) => void;
   onDeleteReply: (parentId: string, reply: Comment) => void;
@@ -33,11 +36,12 @@ export default function CommentItem({
   comment,
   onUpdateComment,
   onDeleteComment,
+  onUpdateCommentLikeStatus,
   onAddReply,
   onUpdateReply,
   onDeleteReply,
 }: CommentItemProps) {
-  const { id, user: writer, content, createdAt, likesCount, post } = comment;
+  const { id, user: writer, content, createdAt, likesCount, post, isLiked } = comment;
   const { id: postId } = post;
 
   const [editedContent, setEditedContent] = useState<string>(content);
@@ -103,12 +107,6 @@ export default function CommentItem({
     }
   };
 
-  /** 좋아요 버튼 클릭 핸들러 */
-  const handleLikeButtonClick = async () => {};
-
-  /** 답글 버튼 클릭 핸들러 */
-  const handleReplyButtonClick = async () => {};
-
   /** 드롭다운 메뉴 클릭 처리 */
   const handleCommentMenuItem = (value: number) => {
     switch (value) {
@@ -127,6 +125,9 @@ export default function CommentItem({
     }
     setIsDropdownOpen(false);
   };
+
+  /** 답글 버튼 클릭 핸들러 */
+  const handleReplyButtonClick = async () => {};
 
   return (
     <div className={styles.container}>
@@ -185,18 +186,13 @@ export default function CommentItem({
 
             {/* 댓글 액션 바 */}
             <div className={styles.commentActionBarContainer}>
-              {/* 좋아요 버튼 */}
-              <button onClick={handleLikeButtonClick} className={styles.likesButton}>
-                <Image
-                  src="/post/heart.svg"
-                  alt="Likes icon"
-                  width={14}
-                  height={14}
-                  className={styles.icon}
-                />
-              </button>
-
-              <p className={styles.likesCount}>{likesCount}</p>
+              <CommentActionBar
+                commentId={id}
+                postId={postId}
+                isLiked={isLiked}
+                likesCount={likesCount}
+                onUpdateCommentLikeStatus={onUpdateCommentLikeStatus}
+              />
 
               {/* 답글 버튼 */}
               <button onClick={handleReplyButtonClick} className={styles.replyButton}>

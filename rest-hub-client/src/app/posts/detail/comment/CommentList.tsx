@@ -41,6 +41,17 @@ export default function CommentList({
     onChangeComments((prev) => prev.filter((c) => c.id !== commentId));
   };
 
+  /** 댓글 isLiked, likesCount를 업데이트 */
+  const handleUpdateCommentLikeStatus = (
+    commentId: string,
+    isLiked: boolean,
+    likesCount: number,
+  ) => {
+    onChangeComments((prev) =>
+      prev.map((c) => (c.id === commentId ? { ...c, isLiked, likesCount } : c)),
+    );
+  };
+
   /** 대댓글 추가 핸들러 (추후 구현 예정) */
   const handleAddReply = (parentId: string, reply: Comment) => {};
 
@@ -64,6 +75,7 @@ export default function CommentList({
           comment={comment}
           onUpdateComment={handleUpdateComment}
           onDeleteComment={handleDeleteComment}
+          onUpdateCommentLikeStatus={handleUpdateCommentLikeStatus}
           onAddReply={handleAddReply}
           onUpdateReply={handleUpdateReply}
           onDeleteReply={handleDeleteReply}
