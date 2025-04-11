@@ -23,6 +23,7 @@ import {
   GetPaginatedPostCommentsResponse,
   GetPaginatedPostsResponse,
   PostCommentDetail,
+  PostCommentLikeStatusResponse,
   PostLikeStatusResponse,
   PostWithUser,
   PostWithUserAndIsLiked,
@@ -423,6 +424,138 @@ export class PostsService {
       await queryRunner.rollbackTransaction();
       this.logger.error(`deleteComment`, error);
       throw new InternalServerErrorException('Failed to delete the comment. Please try again');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async likeComment(
+    postId: string,
+    commentId: string,
+    userId: number,
+  ): Promise<PostCommentLikeStatusResponse> {
+    return this._runLikeCommentTransaction(postId, commentId, userId);
+  }
+
+  private async _runLikeCommentTransaction(
+    postId: string,
+    commentId: string,
+    userId: number,
+  ): Promise<PostCommentLikeStatusResponse> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const manager = queryRunner.manager;
+
+      const post = await this.postsRepository.getPostById(postId, manager);
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+
+      const comment = await this.postCommentsService.getPostCommentByIdAndPostId(
+        commentId,
+        post.id,
+        manager,
+      );
+      if (!comment) {
+        throw new NotFoundException('Comment not found');
+      }
+
+      const existing = await this.postCommentsService.getPostCommentLikeByPostIdAndUserId(
+        commentId,
+        userId,
+        manager,
+      );
+
+      if (!existing) {
+        await this.postCommentsService.createPostCommentLike(commentId, userId, manager);
+        await this.postCommentsService.incrementPostCommentLikesCount(commentId, manager);
+        comment.likesCount = Math.max(0, comment.likesCount + 1);
+      }
+
+      const updated = await this.postCommentsService.getPostCommentById(commentId, manager);
+      if (!updated) {
+        throw new NotFoundException(`Comment with ID ${commentId} not found after like`);
+      }
+
+      await queryRunner.commitTransaction();
+
+      return {
+        isLiked: true,
+        likesCount: updated.likesCount,
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.logger.error(`_runLikeCommentTransaction`, error);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async unlikeComment(
+    postId: string,
+    commentId: string,
+    userId: number,
+  ): Promise<PostCommentLikeStatusResponse> {
+    return this._runUnlikeCommentTransaction(postId, commentId, userId);
+  }
+
+  private async _runUnlikeCommentTransaction(
+    postId: string,
+    commentId: string,
+    userId: number,
+  ): Promise<PostCommentLikeStatusResponse> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const manager = queryRunner.manager;
+
+      const post = await this.postsRepository.getPostById(postId, manager);
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+
+      const comment = await this.postCommentsService.getPostCommentByIdAndPostId(
+        commentId,
+        post.id,
+        manager,
+      );
+      if (!comment) {
+        throw new NotFoundException('Comment not found');
+      }
+
+      const existing = await this.postCommentsService.getPostCommentLikeByPostIdAndUserId(
+        commentId,
+        userId,
+        manager,
+      );
+
+      if (existing) {
+        await this.postCommentsService.removePostCommentLike(existing, manager);
+        await this.postCommentsService.decrementPostCommentLikesCount(commentId, manager);
+        comment.likesCount = Math.max(0, comment.likesCount - 1);
+      }
+
+      const updated = await this.postCommentsService.getPostCommentById(commentId, manager);
+      if (!updated) {
+        throw new NotFoundException(`Comment with ID ${commentId} not found after unlike`);
+      }
+
+      await queryRunner.commitTransaction();
+
+      return {
+        isLiked: false,
+        likesCount: updated.likesCount,
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.logger.error(`_runUnlikeCommentTransaction`, error);
+      throw error;
     } finally {
       await queryRunner.release();
     }

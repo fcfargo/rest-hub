@@ -10,6 +10,7 @@ import {
 
 import { Post } from './post.entity';
 import { PostComment } from './postComment.entity';
+import { PostCommentLike } from './postCommentLike.entity';
 import { PostLike } from './postLike.entity';
 
 import { SOCIAL_PROVIDERS, SocialProvider } from '@/users/interfaces/users.interface';
@@ -54,4 +55,7 @@ export class User {
 
   @OneToMany(() => PostComment, (comment) => comment.user)
   comments: PostComment[];
+
+  @OneToMany(() => PostCommentLike, (like) => like.user)
+  commentLikes: PostCommentLike[];
 }

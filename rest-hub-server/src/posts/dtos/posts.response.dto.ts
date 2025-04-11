@@ -81,6 +81,9 @@ export class PostCommentResponseDto {
 
   @Expose()
   updatedAt: string;
+
+  @Expose()
+  isLiked: boolean;
 }
 
 export class metaDataResponseDto {
@@ -117,6 +120,14 @@ export class CommonMessageResponseDto {
 }
 
 export class PostLikeStatusResponseDto {
+  @Expose()
+  isLiked: boolean;
+
+  @Expose()
+  likesCount: number;
+}
+
+export class PostCommentLikeStatusResponseDto {
   @Expose()
   isLiked: boolean;
 

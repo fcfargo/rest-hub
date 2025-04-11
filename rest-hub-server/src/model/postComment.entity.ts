@@ -9,6 +9,8 @@ import {
   OneToMany,
 } from 'typeorm';
 
+import { PostCommentLike } from './postCommentLike.entity';
+
 import { Post } from '@/model/post.entity';
 import { User } from '@/model/user.entity';
 
@@ -52,4 +54,7 @@ export class PostComment {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => PostCommentLike, (like) => like.comment)
+  likes: PostCommentLike[];
 }

@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import { processEnv } from '@/common/constants';
 import { Post } from '@/model/post.entity';
 import { PostComment } from '@/model/postComment.entity';
+import { PostCommentLike } from '@/model/postCommentLike.entity';
 import { PostLike } from '@/model/postLike.entity';
 import { User } from '@/model/user.entity';
 
@@ -16,6 +17,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   port: Number(processEnv.DB_PORT),
   username: processEnv.DB_USERNAME,
   password: processEnv.DB_PASSWORD,
-  entities: [User, Post, PostLike, PostComment],
+  entities: [User, Post, PostLike, PostComment, PostCommentLike],
   synchronize: true,
 };

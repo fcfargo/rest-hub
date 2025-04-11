@@ -1,4 +1,4 @@
-import { PostComment } from '@/model/postComment.entity';
+import { PostCommentDetailAndIsLiked } from '@/posts/interfaces/posts.interface';
 
 export interface CreatePostCommentRequest {
   postId: string;
@@ -7,7 +7,7 @@ export interface CreatePostCommentRequest {
   parentId?: string;
 }
 
-export interface GetPaginatedPostCommentsResponse {
-  comments: PostComment[];
+export interface GetPaginatedPostCommentsByPostIdResponse {
+  comments: PostCommentDetailAndIsLiked[];
   totalCount: number;
 }

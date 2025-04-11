@@ -20,6 +20,7 @@ import {
 import {
   GetPostCommentsResponseDto,
   GetPostsResponseDto,
+  PostCommentLikeStatusResponseDto,
   PostCommentResponseDto,
   PostLikeStatusResponseDto,
   PostResponseDto,
@@ -135,5 +136,29 @@ export class PostsController {
   ) {
     const userId = currentUser.sub;
     return this.postsService.deleteComment(userId, postId, commentId);
+  }
+
+  @Serialize(PostCommentLikeStatusResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Post(':postId/comments/:commentId/like')
+  async likePostComment(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.likeComment(postId, commentId, userId);
+  }
+
+  @Serialize(PostCommentLikeStatusResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':postId/comments/:commentId/like')
+  async unlikePostComment(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.unlikeComment(postId, commentId, userId);
   }
 }
