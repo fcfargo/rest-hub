@@ -1,14 +1,15 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
+import { EntityManager, UpdateResult } from 'typeorm';
 
 import {
   CreatePostCommentRequest,
-  GetPaginatedPostCommentsResponse,
+  GetPaginatedPostCommentsByPostIdResponse,
 } from './interfaces/ponst-comments.interface';
 import { PostCommentsRepository } from './post-comments.repository';
 
 import { OrderTypes } from '@/common/interfaces/common.interface';
 import { PostComment } from '@/model/postComment.entity';
+import { PostCommentLike } from '@/model/postCommentLike.entity';
 
 @Injectable()
 export class PostCommentsService {
@@ -65,7 +66,7 @@ export class PostCommentsService {
     limit: number,
     offset: number,
     order: OrderTypes,
-  ): Promise<GetPaginatedPostCommentsResponse> {
+  ): Promise<GetPaginatedPostCommentsByPostIdResponse> {
     return this.postCommentRepository.getPaginatedPostCommentsByPostId(
       userId,
       postId,
@@ -73,5 +74,46 @@ export class PostCommentsService {
       offset,
       order,
     );
+  }
+
+  async createPostCommentLike(
+    commentId: string,
+    userId: number,
+    manager?: EntityManager,
+  ): Promise<PostCommentLike> {
+    return this.postCommentRepository.createPostCommentLike(commentId, userId, manager);
+  }
+
+  async removePostCommentLike(
+    requestData: PostCommentLike,
+    manager?: EntityManager,
+  ): Promise<PostCommentLike> {
+    return this.postCommentRepository.removePostCommentLike(requestData, manager);
+  }
+
+  async getPostCommentLikeByPostIdAndUserId(
+    commentId: string,
+    userId: number,
+    manager?: EntityManager,
+  ): Promise<PostCommentLike | null> {
+    return this.postCommentRepository.getPostCommentLikeByPostIdAndUserId(
+      commentId,
+      userId,
+      manager,
+    );
+  }
+
+  async incrementPostCommentLikesCount(
+    commentId: string,
+    manager?: EntityManager,
+  ): Promise<UpdateResult> {
+    return this.postCommentRepository.incrementPostCommentLikesCount(commentId, manager);
+  }
+
+  async decrementPostCommentLikesCount(
+    commentId: string,
+    manager?: EntityManager,
+  ): Promise<UpdateResult> {
+    return this.postCommentRepository.decrementPostCommentLikesCount(commentId, manager);
   }
 }

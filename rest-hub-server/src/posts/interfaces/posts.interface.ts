@@ -17,7 +17,7 @@ export interface GetPaginatedPostsResponse {
 }
 
 export interface GetPaginatedPostCommentsResponse {
-  comments: PostComment[];
+  comments: PostCommentDetailAndIsLiked[];
   meta: metaDataResponseDto;
 }
 
@@ -27,7 +27,14 @@ export type PostWithUserAndIsLiked = PostWithUser & { isLiked: boolean };
 
 export type PostCommentDetail = PostComment & { user: User } & { post: Post };
 
+export type PostCommentDetailAndIsLiked = PostCommentDetail & { isLiked: boolean };
+
 export interface PostLikeStatusResponse {
+  isLiked: boolean;
+  likesCount: number;
+}
+
+export interface PostCommentLikeStatusResponse {
   isLiked: boolean;
   likesCount: number;
 }

@@ -1,19 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, IsNull, Repository } from 'typeorm';
+import { EntityManager, In, IsNull, Repository, UpdateResult } from 'typeorm';
 
-import { CreatePostCommentRequest } from './interfaces/ponst-comments.interface';
+import {
+  CreatePostCommentRequest,
+  GetPaginatedPostCommentsByPostIdResponse,
+} from './interfaces/ponst-comments.interface';
 
 import { OrderTypes } from '@/common/interfaces/common.interface';
 import { PostComment } from '@/model/postComment.entity';
+import { PostCommentLike } from '@/model/postCommentLike.entity';
 
 @Injectable()
 export class PostCommentsRepository {
   private readonly postComment = PostComment;
+  private readonly postCommentLike = PostCommentLike;
 
   constructor(
     @InjectRepository(PostComment)
     private readonly postCommentsRepository: Repository<PostComment>,
+    @InjectRepository(PostCommentLike)
+    private readonly postCommentsLikesRepository: Repository<PostCommentLike>,
   ) {}
 
   async createPostComment(
@@ -75,7 +82,7 @@ export class PostCommentsRepository {
     limit: number,
     offset: number,
     order: OrderTypes,
-  ) {
+  ): Promise<GetPaginatedPostCommentsByPostIdResponse> {
     const [comments, totalCount] = await this.postCommentsRepository.findAndCount({
       where: {
         postId,
@@ -91,6 +98,82 @@ export class PostCommentsRepository {
       return { comments: [], totalCount };
     }
 
-    return { comments, totalCount };
+    const commentIds = comments.map((comment) => comment.id);
+    const likedPostCommentLikes = await this.getLikedPostCommentLikesByCommentIdAndUserId(
+      commentIds,
+      userId,
+    );
+
+    const likedPostCommentIdSet = new Set(likedPostCommentLikes.map((like) => like.commentId));
+
+    const postCommentsWithIsLiked = comments.map((comment) => ({
+      ...comment,
+      isLiked: likedPostCommentIdSet.has(comment.id),
+    }));
+
+    return { comments: postCommentsWithIsLiked, totalCount };
+  }
+
+  async getLikedPostCommentLikesByCommentIdAndUserId(
+    commentIds: string[],
+    userId: number,
+  ): Promise<PostCommentLike[]> {
+    return this.postCommentsLikesRepository.find({
+      where: { userId, commentId: In(commentIds) },
+    });
+  }
+
+  async createPostCommentLike(
+    commentId: string,
+    userId: number,
+    manager?: EntityManager,
+  ): Promise<PostCommentLike> {
+    const repo = manager
+      ? manager.getRepository(this.postCommentLike)
+      : this.postCommentsLikesRepository;
+    const postCommentLike = repo.create({ commentId, userId });
+    return repo.save(postCommentLike);
+  }
+
+  async removePostCommentLike(
+    requestData: PostCommentLike,
+    manager?: EntityManager,
+  ): Promise<PostCommentLike> {
+    return manager
+      ? manager.remove(this.postCommentLike, requestData)
+      : this.postCommentsLikesRepository.remove(requestData);
+  }
+
+  async getPostCommentLikeByPostIdAndUserId(
+    commentId: string,
+    userId: number,
+    manager?: EntityManager,
+  ): Promise<PostCommentLike | null> {
+    const where = {
+      where: { commentId, userId },
+    };
+    return manager
+      ? manager.findOne(this.postCommentLike, where)
+      : this.postCommentsLikesRepository.findOne(where);
+  }
+
+  async incrementPostCommentLikesCount(
+    commentId: string,
+    manager?: EntityManager,
+  ): Promise<UpdateResult> {
+    const where = { id: commentId };
+    return manager
+      ? manager.increment(this.postComment, where, 'likesCount', 1)
+      : this.postCommentsRepository.increment(where, 'likesCount', 1);
+  }
+
+  async decrementPostCommentLikesCount(
+    commentId: string,
+    manager?: EntityManager,
+  ): Promise<UpdateResult> {
+    const where = { id: commentId };
+    return manager
+      ? manager.decrement(this.postComment, where, 'likesCount', 1)
+      : this.postCommentsRepository.decrement(where, 'likesCount', 1);
   }
 }
