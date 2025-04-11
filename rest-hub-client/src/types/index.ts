@@ -45,6 +45,7 @@ export type Comment = {
   children?: Comment[];
   createdAt: string;
   updatedAt: string;
+  isLiked: boolean;
 };
 
 export interface PostDataProps {

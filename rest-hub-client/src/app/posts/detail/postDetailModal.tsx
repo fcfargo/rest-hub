@@ -29,7 +29,7 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
     return null;
   }
 
-  const { id, imageUrl, content } = post;
+  const { imageUrl, content } = post;
 
   // 게시글에 미디어 데이터 포함 여부
   const hasMediaData = Boolean(imageUrl?.trim());
