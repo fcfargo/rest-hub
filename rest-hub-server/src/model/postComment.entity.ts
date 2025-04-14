@@ -49,6 +49,9 @@ export class PostComment {
   @Column({ default: 0 })
   likesCount: number;
 
+  @Column({ default: 0 })
+  repliesCount: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

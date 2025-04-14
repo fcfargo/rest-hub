@@ -11,15 +11,18 @@ import {
 } from '@nestjs/common';
 
 import {
-  CreateCommentReuestDto,
+  CreateCommentRequestDto,
   CreatePostRequestDto,
   GetPostsRequestDto,
   UpdateCommentRequestDto,
   UpdatePostRequestDto,
 } from './dtos/posts.dto';
 import {
+  CreateReplyResponseDto,
+  DeleteReplyResponseDto,
   GetPostCommentsResponseDto,
   GetPostsResponseDto,
+  GetRepliesResponseDto,
   PostCommentLikeStatusResponseDto,
   PostCommentResponseDto,
   PostLikeStatusResponseDto,
@@ -95,7 +98,7 @@ export class PostsController {
   async createComment(
     @CurrentUser() currentUser: jwtPayLoad,
     @Param('postId') postId: string,
-    @Body() body: CreateCommentReuestDto,
+    @Body() body: CreateCommentRequestDto,
   ) {
     const userId = currentUser.sub;
     return this.postsService.createComment(userId, postId, body);
@@ -160,5 +163,58 @@ export class PostsController {
   ) {
     const userId = currentUser.sub;
     return this.postsService.unlikeComment(postId, commentId, userId);
+  }
+
+  @Serialize(CreateReplyResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Post(':postId/comments/:commentId/reply')
+  async createReply(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Body() body: CreateCommentRequestDto,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.createReply(userId, postId, commentId, body);
+  }
+
+  @Serialize(GetRepliesResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Get(':postId/comments/:commentId/replies')
+  async getReplies(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Query() query: GetPostsRequestDto,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.getReplies(userId, postId, commentId, query);
+  }
+
+  @Serialize(PostResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Patch(':postId/comments/:commentId/replies/:replyId')
+  async updateReply(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Param('replyId') replyId: string,
+    @Body() body: UpdateCommentRequestDto,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.updateReply(userId, postId, commentId, replyId, body);
+  }
+
+  @Serialize(DeleteReplyResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':postId/comments/:commentId/replies/:replyId')
+  async deleteReply(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Param('replyId') replyId: string,
+  ) {
+    const userId = currentUser.sub;
+    return this.postsService.deleteReply(userId, postId, commentId, replyId);
   }
 }
