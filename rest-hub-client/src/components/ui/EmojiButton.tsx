@@ -10,9 +10,14 @@ import styles from '@/styles/utils/emojiButton.module.css';
 interface EmojiButtonProps {
   setTextContent: Dispatch<SetStateAction<string>>;
   className?: string;
+  iconSize?: number;
 }
 
-export default function EmojiButton({ setTextContent, className }: EmojiButtonProps) {
+export default function EmojiButton({
+  setTextContent,
+  className,
+  iconSize = 20,
+}: EmojiButtonProps) {
   const [showPicker, setShowPicker] = useState(false);
 
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -52,11 +57,11 @@ export default function EmojiButton({ setTextContent, className }: EmojiButtonPr
         className={styles.emojiButton}
       >
         <Image
-          className={styles.emojiIcon}
           src="/post/emoji.svg"
           alt="Emoji Icon"
-          width={20}
-          height={20}
+          width={iconSize}
+          height={iconSize}
+          style={{ width: iconSize, height: iconSize }}
         />
       </button>
 

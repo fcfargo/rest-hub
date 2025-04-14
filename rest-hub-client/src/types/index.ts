@@ -42,7 +42,7 @@ export type Comment = {
     commentsCount: number;
   };
   likesCount: number;
-  children?: Comment[];
+  repliesCount: number;
   createdAt: string;
   updatedAt: string;
   isLiked: boolean;

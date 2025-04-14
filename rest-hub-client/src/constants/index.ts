@@ -42,6 +42,7 @@ export const MODAL_TYPES = {
   POST_DELETE: 'postDelete',
   POST_DETAIL: 'postDetail',
   COMMENT_DELETE: 'commentDelete',
+  COMMENT_REPLY_DELETE: 'commentReplyDelete',
 } as const;
 
 export const ERROR_CODES = {
@@ -92,6 +93,12 @@ export const KEY_DOWNS = {
 } as const;
 
 export const COMMENT_MENU_ITEM_TYPES = {
+  UPDATE: 0,
+  DELETE: 1,
+  REPORT: 2,
+} as const;
+
+export const COMMENT_REPLY_MENU_ITEM_TYPES = {
   UPDATE: 0,
   DELETE: 1,
   REPORT: 2,

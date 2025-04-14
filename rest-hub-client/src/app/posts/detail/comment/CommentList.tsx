@@ -52,14 +52,10 @@ export default function CommentList({
     );
   };
 
-  /** 대댓글 추가 핸들러 (추후 구현 예정) */
-  const handleAddReply = (parentId: string, reply: Comment) => {};
-
-  /** 대댓글 수정 핸들러 (추후 구현 예정) */
-  const handleUpdateReply = (parentId: string, reply: Comment) => {};
-
-  /** 대댓글 삭제 핸들러 (추후 구현 예정) */
-  const handleDeleteReply = (parentId: string, reply: Comment) => {};
+  /** 댓글 repliesCount를 업데이트 */
+  const handleUpdateRepliesCount = (commentId: string, repliesCount: number) => {
+    onChangeComments((prev) => prev.map((c) => (c.id === commentId ? { ...c, repliesCount } : c)));
+  };
 
   return (
     <div ref={scrollContainerRef} className={styles.container}>
@@ -76,9 +72,7 @@ export default function CommentList({
           onUpdateComment={handleUpdateComment}
           onDeleteComment={handleDeleteComment}
           onUpdateCommentLikeStatus={handleUpdateCommentLikeStatus}
-          onAddReply={handleAddReply}
-          onUpdateReply={handleUpdateReply}
-          onDeleteReply={handleDeleteReply}
+          onUpdateCommentRepliesCount={handleUpdateRepliesCount}
         />
       ))}
 

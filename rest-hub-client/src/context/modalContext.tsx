@@ -5,6 +5,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 import PostCreateModal from '@/app/posts/create/postCreateModal';
 import PostDeleteModal from '@/app/posts/delete/postDeleteModal';
 import CommentDeleteModal from '@/app/posts/detail/\bcomment/CommentDeleteModal';
+import CommentReplyDeleteModal from '@/app/posts/detail/\bcomment/CommentReplyDeleteModal';
 import PostDetailModal from '@/app/posts/detail/postDetailModal';
 import PostUpdateModal from '@/app/posts/update/postUpdateModal';
 import PasswordChangeModal from '@/app/settings/security/passwordChangeModal';
@@ -39,6 +40,14 @@ type CommentDelete = {
   deleteComment: (commentId: string) => void;
 };
 
+type CommentReplyDelete = {
+  postId: string;
+  parentId: string;
+  replyId: string;
+  deleteCommentReply: (replyId: string) => void;
+  updateCommentRepliesCount: (commentId: string, repliesCount: number) => void;
+};
+
 type ModalDataMap = {
   [MODAL_TYPES.POST_CREATE]: undefined;
   [MODAL_TYPES.PASSWORD_CHANGE]: undefined;
@@ -46,6 +55,7 @@ type ModalDataMap = {
   [MODAL_TYPES.POST_DELETE]: PostDelete;
   [MODAL_TYPES.POST_DETAIL]: PostDetail;
   [MODAL_TYPES.COMMENT_DELETE]: CommentDelete;
+  [MODAL_TYPES.COMMENT_REPLY_DELETE]: CommentReplyDelete;
 };
 
 /**
@@ -110,6 +120,17 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
                 postId={data.postId}
                 commentId={data.commentId}
                 deleteComment={data.deleteComment}
+              />
+            );
+          case MODAL_TYPES.COMMENT_REPLY_DELETE:
+            return (
+              <CommentReplyDeleteModal
+                key={index}
+                postId={data.postId}
+                parentId={data.parentId}
+                replyId={data.replyId}
+                deleteCommentReply={data.deleteCommentReply}
+                updateCommentRepliesCount={data.updateCommentRepliesCount}
               />
             );
           default:
