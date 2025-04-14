@@ -12,7 +12,7 @@ import { DataSource } from 'typeorm';
 import { Logger } from 'winston';
 
 import {
-  CreateCommentReuestDto,
+  CreateCommentRequestDto,
   CreatePostRequestDto,
   GetPostsRequestDto,
   UpdateCommentRequestDto,
@@ -20,8 +20,11 @@ import {
 } from './dtos/posts.dto';
 import { CommonMessageResponseDto } from './dtos/posts.response.dto';
 import {
+  CreateReply,
   GetPaginatedPostCommentsResponse,
   GetPaginatedPostsResponse,
+  GetPaginatedRepliesResponse,
+  ParentRepliesCount,
   PostCommentDetail,
   PostCommentLikeStatusResponse,
   PostLikeStatusResponse,
@@ -256,15 +259,35 @@ export class PostsService {
   async createComment(
     userId: number,
     postId: string,
-    requestData: CreateCommentReuestDto,
+    requestData: CreateCommentRequestDto,
   ): Promise<PostComment> {
     return this._runCreateCommentTransaction(userId, postId, requestData);
+  }
+
+  async createReply(
+    userId: number,
+    postId: string,
+    parentId: string,
+    requestData: CreateCommentRequestDto,
+  ): Promise<CreateReply> {
+    const created = await this._runCreateCommentTransaction(userId, postId, requestData, parentId);
+
+    const parent = await this.postCommentsService.getPostCommentById(parentId);
+    if (!parent) {
+      throw new NotFoundException('Parent comment not found after reply creation.');
+    }
+
+    return {
+      reply: created,
+      parentRepliesCount: parent.repliesCount,
+    };
   }
 
   async _runCreateCommentTransaction(
     userId: number,
     postId: string,
-    requestData: CreateCommentReuestDto,
+    requestData: CreateCommentRequestDto,
+    parentId?: string,
   ): Promise<PostComment> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -272,7 +295,7 @@ export class PostsService {
 
     try {
       const manager = queryRunner.manager;
-      const { content, parentId } = requestData;
+      const { content } = requestData;
 
       const post = await this.postsRepository.getPostById(postId, manager);
       if (!post) throw new NotFoundException('Post not found');
@@ -285,6 +308,8 @@ export class PostsService {
         if (parent.parentId) {
           throw new BadRequestException('Only 1-level nested replies are allowed');
         }
+
+        await this.postCommentsService.incrementPostCommentRepliesCount(parentId, manager);
       }
 
       const created = await this.postCommentsService.createPostComment(
@@ -294,7 +319,7 @@ export class PostsService {
 
       await this.postsRepository.incrementPostCommentsCount(postId, manager);
 
-      const fullComment = await this.postCommentsService.getPostCommentWithUserAndRepliesById(
+      const fullComment = await this.postCommentsService.getPostCommentWithUserById(
         created.id,
         manager,
       );
@@ -350,6 +375,49 @@ export class PostsService {
     };
   }
 
+  async getReplies(
+    userId: number,
+    postId: string,
+    parentId: string,
+    query: GetPostsRequestDto,
+  ): Promise<GetPaginatedRepliesResponse> {
+    const { page, limit } = query;
+
+    const order = ORDER_TYPES.DESC;
+
+    const offset = (page - 1) * limit;
+
+    const post = await this.postsRepository.getPostById(postId);
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    const parent = await this.postCommentsService.getPostCommentById(parentId);
+    if (!parent) {
+      throw new NotFoundException(`Comment with ID ${parentId} not found`);
+    }
+
+    const { replies, totalCount } =
+      await this.postCommentsService.getPaginatedRepliesByPostIdAndParentId(
+        userId,
+        postId,
+        parentId,
+        limit,
+        offset,
+        order,
+      );
+
+    replies.filter((reply) => !reply.parentId);
+
+    return {
+      replies,
+      meta: {
+        totalPages: Math.ceil(totalCount / limit),
+        currentPage: page,
+      },
+    };
+  }
+
   private _validateCommentOwnership(userId: number, commentUserId: number) {
     if (userId !== commentUserId) {
       throw new ForbiddenException('You are not authorized to modify this post');
@@ -364,12 +432,15 @@ export class PostsService {
   ): Promise<PostCommentDetail> {
     const { content } = requestData;
 
-    const post = await this.postsRepository.getPostWithUserById(postId);
+    const post = await this.postsRepository.getPostById(postId);
     if (!post) {
       throw new NotFoundException('Post not found');
     }
 
-    const comment = await this.postCommentsService.getPostCommentByIdAndPostId(commentId, post.id);
+    const comment = await this.postCommentsService.getPostCommentWithUserByIdAndPostId(
+      commentId,
+      post.id,
+    );
     if (!comment) {
       throw new NotFoundException('Comment not found');
     }
@@ -379,11 +450,11 @@ export class PostsService {
     comment.content = content;
 
     try {
-      const [updated] = await Promise.all([this.postCommentsService.savePostComment(comment)]);
-      return { ...updated, user: post.user, post };
+      const updated = await this.postCommentsService.savePostComment(comment);
+      return { ...updated, user: comment.user, post };
     } catch (err) {
-      this.logger.error(`updatePost`, err);
-      throw new InternalServerErrorException('Failed to update the post. Please try again');
+      this.logger.error(`updateComment`, err);
+      throw new InternalServerErrorException('Failed to update the comment. Please try again');
     }
   }
 
@@ -424,6 +495,106 @@ export class PostsService {
       await queryRunner.rollbackTransaction();
       this.logger.error(`deleteComment`, error);
       throw new InternalServerErrorException('Failed to delete the comment. Please try again');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async updateReply(
+    userId: number,
+    postId: string,
+    parentId: string,
+    replyId: string,
+    requestData: UpdateCommentRequestDto,
+  ): Promise<PostCommentDetail> {
+    const { content } = requestData;
+
+    const post = await this.postsRepository.getPostById(postId);
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    const reply = await this.postCommentsService.getPostCommentWithUserByIdAndPostId(
+      replyId,
+      post.id,
+    );
+
+    if (!reply) {
+      throw new NotFoundException('Reply not found');
+    }
+
+    if (!reply.parentId) {
+      throw new BadRequestException('Target is not a reply.');
+    }
+
+    if (reply.parentId !== parentId) {
+      throw new BadRequestException('Reply does not belong to the specified parent comment.');
+    }
+
+    this._validateCommentOwnership(userId, reply.userId);
+
+    reply.content = content;
+
+    try {
+      const updated = await this.postCommentsService.savePostComment(reply);
+      return { ...updated, user: reply.user, post };
+    } catch (err) {
+      this.logger.error(`updateReply`, err);
+      throw new InternalServerErrorException('Failed to update the reply. Please try again');
+    }
+  }
+
+  async deleteReply(
+    userId: number,
+    postId: string,
+    parentId: string,
+    replyId: string,
+  ): Promise<ParentRepliesCount> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const manager = queryRunner.manager;
+
+      const post = await this.postsRepository.getPostById(postId, manager);
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+
+      const reply = await this.postCommentsService.getPostCommentByIdAndPostId(
+        replyId,
+        post.id,
+        manager,
+      );
+      if (!reply) {
+        throw new NotFoundException('Reply not found');
+      }
+
+      if (!reply.parentId) {
+        throw new BadRequestException('Target is not a reply.');
+      }
+
+      if (reply.parentId !== parentId) {
+        throw new BadRequestException('Reply does not belong to the specified parent comment.');
+      }
+
+      this._validateCommentOwnership(userId, reply.userId);
+
+      await this.postCommentsService.removePostComment(reply, manager);
+      await this.postCommentsService.decrementPostCommentRepliesCount(parentId, manager);
+
+      const updatedParent = await this.postCommentsService.getPostCommentById(parentId, manager);
+      if (!updatedParent) {
+        throw new NotFoundException(`Comment with ID ${parentId} not found after like`);
+      }
+
+      await queryRunner.commitTransaction();
+      return { parentRepliesCount: updatedParent.repliesCount };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.logger.error('deleteReply', error);
+      throw new InternalServerErrorException('Failed to delete the reply. Please try again');
     } finally {
       await queryRunner.release();
     }

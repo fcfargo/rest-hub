@@ -21,6 +21,11 @@ export interface GetPaginatedPostCommentsResponse {
   meta: metaDataResponseDto;
 }
 
+export interface GetPaginatedRepliesResponse {
+  replies: PostCommentDetailAndIsLiked[];
+  meta: metaDataResponseDto;
+}
+
 export type PostWithUser = Post & { user: User };
 
 export type PostWithUserAndIsLiked = PostWithUser & { isLiked: boolean };
@@ -37,4 +42,12 @@ export interface PostLikeStatusResponse {
 export interface PostCommentLikeStatusResponse {
   isLiked: boolean;
   likesCount: number;
+}
+
+export interface ParentRepliesCount {
+  parentRepliesCount: number;
+}
+
+export interface CreateReply extends ParentRepliesCount {
+  reply: PostComment;
 }

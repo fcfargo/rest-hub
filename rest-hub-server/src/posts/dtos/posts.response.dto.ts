@@ -74,7 +74,7 @@ export class PostCommentResponseDto {
   likesCount: number;
 
   @Expose()
-  children: Comment[];
+  repliesCount: number;
 
   @Expose()
   createdAt: string;
@@ -85,6 +85,19 @@ export class PostCommentResponseDto {
   @Expose()
   isLiked: boolean;
 }
+
+export class ParentRepliesCountDto {
+  @Expose()
+  parentRepliesCount: number;
+}
+
+export class CreateReplyResponseDto extends ParentRepliesCountDto {
+  @Expose()
+  @Type(() => PostCommentResponseDto)
+  reply: PostCommentResponseDto;
+}
+
+export class DeleteReplyResponseDto extends ParentRepliesCountDto {}
 
 export class metaDataResponseDto {
   @Expose()
@@ -108,6 +121,16 @@ export class GetPostCommentsResponseDto {
   @Expose()
   @Type(() => PostCommentResponseDto)
   comments: PostCommentResponseDto[];
+
+  @Expose()
+  @Type(() => metaDataResponseDto)
+  meta: metaDataResponseDto;
+}
+
+export class GetRepliesResponseDto {
+  @Expose()
+  @Type(() => PostCommentResponseDto)
+  replies: PostCommentResponseDto[];
 
   @Expose()
   @Type(() => metaDataResponseDto)

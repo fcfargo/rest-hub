@@ -11,3 +11,8 @@ export interface GetPaginatedPostCommentsByPostIdResponse {
   comments: PostCommentDetailAndIsLiked[];
   totalCount: number;
 }
+
+export interface GetPaginatedRepliesByPostIdAndCommentIdResponse {
+  replies: PostCommentDetailAndIsLiked[];
+  totalCount: number;
+}

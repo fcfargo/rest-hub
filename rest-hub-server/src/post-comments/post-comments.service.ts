@@ -4,6 +4,7 @@ import { EntityManager, UpdateResult } from 'typeorm';
 import {
   CreatePostCommentRequest,
   GetPaginatedPostCommentsByPostIdResponse,
+  GetPaginatedRepliesByPostIdAndCommentIdResponse,
 } from './interfaces/ponst-comments.interface';
 import { PostCommentsRepository } from './post-comments.repository';
 
@@ -38,11 +39,11 @@ export class PostCommentsService {
     return this.postCommentRepository.removePostComment(comment, manager);
   }
 
-  async getPostCommentWithUserAndRepliesById(
+  async getPostCommentWithUserById(
     commentId: string,
     manager?: EntityManager,
   ): Promise<PostComment | null> {
-    return this.postCommentRepository.getPostCommentWithUserAndRepliesById(commentId, manager);
+    return this.postCommentRepository.getPostCommentWithUserById(commentId, manager);
   }
 
   async getPostCommentById(
@@ -60,6 +61,18 @@ export class PostCommentsService {
     return this.postCommentRepository.getPostCommentByIdAndPostId(commentId, postId, manager);
   }
 
+  async getPostCommentWithUserByIdAndPostId(
+    commentId: string,
+    postId: string,
+    manager?: EntityManager,
+  ): Promise<PostComment | null> {
+    return this.postCommentRepository.getPostCommentWithUserByIdAndPostId(
+      commentId,
+      postId,
+      manager,
+    );
+  }
+
   async getPaginatedPostCommentsByPostId(
     userId: number,
     postId: string,
@@ -70,6 +83,24 @@ export class PostCommentsService {
     return this.postCommentRepository.getPaginatedPostCommentsByPostId(
       userId,
       postId,
+      limit,
+      offset,
+      order,
+    );
+  }
+
+  async getPaginatedRepliesByPostIdAndParentId(
+    userId: number,
+    postId: string,
+    parentId: string,
+    limit: number,
+    offset: number,
+    order: OrderTypes,
+  ): Promise<GetPaginatedRepliesByPostIdAndCommentIdResponse> {
+    return this.postCommentRepository.getPaginatedRepliesByPostIdAndParentId(
+      userId,
+      postId,
+      parentId,
       limit,
       offset,
       order,
@@ -115,5 +146,19 @@ export class PostCommentsService {
     manager?: EntityManager,
   ): Promise<UpdateResult> {
     return this.postCommentRepository.decrementPostCommentLikesCount(commentId, manager);
+  }
+
+  async incrementPostCommentRepliesCount(
+    commentId: string,
+    manager?: EntityManager,
+  ): Promise<UpdateResult> {
+    return this.postCommentRepository.incrementPostCommentRepliesCount(commentId, manager);
+  }
+
+  async decrementPostCommentRepliesCount(
+    commentId: string,
+    manager?: EntityManager,
+  ): Promise<UpdateResult> {
+    return this.postCommentRepository.decrementPostCommentRepliesCount(commentId, manager);
   }
 }

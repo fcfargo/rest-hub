@@ -5,6 +5,7 @@ import { EntityManager, In, IsNull, Repository, UpdateResult } from 'typeorm';
 import {
   CreatePostCommentRequest,
   GetPaginatedPostCommentsByPostIdResponse,
+  GetPaginatedRepliesByPostIdAndCommentIdResponse,
 } from './interfaces/ponst-comments.interface';
 
 import { OrderTypes } from '@/common/interfaces/common.interface';
@@ -57,19 +58,35 @@ export class PostCommentsRepository {
     postId: string,
     manager?: EntityManager,
   ): Promise<PostComment | null> {
-    const where = { id: commentId, postId };
+    const options = {
+      where: { id: commentId, postId },
+    };
     return manager
-      ? manager.findOne(this.postComment, { where })
-      : this.postCommentsRepository.findOne({ where });
+      ? manager.findOne(this.postComment, options)
+      : this.postCommentsRepository.findOne(options);
   }
 
-  async getPostCommentWithUserAndRepliesById(
+  async getPostCommentWithUserByIdAndPostId(
+    commentId: string,
+    postId: string,
+    manager?: EntityManager,
+  ): Promise<PostComment | null> {
+    const options = {
+      where: { id: commentId, postId },
+      relations: ['user', 'post'],
+    };
+    return manager
+      ? manager.findOne(this.postComment, options)
+      : this.postCommentsRepository.findOne(options);
+  }
+
+  async getPostCommentWithUserById(
     commentId: string,
     manager?: EntityManager,
   ): Promise<PostComment | null> {
     const options = {
       where: { id: commentId },
-      relations: ['user', 'children', 'children.user', 'post'],
+      relations: ['user', 'post'],
     };
     return manager
       ? manager.findOne(this.postComment, options)
@@ -91,7 +108,7 @@ export class PostCommentsRepository {
       order: { createdAt: order },
       take: limit,
       skip: offset,
-      relations: ['user', 'children', 'children.user', 'post'],
+      relations: ['user', 'post'],
     });
 
     if (!comments.length) {
@@ -112,6 +129,45 @@ export class PostCommentsRepository {
     }));
 
     return { comments: postCommentsWithIsLiked, totalCount };
+  }
+
+  async getPaginatedRepliesByPostIdAndParentId(
+    userId: number,
+    postId: string,
+    parentId: string,
+    limit: number,
+    offset: number,
+    order: OrderTypes,
+  ): Promise<GetPaginatedRepliesByPostIdAndCommentIdResponse> {
+    const [replies, totalCount] = await this.postCommentsRepository.findAndCount({
+      where: {
+        postId,
+        parentId,
+      },
+      order: { createdAt: order },
+      take: limit,
+      skip: offset,
+      relations: ['user', 'post'],
+    });
+
+    if (!replies.length) {
+      return { replies: [], totalCount };
+    }
+
+    const replyIds = replies.map((comment) => comment.id);
+    const likedReplyLikes = await this.getLikedPostCommentLikesByCommentIdAndUserId(
+      replyIds,
+      userId,
+    );
+
+    const likedReplyIdSet = new Set(likedReplyLikes.map((like) => like.commentId));
+
+    const repliesWithIsLiked = replies.map((reply) => ({
+      ...reply,
+      isLiked: likedReplyIdSet.has(reply.id),
+    }));
+
+    return { replies: repliesWithIsLiked, totalCount };
   }
 
   async getLikedPostCommentLikesByCommentIdAndUserId(
@@ -175,5 +231,25 @@ export class PostCommentsRepository {
     return manager
       ? manager.decrement(this.postComment, where, 'likesCount', 1)
       : this.postCommentsRepository.decrement(where, 'likesCount', 1);
+  }
+
+  async incrementPostCommentRepliesCount(
+    commentId: string,
+    manager?: EntityManager,
+  ): Promise<UpdateResult> {
+    const where = { id: commentId };
+    return manager
+      ? manager.increment(this.postComment, where, 'repliesCount', 1)
+      : this.postCommentsRepository.increment(where, 'repliesCount', 1);
+  }
+
+  async decrementPostCommentRepliesCount(
+    commentId: string,
+    manager?: EntityManager,
+  ): Promise<UpdateResult> {
+    const where = { id: commentId };
+    return manager
+      ? manager.decrement(this.postComment, where, 'repliesCount', 1)
+      : this.postCommentsRepository.decrement(where, 'repliesCount', 1);
   }
 }
