@@ -10,7 +10,7 @@
   margin-bottom: 2px;
 }
 
-.writerProfileImageContainer {
+.replyWriterProfileImageContainer {
   flex-shrink: 0;
   display: flex;
   align-items: flex-start;
@@ -18,8 +18,8 @@
 }
 
 .profileIcon {
-  width: 40px;
-  height: 40px;
+  width: 24;
+  height: 24;
   border-radius: 100px;
   border-style: solid;
   border-color: rgba(90, 91, 97, 0.2);
@@ -27,24 +27,24 @@
   object-fit: cover;
 }
 
-.commentContainer {
+.replyContentContainer {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.parentCommentContainer {
+.replyContentWrapper {
   flex-shrink: 0;
   display: flex;
   gap: 4px;
 }
 
-.contentContainer {
+.replyTextContainer {
   width: 100%;
 }
 
-.writerProfileInfoContainer {
+.replyWriterInfo {
   gap: 8px;
   display: flex;
   align-items: center;
@@ -69,13 +69,13 @@
   font-weight: 400;
 }
 
-.writerContentContainer {
+.replyTextContent {
   width: 100%;
   display: flex;
   align-items: center;
 }
 
-.content {
+.text {
   width: 100%;
   font-size: 13px;
   color: #222;
@@ -84,7 +84,7 @@
   overflow-wrap: break-word;
 }
 
-.commentActionBarContainer {
+.replyActionBar {
   margin-top: 2px;
   display: flex;
   align-items: center;

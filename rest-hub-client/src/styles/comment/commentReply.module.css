@@ -1,0 +1,88 @@
+.repliesWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.replyComposer {
+  width: 100%;
+  display: flex;
+  gap: 6px;
+}
+
+.replyProfileImageContainer {
+  flex-shrink: 0;
+  align-self: flex-start;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.profileIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 100px;
+  border-style: solid;
+  border-color: rgba(90, 91, 97, 0.2);
+  border-width: 0.5px;
+  object-fit: cover;
+}
+
+.replyEditorArea {
+  flex-grow: 1;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.replyToggleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.replyToggleContent {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.replyArrowIcon {
+  width: 16px;
+  height: 16px;
+  transform: rotate(90deg);
+  filter: brightness(0) saturate(100%) invert(51%) sepia(91%) saturate(575%) hue-rotate(169deg)
+    brightness(94%) contrast(90%);
+}
+
+.replyArrowIcon.expanded {
+  transform: rotate(270deg);
+}
+
+.replyToggleText {
+  flex-shrink: 0;
+  color: #0095f6;
+  font-size: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  letter-spacing: -0.8px;
+}
+
+.repliesList {
+  width: 100%;
+}
+
+.loadMoreButton {
+  flex-shrink: 0;
+  color: #0095f6;
+  font-size: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}

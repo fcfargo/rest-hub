@@ -43,7 +43,7 @@ export default function CommentInput({ postId, parentId, onAddComment }: Comment
     try {
       setIsLoading(true);
 
-      const payload = { content: comment, parentId: parentId ? parentId : null };
+      const payload = { content: comment, parentId: parentId ?? null };
 
       const { data } = await apiRequest(async (accessToken: string) => {
         return api.post(`${API_ENDPOINTS.POST}/${postId}/comment`, payload, {
@@ -54,11 +54,11 @@ export default function CommentInput({ postId, parentId, onAddComment }: Comment
       const { post } = data.body;
 
       onAddComment(data.body);
+      setComment('');
       updatePostCommentsCount(post.id, post.commentsCount);
     } catch (error) {
       console.error('Failed to create comment:', error);
     } finally {
-      setComment('');
       setIsLoading(false);
     }
   };
