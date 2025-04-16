@@ -1,7 +1,9 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
+import { MODAL_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
+import { useModal } from '@/context/modalContext';
 import { usePost } from '@/context/postContext';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
@@ -21,39 +23,40 @@ export default function FollowButton({
 }: FollowButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { logout } = useAuth();
+  const { openModal } = useModal();
   const { patchPostsByAuthorId } = usePost();
 
   if (currentUserId === targetUserId) {
     return null;
   }
 
-  const handleToggleFollow = async () => {
+  const followUser = async () => {
     setIsLoading(true);
-
-    const requestFn = isFollowing
-      ? async (accessToken: string) => {
-          return api.delete(`${API_ENDPOINTS.FOLLOW}`, {
-            data: { followingId: targetUserId },
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
-        }
-      : async (accessToken: string) => {
-          return api.post(
-            `${API_ENDPOINTS.FOLLOW}`,
-            { followingId: targetUserId },
-            {
-              headers: { Authorization: `Bearer ${accessToken}` },
-            },
-          );
-        };
-
     try {
-      await apiRequest(requestFn, logout);
-      patchPostsByAuthorId(targetUserId, { isFollowing: !isFollowing });
+      await apiRequest(async (accessToken: string) => {
+        return api.post(
+          `${API_ENDPOINTS.FOLLOW}`,
+          { followingId: targetUserId },
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          },
+        );
+      }, logout);
+      patchPostsByAuthorId(targetUserId, { isFollowing: true });
     } catch (error) {
-      console.error('Follow toggle failed:', error);
+      console.error('Follow user failed:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleToggleFollow = async () => {
+    if (isFollowing) {
+      openModal(MODAL_TYPES.UNFOLLOW_USER, {
+        targetUserId,
+      });
+    } else {
+      followUser();
     }
   };
 

@@ -43,6 +43,7 @@ export const MODAL_TYPES = {
   POST_DETAIL: 'postDetail',
   COMMENT_DELETE: 'commentDelete',
   COMMENT_REPLY_DELETE: 'commentReplyDelete',
+  UNFOLLOW_USER: 'unfollowUser',
 } as const;
 
 export const ERROR_CODES = {

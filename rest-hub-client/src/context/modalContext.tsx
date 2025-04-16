@@ -9,6 +9,7 @@ import CommentReplyDeleteModal from '@/app/posts/detail/\bcomment/CommentReplyDe
 import PostDetailModal from '@/app/posts/detail/postDetailModal';
 import PostUpdateModal from '@/app/posts/update/postUpdateModal';
 import PasswordChangeModal from '@/app/settings/security/passwordChangeModal';
+import UnfollowModal from '@/components/follow/UnfollowModal';
 import { MODAL_TYPES } from '@/constants';
 import { Post } from '@/types';
 
@@ -48,6 +49,10 @@ type CommentReplyDelete = {
   updateCommentRepliesCount: (commentId: string, repliesCount: number) => void;
 };
 
+type FollowDelete = {
+  targetUserId: number;
+};
+
 type ModalDataMap = {
   [MODAL_TYPES.POST_CREATE]: undefined;
   [MODAL_TYPES.PASSWORD_CHANGE]: undefined;
@@ -56,6 +61,7 @@ type ModalDataMap = {
   [MODAL_TYPES.POST_DETAIL]: PostDetail;
   [MODAL_TYPES.COMMENT_DELETE]: CommentDelete;
   [MODAL_TYPES.COMMENT_REPLY_DELETE]: CommentReplyDelete;
+  [MODAL_TYPES.UNFOLLOW_USER]: FollowDelete;
 };
 
 /**
@@ -133,6 +139,8 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
                 updateCommentRepliesCount={data.updateCommentRepliesCount}
               />
             );
+          case MODAL_TYPES.UNFOLLOW_USER:
+            return <UnfollowModal key={index} targetUserId={data.targetUserId} />;
           default:
             return null;
         }
@@ -140,7 +148,6 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     </ModalContext.Provider>
   );
 };
-
 export const useModal = () => {
   const context = useContext(ModalContext);
   if (!context) {

@@ -3,62 +3,51 @@
 import classNames from 'classnames';
 import { useState } from 'react';
 
+import { CloseButtonWhite } from '../ui/closeButton';
+
 import { ErrorMessage } from '@/components/ui/message';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
-import styles from '@/styles/comment/commentReplyDelete.module.css';
+import styles from '@/styles/follow/unfollow.module.css';
 import { apiRequest } from '@/utils/apiRequest';
 
-interface CommentReplyDeleteModalProps {
-  postId: string;
-  parentId: string;
-  replyId: string;
-  deleteCommentReply: (replyId: string) => void;
-  updateCommentRepliesCount: (commentId: string, repliesCount: number) => void;
+interface UnfollowModalProps {
+  targetUserId: number;
 }
 
-export default function CommentReplyDeleteModal({
-  postId,
-  parentId,
-  replyId,
-  deleteCommentReply,
-  updateCommentRepliesCount,
-}: CommentReplyDeleteModalProps) {
+export default function UnfollowModal({ targetUserId }: UnfollowModalProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const { closeModal } = useModal();
   const { logout } = useAuth();
+  const { patchPostsByAuthorId } = usePost();
   const isMounted = useMounted();
 
   /**
-   * 답글 삭제 요청 처리
+   * 언팔로우 요청 처리
    */
-  const handleCommenReplyDelete = async () => {
+  const handleCommentDelete = async () => {
     try {
       setIsLoading(true);
       setMessage(null);
 
-      const { data } = await apiRequest(async (accessToken: string) => {
-        return api.delete(
-          `${API_ENDPOINTS.POST}/${postId}/comments/${parentId}/replies/${replyId}`,
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          },
-        );
+      await apiRequest(async (accessToken: string) => {
+        return api.delete(`${API_ENDPOINTS.FOLLOW}`, {
+          data: { followingId: targetUserId },
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
       }, logout);
 
-      const { parentRepliesCount } = data.body;
-
+      patchPostsByAuthorId(targetUserId, { isFollowing: false });
       closeModal();
-      deleteCommentReply(replyId);
-      updateCommentRepliesCount(parentId, parentRepliesCount);
     } catch (err) {
-      console.error('Failed to delete reply:', err);
-      setMessage('답글 삭제 중 문제가 발생했습니다.');
+      console.error('Unfollow user failed:', err);
+      setMessage('언팔로우 처리 중 문제가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -66,17 +55,20 @@ export default function CommentReplyDeleteModal({
 
   return (
     <div className={styles.overlay}>
+      <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
+
       <div className={styles.container}>
         <div className={classNames(styles.wrapper, isMounted && styles.active)}>
-          <h2 className={styles.title}>답글을 삭제할까요?</h2>
-          <p className={styles.description}>삭제된 답글은 복구할 수 없습니다.</p>
+          <h2 className={styles.title}>언팔로우 하시겠어요?</h2>
+          <p className={styles.description}>상대방 피드가 더 이상 나타나지 않습니다.</p>
+
           <div className={styles.actions}>
             <button
               className={styles.deleteButton}
-              onClick={handleCommenReplyDelete}
+              onClick={handleCommentDelete}
               disabled={isLoading}
             >
-              삭제하기
+              언팔로우
             </button>
             <button
               className={styles.cancelButton}
@@ -86,6 +78,7 @@ export default function CommentReplyDeleteModal({
               취소
             </button>
           </div>
+
           {message && <ErrorMessage message={message} className="!text-[12px] mt-[-8px]" />}
         </div>
       </div>
