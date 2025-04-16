@@ -15,6 +15,7 @@ export type Post = {
   createdAt: string;
   updatedAt: string;
   isLiked: boolean;
+  isFollowing: boolean;
 };
 
 export type User = {

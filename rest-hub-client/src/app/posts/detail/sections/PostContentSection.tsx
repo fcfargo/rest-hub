@@ -18,11 +18,14 @@ export default function PostContentSection({
 }: PostContentSectionProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const lineCount = content.split('\n').length;
+
   // 더보기 버튼 표시 조건
   const showMoreButton =
     showToggleButton &&
     !isExpanded &&
-    ((hasMediaData && content.length > 50) || (!hasMediaData && content.length > 300));
+    ((hasMediaData && (content.length > 50 || lineCount > 1)) ||
+      (!hasMediaData && (content.length > 300 || lineCount > 3)));
 
   // 줄 수 제한 클래스 적용
   const contentClampClass =

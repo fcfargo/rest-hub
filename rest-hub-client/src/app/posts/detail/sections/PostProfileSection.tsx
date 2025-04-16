@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
+import FollowButton from '@/components/follow/FollowButton';
 import { PROFILE_IMAGE_DEFAULT, POST_MENU_ITEM_TYPES, MODAL_TYPES } from '@/constants';
 import { useModal } from '@/context/modalContext';
 import { useProtectedUser } from '@/hooks/useProtectedUser';
@@ -29,7 +30,7 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
   const { openModal } = useModal();
   const user = useProtectedUser();
 
-  const { user: writer, createdAt, location } = post;
+  const { user: author, createdAt, location, isFollowing } = post;
   const fromNow = formatTimeAgo(createdAt);
   const formattedLocation = location ? getFormattedLocation(location) : null;
 
@@ -66,8 +67,8 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
   };
 
   // 사용자 권한에 따른 메뉴 필터링
-  const getFilteredPostMenuItems = (user: User, writer: Partial<User>) => {
-    const isOwner = user.id === writer.id;
+  const getFilteredPostMenuItems = (user: User, author: Partial<User>) => {
+    const isOwner = user.id === author.id;
     return POST_MENU_ITEMS.filter(({ value }) => {
       if (isOwner) {
         return value !== POST_MENU_ITEM_TYPES.REPORT && value !== POST_MENU_ITEM_TYPES.HIDE;
@@ -81,7 +82,7 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
     <section className={styles.profile} aria-label="Post profile">
       <div className={styles.userInfo}>
         <Image
-          src={writer.profileImage || PROFILE_IMAGE_DEFAULT}
+          src={author.profileImage || PROFILE_IMAGE_DEFAULT}
           alt="User Profile"
           width={40}
           height={40}
@@ -89,8 +90,12 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
         />
         <div className={styles.userDetails}>
           <div className={styles.userHeader}>
-            <div className={styles.username}>{writer.username}</div>
-            <button className={styles.follow}>팔로우</button>
+            <div className={styles.username}>{author.username}</div>
+            <FollowButton
+              currentUserId={user.id}
+              targetUserId={author.id}
+              isFollowing={isFollowing}
+            />
           </div>
           <div className={styles.userFooter}>
             <div className={styles.timaAgo}>{fromNow}</div>
@@ -126,7 +131,7 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
               role="menu"
               aria-label="Post action menu"
             >
-              {getFilteredPostMenuItems(user, writer).map((item) => (
+              {getFilteredPostMenuItems(user, author).map((item) => (
                 <li
                   key={item.value}
                   className={styles.dropdownItem}

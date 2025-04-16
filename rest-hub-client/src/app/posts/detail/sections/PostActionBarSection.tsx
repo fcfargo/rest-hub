@@ -22,7 +22,7 @@ export default function PostActionBarSection({ post }: PostActionBarSectionProps
 
   const { openModal } = useModal();
   const { logout } = useAuth();
-  const { posts, updatePost } = usePost();
+  const { patchPost } = usePost();
 
   /** 좋아요 버튼 클릭 핸들러 */
   const handleLikeButtonClick = async () => {
@@ -47,10 +47,7 @@ export default function PostActionBarSection({ post }: PostActionBarSectionProps
       const { isLiked, likesCount } = data.body;
 
       // 전역 상태(PostContext) 업데이트
-      const targetPost = posts.find((post) => post.id === id);
-      if (targetPost) {
-        updatePost({ ...targetPost, isLiked, likesCount });
-      }
+      patchPost(id, { isLiked, likesCount });
     } catch (error) {
       console.error('Like request failed:', error);
     }

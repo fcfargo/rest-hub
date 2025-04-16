@@ -9,4 +9,5 @@ export const API_ENDPOINTS = {
   POST: '/posts',
   PLACES_AUTOCOMPLETE: '/places/autocomplete',
   PRESIGNED_URL: '/upload/presigned-url',
+  FOLLOW: '/follow',
 };

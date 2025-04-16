@@ -1,6 +1,5 @@
 .contentContainer {
   display: flex;
-  align-items: center;
 }
 
 .content {
@@ -29,8 +28,9 @@
 
 .readMoreButton {
   flex-shrink: 0;
+  align-self: flex-end;
   color: #0095f6;
-  font-size: 14px;
+  font-size: 13px;
   background: none;
   border: none;
   cursor: pointer;

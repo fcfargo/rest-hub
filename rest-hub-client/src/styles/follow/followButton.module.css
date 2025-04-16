@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.followingIcon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) saturate(100%) invert(49%) sepia(63%) saturate(3601%) hue-rotate(177deg)
+    brightness(94%) contrast(99%);
+  opacity: 0.6;
+}
+
+.follow {
+  color: #0095f6;
+  text-align: left;
+  font-family: 'Inter-Medium', sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}

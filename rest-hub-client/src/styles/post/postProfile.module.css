@@ -44,15 +44,6 @@
   font-weight: 600;
 }
 
-.follow {
-  color: #0095f6;
-  text-align: left;
-  font-family: 'Inter-Medium', sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 600;
-}
-
 .userFooter {
   display: flex;
   align-items: center;
