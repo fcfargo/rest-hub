@@ -12,6 +12,13 @@ import { useModal } from '@/context/modalContext';
 import styles from '@/styles/layout/sidebar.module.css';
 import globalStyles from '@/styles/utils/utils.module.css';
 
+interface MenuItemProps {
+  src: string;
+  alt: string;
+  label: string;
+  onClick?: () => void;
+}
+
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const { user, logout } = useAuth();
@@ -19,11 +26,8 @@ export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  interface MenuItemProps {
-    src: string;
-    alt: string;
-    label: string;
-    onClick?: () => void;
+  if (!user) {
+    return null;
   }
 
   const MENU_ITEMS = [
@@ -33,17 +37,17 @@ export default function Sidebar() {
       label: 'Home',
       onClick: () => router.push(ROUTES.HOME),
     },
-    { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search' },
+    // { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search' },
     {
       src: '/layout/sidebar/notification.svg',
       alt: 'Notification',
       label: 'Notification',
     },
-    {
-      src: '/layout/sidebar/communities.svg',
-      alt: 'Communities',
-      label: 'Communities',
-    },
+    // {
+    //   src: '/layout/sidebar/communities.svg',
+    //   alt: 'Communities',
+    //   label: 'Communities',
+    // },
     {
       src: '/layout/sidebar/post.svg',
       alt: 'Post',
@@ -57,11 +61,13 @@ export default function Sidebar() {
       onClick: () =>
         router.push(pathname === ROUTES.SETTINGS.HOME ? ROUTES.HOME : ROUTES.SETTINGS.HOME),
     },
+    {
+      src: '/layout/sidebar/profile.svg',
+      alt: 'Me',
+      label: 'Me',
+      onClick: () => router.push(`${ROUTES.USERS}/${user.id}`),
+    },
   ];
-
-  if (!user) {
-    return null;
-  }
 
   const username = user.username;
   const profileImage = user.profileImage || PROFILE_IMAGE_DEFAULT;
@@ -99,7 +105,10 @@ export default function Sidebar() {
               width={48}
               height={48}
               alt="ProfileImage"
-              className={styles.profileDefault}
+              className={classNames(
+                styles.profileIcon,
+                !user.profileImage && styles.defaultProfile,
+              )}
             />
           </div>
 

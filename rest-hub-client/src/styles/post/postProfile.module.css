@@ -23,6 +23,10 @@
   object-fit: cover;
 }
 
+.profileIcon.defaultProfile {
+  opacity: 0.2;
+}
+
 .userDetails {
   display: flex;
   flex-direction: column;

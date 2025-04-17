@@ -1,5 +1,6 @@
 'use client';
 
+import classNames from 'classnames';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
@@ -86,7 +87,7 @@ export default function PostProfileSection({ post }: PostProfileSectionProps) {
           alt="User Profile"
           width={40}
           height={40}
-          className={styles.profileIcon}
+          className={classNames(styles.profileIcon, !author.profileImage && styles.defaultProfile)}
         />
         <div className={styles.userDetails}>
           <div className={styles.userHeader}>

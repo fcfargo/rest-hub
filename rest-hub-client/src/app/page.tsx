@@ -1,6 +1,7 @@
 'use client';
 
 import PostList from './posts/list/postList';
+
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useRouteEffect } from '@/hooks/useRouteEffect';
 

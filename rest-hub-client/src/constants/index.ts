@@ -9,6 +9,7 @@ export const ROUTES = {
     HOME: '/settings',
     SECURITY: '/settings/security',
   },
+  USERS: '/users',
 };
 
 export const PROFILE_IMAGE_DEFAULT = '/layout/sidebar/profile-default.svg';
