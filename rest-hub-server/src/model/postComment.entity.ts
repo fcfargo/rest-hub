@@ -7,6 +7,8 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  Index,
+  Check,
 } from 'typeorm';
 
 import { PostCommentLike } from './postCommentLike.entity';
@@ -14,6 +16,9 @@ import { PostCommentLike } from './postCommentLike.entity';
 import { Post } from '@/model/post.entity';
 import { User } from '@/model/user.entity';
 
+@Index(['id'])
+@Index(['userId'])
+@Index(['postId'])
 @Entity({ name: 'post_comments' })
 export class PostComment {
   @PrimaryGeneratedColumn('uuid')
@@ -47,9 +52,11 @@ export class PostComment {
   post: Post;
 
   @Column({ default: 0 })
+  @Check(`"likesCount" >= 0`)
   likesCount: number;
 
   @Column({ default: 0 })
+  @Check(`"repliesCount" >= 0`)
   repliesCount: number;
 
   @CreateDateColumn()

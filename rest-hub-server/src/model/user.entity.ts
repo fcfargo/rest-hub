@@ -6,6 +6,8 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
+  Index,
+  Check,
 } from 'typeorm';
 
 import { Post } from './post.entity';
@@ -15,6 +17,7 @@ import { PostLike } from './postLike.entity';
 
 import { SOCIAL_PROVIDERS, SocialProvider } from '@/users/interfaces/users.interface';
 
+@Index(['id'])
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
@@ -27,13 +30,16 @@ export class User {
   email: string;
 
   @Column({ nullable: true })
-  password: string;
+  password?: string;
 
   @Column({ nullable: true })
-  profileImage: string;
+  profileImage?: string;
 
   @Column({ nullable: true })
-  deviceToken: string;
+  deviceToken?: string;
+
+  @Column({ nullable: true })
+  description?: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -42,10 +48,10 @@ export class User {
   updatedAt: Date;
 
   @DeleteDateColumn({ nullable: true })
-  deletedAt: Date;
+  deletedAt?: Date;
 
   @Column({ type: 'enum', enum: SOCIAL_PROVIDERS, nullable: true })
-  socialProvider: SocialProvider;
+  socialProvider?: SocialProvider;
 
   @OneToMany(() => Post, (post) => post.user, { cascade: true })
   posts: Post[];
@@ -58,4 +64,12 @@ export class User {
 
   @OneToMany(() => PostCommentLike, (like) => like.user)
   commentLikes: PostCommentLike[];
+
+  @Column({ default: 0 })
+  @Check(`"followingsCount" >= 0`)
+  followingsCount: number;
+
+  @Column({ default: 0 })
+  @Check(`"followersCount" >= 0`)
+  followersCount: number;
 }

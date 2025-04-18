@@ -1,4 +1,6 @@
-export interface UpdateUserData {
+import { User } from '@/model/user.entity';
+
+export interface UpdateUserDataRequest {
   password?: string;
 }
 
@@ -15,3 +17,15 @@ export const SOCIAL_PROVIDERS = {
 } as const;
 
 export type SocialProvider = (typeof SOCIAL_PROVIDERS)[keyof typeof SOCIAL_PROVIDERS];
+
+export type TokenResponse = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type SignupResponse = {
+  user: User;
+  tokens: TokenResponse;
+};
+
+export type UserSummary = { id: number; userId: string; profileImage: string };

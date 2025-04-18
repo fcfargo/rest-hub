@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { UpdateResult } from 'typeorm';
+import { EntityManager, UpdateResult } from 'typeorm';
 
-import { CreateUserRequest, UpdateUserData } from './interfaces/users.interface';
+import { CreateUserRequest, UpdateUserDataRequest } from './interfaces/users.interface';
 import { UsersRepository } from './users.repository';
 
 import { User } from '@/model/user.entity';
@@ -10,7 +10,7 @@ import { User } from '@/model/user.entity';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async updateUser(userId: number, updateData: UpdateUserData): Promise<UpdateResult> {
+  async updateUser(userId: number, updateData: UpdateUserDataRequest): Promise<UpdateResult> {
     const result = await this.usersRepository.updateUser(userId, updateData);
 
     if (result.affected === 0) {
@@ -39,5 +39,21 @@ export class UsersService {
 
   async findOneUserByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOneUserByEmail(email);
+  }
+
+  async incrementFollowingsCount(userId: number, manager?: EntityManager): Promise<UpdateResult> {
+    return this.usersRepository.incrementFollowingsCount(userId, manager);
+  }
+
+  async incrementFollowersCount(userId: number, manager?: EntityManager): Promise<UpdateResult> {
+    return this.usersRepository.incrementFollowersCount(userId, manager);
+  }
+
+  async decrementFollowingsCount(userId: number, manager?: EntityManager): Promise<UpdateResult> {
+    return this.usersRepository.decrementFollowingsCount(userId, manager);
+  }
+
+  async decrementFollowersCount(userId: number, manager?: EntityManager): Promise<UpdateResult> {
+    return this.usersRepository.decrementFollowingsCount(userId, manager);
   }
 }

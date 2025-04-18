@@ -1,7 +1,9 @@
 import {
+  Check,
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -14,6 +16,8 @@ import { PostLike } from './postLike.entity';
 
 import { User } from '@/model/user.entity';
 
+@Index(['id'])
+@Index(['userId'])
 @Entity({ name: 'posts' })
 export class Post {
   @PrimaryGeneratedColumn('uuid')
@@ -36,9 +40,11 @@ export class Post {
   location?: string;
 
   @Column({ default: 0 })
+  @Check(`"likesCount" >= 0`)
   likesCount: number;
 
   @Column({ default: 0 })
+  @Check(`"commentsCount" >= 0`)
   commentsCount: number;
 
   @CreateDateColumn()

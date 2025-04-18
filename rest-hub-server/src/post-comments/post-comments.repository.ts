@@ -6,7 +6,7 @@ import {
   CreatePostCommentRequest,
   GetPaginatedPostCommentsByPostIdResponse,
   GetPaginatedRepliesByPostIdAndCommentIdResponse,
-} from './interfaces/ponst-comments.interface';
+} from './interfaces/post-comments.interface';
 
 import { OrderTypes } from '@/common/interfaces/common.interface';
 import { PostComment } from '@/model/postComment.entity';

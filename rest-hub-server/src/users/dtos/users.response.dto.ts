@@ -17,6 +17,9 @@ export class UserResponseDto {
   deviceToken: string;
 
   @Expose()
+  description: string;
+
+  @Expose()
   createdAt: Date;
 
   @Expose()
@@ -24,6 +27,12 @@ export class UserResponseDto {
 
   @Expose()
   socialProvider: string;
+
+  @Expose()
+  followingsCount: number;
+
+  @Expose()
+  followersCount: number;
 }
 
 export class TokenResponseDto {
@@ -42,4 +51,15 @@ export class AuthResponseDto {
   @Expose()
   @Type(() => TokenResponseDto)
   tokens: TokenResponseDto;
+}
+
+export class UserSummaryResponseDto {
+  @Expose()
+  id: number;
+
+  @Expose()
+  userId: string;
+
+  @Expose()
+  profileImage: string;
 }

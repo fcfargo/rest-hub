@@ -2,11 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, In, Repository, UpdateResult } from 'typeorm';
 
-import {
-  CreatePostRequest,
-  PostWithUser,
-  PostWithUserAndIsLiked,
-} from './interfaces/posts.interface';
+import { CreatePostRequest, PostWithUser } from './interfaces/posts.interface';
 
 import { OrderTypes } from '@/common/interfaces/common.interface';
 import { Post } from '@/model/post.entity';
@@ -39,11 +35,10 @@ export class PostsRepository {
   }
 
   async getPaginatedPosts(
-    userId: number,
     limit: number,
     offset: number,
     order: OrderTypes,
-  ): Promise<{ posts: PostWithUserAndIsLiked[]; totalCount: number }> {
+  ): Promise<{ posts: Post[]; totalCount: number }> {
     const [posts, totalCount] = await this.postsRepository.findAndCount({
       order: { createdAt: order },
       take: limit,
@@ -51,21 +46,7 @@ export class PostsRepository {
       relations: ['user'],
     });
 
-    if (!posts.length) {
-      return { posts: [], totalCount };
-    }
-
-    const postIds = posts.map((post) => post.id);
-    const likedPostLikes = await this.getLikedPostLikesByPostIdAndUserId(postIds, userId);
-
-    const likedPostIdSet = new Set(likedPostLikes.map((like) => like.postId));
-
-    const postsWithIsLiked = posts.map((post) => ({
-      ...post,
-      isLiked: likedPostIdSet.has(post.id),
-    }));
-
-    return { posts: postsWithIsLiked, totalCount };
+    return { posts, totalCount };
   }
 
   async getPostWithUserById(postId: string): Promise<PostWithUser | null> {

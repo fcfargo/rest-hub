@@ -18,22 +18,22 @@ import {
   UpdateCommentRequestDto,
   UpdatePostRequestDto,
 } from './dtos/posts.dto';
-import { CommonMessageResponseDto } from './dtos/posts.response.dto';
 import {
-  CreateReply,
+  CreateReplyResponse,
+  DeleteReplyResponse,
   GetPaginatedPostCommentsResponse,
   GetPaginatedPostsResponse,
   GetPaginatedRepliesResponse,
-  ParentRepliesCount,
   PostCommentDetail,
   PostCommentLikeStatusResponse,
   PostLikeStatusResponse,
   PostWithUser,
-  PostWithUserAndIsLiked,
 } from './interfaces/posts.interface';
 import { PostsRepository } from './posts.repository';
 
 import { ORDER_TYPES } from '@/common/constants';
+import { CommonMessageResponseDto } from '@/common/dtos/common.response.dto';
+import { FollowService } from '@/follow/follow.service';
 import { PostComment } from '@/model/postComment.entity';
 import { PostCommentsService } from '@/post-comments/post-comments.service';
 
@@ -43,6 +43,7 @@ export class PostsService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     private readonly postsRepository: PostsRepository,
     private readonly postCommentsService: PostCommentsService,
+    private readonly followService: FollowService,
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
@@ -63,6 +64,19 @@ export class PostsService {
     return fullPost;
   }
 
+  private async _getUserLikedPostIds(postIds: string[], userId: number): Promise<Set<string>> {
+    const userLikes = await this.postsRepository.getLikedPostLikesByPostIdAndUserId(
+      postIds,
+      userId,
+    );
+    return new Set(userLikes.map((like) => like.postId));
+  }
+
+  private async _getFollowingUserIds(userIds: number[], userId: number): Promise<Set<number>> {
+    const followings = await this.followService.getFollowsByUserAndFollowingIds(userIds, userId);
+    return new Set(followings.map((follow) => follow.followingId));
+  }
+
   /**
    * [TODO: 고도화 예정]
    * 향후 팔로우 기능이 도입되면,
@@ -80,22 +94,45 @@ export class PostsService {
     query: GetPostsRequestDto,
   ): Promise<GetPaginatedPostsResponse> {
     const { page, limit } = query;
-
+    const offset = (page - 1) * limit;
     const order = ORDER_TYPES.DESC;
 
-    const offset = (page - 1) * limit;
-
     const { posts, totalCount } = await this.postsRepository.getPaginatedPosts(
-      userId,
       limit,
       offset,
       order,
     );
 
+    const totalPages = Math.ceil(totalCount / limit);
+
+    if (!posts.length) {
+      return {
+        posts: [],
+        meta: {
+          totalPages,
+          currentPage: page,
+        },
+      };
+    }
+
+    const postIds = posts.map((post) => post.id);
+    const authorIds = posts.map((post) => post.user.id);
+
+    const [likedPostIdSet, followingAuthorIdSet] = await Promise.all([
+      this._getUserLikedPostIds(postIds, userId),
+      this._getFollowingUserIds(authorIds, userId),
+    ]);
+
+    const postsWithFlags = posts.map((post) => ({
+      ...post,
+      isLiked: likedPostIdSet.has(post.id),
+      isFollowing: followingAuthorIdSet.has(post.user.id),
+    }));
+
     return {
-      posts,
+      posts: postsWithFlags,
       meta: {
-        totalPages: Math.ceil(totalCount / limit),
+        totalPages,
         currentPage: page,
       },
     };
@@ -111,7 +148,7 @@ export class PostsService {
     userId: number,
     postId: string,
     requestData: UpdatePostRequestDto,
-  ): Promise<PostWithUserAndIsLiked> {
+  ): Promise<PostWithUser> {
     const { content, location } = requestData;
 
     const post = await this.postsRepository.getPostWithUserById(postId);
@@ -125,11 +162,8 @@ export class PostsService {
     post.location = location;
 
     try {
-      const [updated, isLiked] = await Promise.all([
-        this.postsRepository.savePost(post),
-        this.postsRepository.hasUserLikedPost(postId, userId),
-      ]);
-      return { ...updated, user: post.user, isLiked };
+      const updated = await this.postsRepository.savePost(post);
+      return { ...updated, user: post.user };
     } catch (err) {
       this.logger.error(`updatePost`, err);
       throw new InternalServerErrorException('Failed to update the post. Please try again');
@@ -269,7 +303,7 @@ export class PostsService {
     postId: string,
     parentId: string,
     requestData: CreateCommentRequestDto,
-  ): Promise<CreateReply> {
+  ): Promise<CreateReplyResponse> {
     const created = await this._runCreateCommentTransaction(userId, postId, requestData, parentId);
 
     const parent = await this.postCommentsService.getPostCommentById(parentId);
@@ -364,8 +398,6 @@ export class PostsService {
         order,
       );
 
-    comments.filter((comment) => !comment.parentId);
-
     return {
       comments,
       meta: {
@@ -406,8 +438,6 @@ export class PostsService {
         offset,
         order,
       );
-
-    replies.filter((reply) => !reply.parentId);
 
     return {
       replies,
@@ -549,7 +579,7 @@ export class PostsService {
     postId: string,
     parentId: string,
     replyId: string,
-  ): Promise<ParentRepliesCount> {
+  ): Promise<DeleteReplyResponse> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();

@@ -6,11 +6,14 @@ import {
   CreateDateColumn,
   Column,
   Unique,
+  Index,
 } from 'typeorm';
 
 import { PostComment } from './postComment.entity';
 import { User } from './user.entity';
 
+@Index(['userId'])
+@Index(['commentId'])
 @Entity({ name: 'post_comment_likes' })
 @Unique(['userId', 'commentId'])
 export class PostCommentLike {
