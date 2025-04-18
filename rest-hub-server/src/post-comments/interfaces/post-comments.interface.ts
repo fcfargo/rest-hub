@@ -1,4 +1,4 @@
-import { PostCommentDetailAndIsLiked } from '@/posts/interfaces/posts.interface';
+import { PostCommentDetailViewerState } from '@/posts/interfaces/posts.interface';
 
 export interface CreatePostCommentRequest {
   postId: string;
@@ -8,11 +8,11 @@ export interface CreatePostCommentRequest {
 }
 
 export interface GetPaginatedPostCommentsByPostIdResponse {
-  comments: PostCommentDetailAndIsLiked[];
+  comments: PostCommentDetailViewerState[];
   totalCount: number;
 }
 
 export interface GetPaginatedRepliesByPostIdAndCommentIdResponse {
-  replies: PostCommentDetailAndIsLiked[];
+  replies: PostCommentDetailViewerState[];
   totalCount: number;
 }

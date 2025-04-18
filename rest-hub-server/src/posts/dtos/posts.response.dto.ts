@@ -1,5 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 
+import { MetaDataResponseDto } from '@/common/dtos/common.response.dto';
+
 export class PostUserResponseDto {
   @Expose()
   id: number;
@@ -42,6 +44,9 @@ export class PostResponseDto {
 
   @Expose()
   isLiked: boolean;
+
+  @Expose()
+  isFollowing: boolean;
 }
 
 export class PostSummaryResponseDto {
@@ -99,22 +104,14 @@ export class CreateReplyResponseDto extends ParentRepliesCountDto {
 
 export class DeleteReplyResponseDto extends ParentRepliesCountDto {}
 
-export class metaDataResponseDto {
-  @Expose()
-  totalPages: number;
-
-  @Expose()
-  currentPage: number;
-}
-
 export class GetPostsResponseDto {
   @Expose()
   @Type(() => PostResponseDto)
   posts: PostResponseDto[];
 
   @Expose()
-  @Type(() => metaDataResponseDto)
-  meta: metaDataResponseDto;
+  @Type(() => MetaDataResponseDto)
+  meta: MetaDataResponseDto;
 }
 
 export class GetPostCommentsResponseDto {
@@ -123,8 +120,8 @@ export class GetPostCommentsResponseDto {
   comments: PostCommentResponseDto[];
 
   @Expose()
-  @Type(() => metaDataResponseDto)
-  meta: metaDataResponseDto;
+  @Type(() => MetaDataResponseDto)
+  meta: MetaDataResponseDto;
 }
 
 export class GetRepliesResponseDto {
@@ -133,13 +130,8 @@ export class GetRepliesResponseDto {
   replies: PostCommentResponseDto[];
 
   @Expose()
-  @Type(() => metaDataResponseDto)
-  meta: metaDataResponseDto;
-}
-
-export class CommonMessageResponseDto {
-  @Expose()
-  message: string;
+  @Type(() => MetaDataResponseDto)
+  meta: MetaDataResponseDto;
 }
 
 export class PostLikeStatusResponseDto {

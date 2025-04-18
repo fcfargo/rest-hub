@@ -1,5 +1,4 @@
-import { metaDataResponseDto } from '../dtos/posts.response.dto';
-
+import { MetaDataResponseDto } from '@/common/dtos/common.response.dto';
 import { Post } from '@/model/post.entity';
 import { PostComment } from '@/model/postComment.entity';
 import { User } from '@/model/user.entity';
@@ -12,42 +11,44 @@ export interface CreatePostRequest {
 }
 
 export interface GetPaginatedPostsResponse {
-  posts: PostWithUserAndIsLiked[];
-  meta: metaDataResponseDto;
+  posts: PostWithViewerState[];
+  meta: MetaDataResponseDto;
 }
 
 export interface GetPaginatedPostCommentsResponse {
-  comments: PostCommentDetailAndIsLiked[];
-  meta: metaDataResponseDto;
+  comments: PostCommentDetailViewerState[];
+  meta: MetaDataResponseDto;
 }
 
 export interface GetPaginatedRepliesResponse {
-  replies: PostCommentDetailAndIsLiked[];
-  meta: metaDataResponseDto;
+  replies: PostCommentDetailViewerState[];
+  meta: MetaDataResponseDto;
 }
 
 export type PostWithUser = Post & { user: User };
 
-export type PostWithUserAndIsLiked = PostWithUser & { isLiked: boolean };
+export type PostWithViewerState = PostWithUser & {
+  isLiked: boolean;
+  isFollowing: boolean;
+};
 
 export type PostCommentDetail = PostComment & { user: User } & { post: Post };
 
-export type PostCommentDetailAndIsLiked = PostCommentDetail & { isLiked: boolean };
+export type PostCommentDetailViewerState = PostCommentDetail & { isLiked: boolean };
 
-export interface PostLikeStatusResponse {
+export type PostLikeStatusResponse = {
   isLiked: boolean;
   likesCount: number;
-}
+};
 
-export interface PostCommentLikeStatusResponse {
-  isLiked: boolean;
-  likesCount: number;
-}
+export type PostCommentLikeStatusResponse = PostLikeStatusResponse;
 
 export interface ParentRepliesCount {
   parentRepliesCount: number;
 }
 
-export interface CreateReply extends ParentRepliesCount {
+export interface CreateReplyResponse extends ParentRepliesCount {
   reply: PostComment;
 }
+
+export type DeleteReplyResponse = ParentRepliesCount;

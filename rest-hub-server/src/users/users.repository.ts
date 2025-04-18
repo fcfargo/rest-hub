@@ -1,19 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository, UpdateResult } from 'typeorm';
+import { EntityManager, IsNull, Repository, UpdateResult } from 'typeorm';
 
-import { CreateUserRequest, UpdateUserData } from './interfaces/users.interface';
+import { CreateUserRequest, UpdateUserDataRequest } from './interfaces/users.interface';
 
 import { User } from '@/model/user.entity';
 
 @Injectable()
 export class UsersRepository {
+  private readonly user = User;
+
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async updateUser(userId: number, updateData: UpdateUserData): Promise<UpdateResult> {
+  async updateUser(userId: number, updateData: UpdateUserDataRequest): Promise<UpdateResult> {
     return this.usersRepository.update({ id: userId }, updateData);
   }
 
@@ -33,5 +35,33 @@ export class UsersRepository {
     return this.usersRepository.findOne({
       where: { email, deletedAt: IsNull() },
     });
+  }
+
+  async incrementFollowingsCount(userId: number, manager?: EntityManager): Promise<UpdateResult> {
+    const where = { id: userId };
+    return manager
+      ? manager.increment(this.user, where, 'followingsCount', 1)
+      : this.usersRepository.increment(where, 'followingsCount', 1);
+  }
+
+  async incrementFollowersCount(userId: number, manager?: EntityManager): Promise<UpdateResult> {
+    const where = { id: userId };
+    return manager
+      ? manager.increment(this.user, where, 'followersCount', 1)
+      : this.usersRepository.increment(where, 'followersCount', 1);
+  }
+
+  async decrementFollowingsCount(userId: number, manager?: EntityManager): Promise<UpdateResult> {
+    const where = { id: userId };
+    return manager
+      ? manager.decrement(this.user, where, 'followingsCount', 1)
+      : this.usersRepository.decrement(where, 'followingsCount', 1);
+  }
+
+  async decrementFollowersCount(userId: number, manager?: EntityManager): Promise<UpdateResult> {
+    const where = { id: userId };
+    return manager
+      ? manager.decrement(this.user, where, 'followersCount', 1)
+      : this.usersRepository.decrement(where, 'followersCount', 1);
   }
 }

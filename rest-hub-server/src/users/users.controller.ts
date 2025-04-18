@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import {
@@ -47,6 +47,13 @@ export class UsersController {
   @Get('auth/me')
   async getUser(@CurrentUser() currentUser: jwtPayLoad) {
     return this.usersService.findOneUserById(currentUser.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Serialize(UserResponseDto)
+  @Get(':userId')
+  async getUserById(@Param('userId') userId: number) {
+    return this.usersService.findOneUserById(userId);
   }
 
   @Serialize(TokenResponseDto)

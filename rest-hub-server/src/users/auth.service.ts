@@ -20,8 +20,8 @@ import {
   SignInUserRequestDto,
   VerifyGoogleOAuthRequestDto,
 } from './dtos/users.dto';
-import { AuthResponseDto, TokenResponseDto } from './dtos/users.response.dto';
-import { SOCIAL_PROVIDERS } from './interfaces/users.interface';
+import { TokenResponseDto } from './dtos/users.response.dto';
+import { SignupResponse, SOCIAL_PROVIDERS } from './interfaces/users.interface';
 import { jwtPayLoad } from './jwt/guards/jwt.payload';
 import { UsersService } from './users.service';
 
@@ -73,7 +73,7 @@ export class AuthService {
     });
   }
 
-  async signup(requestBody: CreateUserRequestDto): Promise<AuthResponseDto> {
+  async signup(requestBody: CreateUserRequestDto): Promise<SignupResponse> {
     const { username, email, password } = requestBody;
 
     const user = await this.usersService.findOneUserByEmail(email);
@@ -93,7 +93,7 @@ export class AuthService {
     return { user: newUser, tokens };
   }
 
-  async signin(requestBody: SignInUserRequestDto): Promise<AuthResponseDto> {
+  async signin(requestBody: SignInUserRequestDto): Promise<SignupResponse> {
     const { email, password } = requestBody;
 
     const user = await this.usersService.findOneUserByEmail(email);
@@ -104,6 +104,10 @@ export class AuthService {
     const { socialProvider } = user;
     if (socialProvider) {
       throw new BadRequestException('Not available for social login accounts.');
+    }
+
+    if (!user.password) {
+      throw new UnauthorizedException('Password not set for this user');
     }
 
     const isPasswordValid = await this._checkPassword(password, user.password);
@@ -148,7 +152,7 @@ export class AuthService {
     }
   }
 
-  async verifyGoogleOAuth(requestBody: VerifyGoogleOAuthRequestDto): Promise<AuthResponseDto> {
+  async verifyGoogleOAuth(requestBody: VerifyGoogleOAuthRequestDto): Promise<SignupResponse> {
     const { id_token } = requestBody;
 
     const payload = await this._verifyGoogleIdToken(id_token);
@@ -212,6 +216,10 @@ export class AuthService {
     const { socialProvider } = user;
     if (socialProvider) {
       throw new BadRequestException('Not available for social login accounts.');
+    }
+
+    if (!user.password) {
+      throw new UnauthorizedException('Password not set for this user');
     }
 
     const isPasswordValid = await this._checkPassword(oldPassword, user.password);
