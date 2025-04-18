@@ -8,7 +8,8 @@ interface PostContextValue {
   posts: Post[];
   setPosts: Dispatch<SetStateAction<Post[]>>;
   addPost: (post: Post) => void;
-  updatePost: (post: Post) => void;
+  patchPost: (postId: string, partial: Partial<Post>) => void;
+  patchPostsByAuthorId: (authorId: number, partial: Partial<Post>) => void;
   deletePost: (postId: string) => void;
   updatePostCommentsCount: (postId: string, newCount: number) => void;
 }
@@ -23,9 +24,14 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
     setPosts((prev) => [post, ...prev]);
   };
 
-  /** 게시글 업데이트 */
-  const updatePost = (updatedPost: Post) => {
-    setPosts((prevPosts) => prevPosts.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
+  /** 게시글 부분 업데이트 */
+  const patchPost = (postId: string, partial: Partial<Post>) => {
+    setPosts((prev) => prev.map((p) => (p.id === postId ? { ...p, ...partial } : p)));
+  };
+
+  /** 작성자 전체 게시글 부분 업데이트 */
+  const patchPostsByAuthorId = (authorId: number, partial: Partial<Post>) => {
+    setPosts((prev) => prev.map((p) => (p.user.id === authorId ? { ...p, ...partial } : p)));
   };
 
   /** 게시글 삭제 */
@@ -42,7 +48,15 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <PostContext.Provider
-      value={{ posts, setPosts, addPost, updatePost, deletePost, updatePostCommentsCount }}
+      value={{
+        posts,
+        setPosts,
+        addPost,
+        patchPost,
+        patchPostsByAuthorId,
+        deletePost,
+        updatePostCommentsCount,
+      }}
     >
       {children}
     </PostContext.Provider>

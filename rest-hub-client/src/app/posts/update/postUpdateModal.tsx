@@ -30,7 +30,7 @@ export default function PostUpdateModal({ post }: PostUpdateModalProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const { closeModal } = useModal();
-  const { updatePost } = usePost();
+  const { patchPost } = usePost();
   const isMounted = useMounted();
   const { logout } = useAuth();
 
@@ -52,14 +52,16 @@ export default function PostUpdateModal({ post }: PostUpdateModalProps) {
         location: showLocationOption ? location : null,
       };
 
+      const postId = post.id;
+
       const { data } = await apiRequest(async (accessToken: string) => {
-        return api.patch(`${API_ENDPOINTS.POST}/${post.id}`, payload, {
+        return api.patch(`${API_ENDPOINTS.POST}/${postId}`, payload, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
       }, logout);
 
       closeModal();
-      updatePost(data.body);
+      patchPost(postId, data.body);
     } catch (error) {
       console.error('Failed to update post:', error);
       setMessage('게시글 수정 중 문제가 발생했습니다.');

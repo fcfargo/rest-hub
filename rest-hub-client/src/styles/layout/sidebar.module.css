@@ -11,14 +11,24 @@
   gap: 36px;
   background-color: #ffffff;
   border-right: 1px solid #ddd;
-  transition: width 0.5s ease-in-out;
+  transform: translateX(-20px);
+  opacity: 0;
+  transition:
+    transform 0.3s ease-in-out,
+    opacity 0.3s ease-in-out,
+    width 0.5s ease-in-out;
 }
 
-.expanded {
+.sidebar.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.sidebar.expanded {
   width: 260px;
 }
 
-.collapsed {
+.sidebar.collapsed {
   width: 88px;
 }
 
@@ -90,6 +100,11 @@
   gap: 16px;
 }
 
+.userButton {
+  display: flex;
+  gap: 16px;
+}
+
 .profileWrapper {
   flex-shrink: 0;
   width: 48px;
@@ -99,16 +114,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ddd;
 }
 
-.profileDefault {
+.profileIcon {
   width: 48px;
   height: auto;
   object-fit: cover;
 }
 
+.profileIcon.defaultProfile {
+  opacity: 0.2;
+}
+
 .profileTextWrapper {
+  align-self: center;
   position: relative;
   font-family: 'Inter-Regular', Helvetica;
   font-weight: 400;

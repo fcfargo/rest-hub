@@ -9,6 +9,7 @@ export const ROUTES = {
     HOME: '/settings',
     SECURITY: '/settings/security',
   },
+  USERS: '/users',
 };
 
 export const PROFILE_IMAGE_DEFAULT = '/layout/sidebar/profile-default.svg';
@@ -43,6 +44,7 @@ export const MODAL_TYPES = {
   POST_DETAIL: 'postDetail',
   COMMENT_DELETE: 'commentDelete',
   COMMENT_REPLY_DELETE: 'commentReplyDelete',
+  UNFOLLOW_USER: 'unfollowUser',
 } as const;
 
 export const ERROR_CODES = {

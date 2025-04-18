@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+
 import styles from '@/styles/utils/scrollBoundaryIndicators.module.css';
 
 interface InfiniteScrollLoaderProps {

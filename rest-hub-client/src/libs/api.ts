@@ -1,5 +1,5 @@
 export const API_ENDPOINTS = {
-  USER: '/users/auth/me',
+  ME: '/users/auth/me',
   LOGIN: '/users/auth/signin',
   SIGNUP: '/users/auth/signup',
   OAUTH_GOOGLE: '/users/auth/google',
@@ -9,4 +9,6 @@ export const API_ENDPOINTS = {
   POST: '/posts',
   PLACES_AUTOCOMPLETE: '/places/autocomplete',
   PRESIGNED_URL: '/upload/presigned-url',
+  FOLLOW: '/follow',
+  USER: '/users',
 };
