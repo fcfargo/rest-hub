@@ -2,6 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 
 import { processEnv } from '@/common/constants';
+import { Follow } from '@/model/follow.entity';
 import { Post } from '@/model/post.entity';
 import { PostComment } from '@/model/postComment.entity';
 import { PostCommentLike } from '@/model/postCommentLike.entity';
@@ -17,6 +18,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   port: Number(processEnv.DB_PORT),
   username: processEnv.DB_USERNAME,
   password: processEnv.DB_PASSWORD,
-  entities: [User, Post, PostLike, PostComment, PostCommentLike],
+  entities: [User, Post, PostLike, PostComment, PostCommentLike, Follow],
   synchronize: true,
 };
