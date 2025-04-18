@@ -2,10 +2,24 @@ import axios from 'axios';
 
 import { API_ENDPOINTS } from './api';
 import api from './axiosInstance';
+
+import { UPLOAD_OBJECT_TYPES } from '@/constants';
 import { apiRequest } from '@/utils/apiRequest';
 import { getAccessToken } from '@/utils/authUtils';
 
-export async function uploadMediaToS3(file: File, logout: () => void): Promise<string> {
+type UploadObjectType = (typeof UPLOAD_OBJECT_TYPES)[keyof typeof UPLOAD_OBJECT_TYPES];
+
+interface UploadMediaToS3Props {
+  file: File;
+  logout: () => void;
+  objectType: UploadObjectType;
+}
+
+export async function uploadMediaToS3({
+  file,
+  logout,
+  objectType,
+}: UploadMediaToS3Props): Promise<string> {
   const accessToken = getAccessToken();
   if (!accessToken) {
     logout();
@@ -16,7 +30,7 @@ export async function uploadMediaToS3(file: File, logout: () => void): Promise<s
     const { data } = await apiRequest(async (accessToken: string) => {
       return api.get(API_ENDPOINTS.PRESIGNED_URL, {
         headers: { Authorization: `Bearer ${accessToken}` },
-        params: { fileName: file.name, fileType: file.type },
+        params: { fileName: file.name, fileType: file.type, objectType },
       });
     }, logout);
 

@@ -105,3 +105,8 @@ export const COMMENT_REPLY_MENU_ITEM_TYPES = {
   DELETE: 1,
   REPORT: 2,
 } as const;
+
+export const UPLOAD_OBJECT_TYPES = {
+  POST: 'users/posts',
+  PROFILE: 'users/profile',
+} as const;
