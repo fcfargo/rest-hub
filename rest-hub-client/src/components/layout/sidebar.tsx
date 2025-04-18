@@ -9,6 +9,8 @@ import { useState } from 'react';
 import { MODAL_TYPES, PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { useMounted } from '@/hooks/useMounted';
+import { useRouteEffect } from '@/hooks/useRouteEffect';
 import styles from '@/styles/layout/sidebar.module.css';
 import globalStyles from '@/styles/utils/utils.module.css';
 
@@ -25,6 +27,9 @@ export default function Sidebar() {
   const { openModal } = useModal();
   const router = useRouter();
   const pathname = usePathname();
+
+  const isMounted = useMounted();
+  useRouteEffect();
 
   if (!user) {
     return null;
@@ -73,7 +78,13 @@ export default function Sidebar() {
   const profileImage = user.profileImage || PROFILE_IMAGE_DEFAULT;
 
   return (
-    <aside className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed}`}>
+    <aside
+      className={classNames(
+        styles.sidebar,
+        isMounted && styles.active,
+        expanded ? styles.expanded : styles.collapsed,
+      )}
+    >
       <Link
         href={ROUTES.HOME}
         className={classNames(styles.titleWrapper, {
@@ -99,20 +110,25 @@ export default function Sidebar() {
 
       <div className={styles.footerContainer}>
         <div className={styles.user}>
-          <div className={styles.profileWrapper}>
-            <Image
-              src={profileImage}
-              width={48}
-              height={48}
-              alt="ProfileImage"
-              className={classNames(
-                styles.profileIcon,
-                !user.profileImage && styles.defaultProfile,
-              )}
-            />
-          </div>
+          <button
+            className={styles.userButton}
+            onClick={() => router.push(`${ROUTES.USERS}/${user.id}`)}
+          >
+            <div className={styles.profileWrapper}>
+              <Image
+                src={profileImage}
+                width={48}
+                height={48}
+                alt="ProfileImage"
+                className={classNames(
+                  styles.profileIcon,
+                  !user.profileImage && styles.defaultProfile,
+                )}
+              />
+            </div>
 
-          {expanded && <span className={styles.profileTextWrapper}>{username}</span>}
+            {expanded && <span className={styles.profileTextWrapper}>{username}</span>}
+          </button>
         </div>
 
         <button

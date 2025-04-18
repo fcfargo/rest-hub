@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const getUser = async (): Promise<User> => {
     try {
       const { data } = await apiRequest(async (accessToken: string) => {
-        return api.get(API_ENDPOINTS.USER, {
+        return api.get(API_ENDPOINTS.ME, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
       }, logout);

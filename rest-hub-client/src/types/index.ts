@@ -24,9 +24,12 @@ export type User = {
   email: string;
   profileImage: string | null;
   deviceToken: string | null;
+  description: string | null;
   createdAt: Date;
   updatedAt: Date;
   socialProvider: string | null;
+  followingsCount: number;
+  followersCount: number;
 };
 
 export type Comment = {

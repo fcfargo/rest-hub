@@ -1,5 +1,3 @@
-'use client';
-
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -15,7 +13,9 @@ export const useRouteEffect = () => {
       return;
     }
 
-    if (pathname === ROUTES.HOME) {
+    const shouldFetchUser = pathname === ROUTES.HOME || pathname.startsWith(`${ROUTES.USERS}/`);
+
+    if (shouldFetchUser) {
       getUser();
     }
   }, [pathname]);
