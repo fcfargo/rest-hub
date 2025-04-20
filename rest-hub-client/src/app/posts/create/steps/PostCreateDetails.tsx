@@ -7,7 +7,7 @@ import LocationField from '@/components/forms/locationField';
 import { PostCreateMediaPreview } from '@/components/media/mediaPreview';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
 import TextContent from '@/components/ui/textContent';
-import { MEDIA_TYPES } from '@/constants';
+import { MEDIA_TYPES, UPLOAD_OBJECT_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { usePost } from '@/context/postContext';
 import { API_ENDPOINTS } from '@/libs/api';
@@ -57,7 +57,13 @@ export default function PostCreateDetails({
       setIsLoading(true);
 
       const imageUrl =
-        mediaType === MEDIA_TYPES.IMAGE ? await uploadMediaToS3(croppedFile, logout) : null;
+        mediaType === MEDIA_TYPES.IMAGE
+          ? await uploadMediaToS3({
+              file: croppedFile,
+              logout,
+              objectType: UPLOAD_OBJECT_TYPES.POST,
+            })
+          : null;
 
       {
         /* 후속 작업

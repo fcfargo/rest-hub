@@ -46,14 +46,22 @@ export default function SettingsSidebar() {
   const isMounted = useMounted();
 
   const sidebarItems = [
-    { path: '', src: '/settings/profile.svg', label: '프로필 편집' },
+    {
+      path: ROUTES.SETTINGS.PROFILE,
+      src: '/settings/profile.svg',
+      label: '프로필 편집',
+      onClick: () =>
+        router.push(
+          pathname === ROUTES.SETTINGS.PROFILE ? ROUTES.SETTINGS.HOME : ROUTES.SETTINGS.PROFILE,
+        ),
+    },
     {
       path: ROUTES.SETTINGS.SECURITY,
       src: '/settings/security.svg',
       label: '비밀번호 및 보안',
       onClick: () =>
         router.push(
-          pathname === ROUTES.SETTINGS.HOME ? ROUTES.SETTINGS.SECURITY : ROUTES.SETTINGS.HOME,
+          pathname === ROUTES.SETTINGS.SECURITY ? ROUTES.SETTINGS.HOME : ROUTES.SETTINGS.SECURITY,
         ),
     },
     { path: '', src: '/settings/notifications.svg', label: '알림' },

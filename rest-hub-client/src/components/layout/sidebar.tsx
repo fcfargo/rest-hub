@@ -117,8 +117,8 @@ export default function Sidebar() {
             <div className={styles.profileWrapper}>
               <Image
                 src={profileImage}
-                width={48}
-                height={48}
+                sizes="48px"
+                fill
                 alt="ProfileImage"
                 className={classNames(
                   styles.profileIcon,

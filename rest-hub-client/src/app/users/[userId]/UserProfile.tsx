@@ -2,10 +2,11 @@
 
 import classNames from 'classnames';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 import { ErrorMessage } from '@/components/ui/message';
 import { InfiniteScrollLoader } from '@/components/ui/ScrollBoundaryIndicators';
-import { PROFILE_IMAGE_DEFAULT } from '@/constants';
+import { PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
 import { useMounted } from '@/hooks/useMounted';
 import { useProtectedUser } from '@/hooks/useProtectedUser';
 import { useUserProfile } from '@/hooks/useUserProfile';
@@ -16,6 +17,7 @@ interface UserProfileProps {
 }
 
 export default function UserProfile({ userId }: UserProfileProps) {
+  const router = useRouter();
   const isMounted = useMounted();
   const currentUser = useProtectedUser();
   const isMyPage = currentUser.id === userId;
@@ -40,8 +42,7 @@ export default function UserProfile({ userId }: UserProfileProps) {
         <Image
           src={profileImage}
           alt="User Profile"
-          width={60}
-          height={60}
+          fill
           priority
           className={classNames(
             styles.profileIcon,
@@ -56,7 +57,10 @@ export default function UserProfile({ userId }: UserProfileProps) {
 
           {isMyPage && (
             <div className={styles.editButtonWrapper}>
-              <button className={styles.editButton} onClick={() => console.log('프로필 편집')}>
+              <button
+                className={styles.editButton}
+                onClick={() => router.push(ROUTES.SETTINGS.PROFILE)}
+              >
                 프로필 편집
               </button>
             </div>

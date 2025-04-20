@@ -8,6 +8,7 @@ export const ROUTES = {
   SETTINGS: {
     HOME: '/settings',
     SECURITY: '/settings/security',
+    PROFILE: '/settings/profile',
   },
   USERS: '/users',
 };
@@ -104,4 +105,9 @@ export const COMMENT_REPLY_MENU_ITEM_TYPES = {
   UPDATE: 0,
   DELETE: 1,
   REPORT: 2,
+} as const;
+
+export const UPLOAD_OBJECT_TYPES = {
+  POST: 'users/posts',
+  PROFILE: 'users/profile',
 } as const;

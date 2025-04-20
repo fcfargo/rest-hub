@@ -1,4 +1,5 @@
 import SettingsSidebar from '@/app/settings/components/settingsSidebar';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 interface SettingsLayoutProps {
   children: React.ReactNode;
@@ -7,8 +8,10 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <div className="flex flex-grow">
-      <SettingsSidebar />
-      {children}
+      <ProtectedRoute>
+        <SettingsSidebar />
+        {children}
+      </ProtectedRoute>
     </div>
   );
 }

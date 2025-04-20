@@ -5,6 +5,7 @@ import { useState } from 'react';
 import PostCreateCrop from './steps/PostCreateCrop';
 import PostCreateDetails from './steps/PostCreateDetails';
 import PostCreateUpload from './steps/PostCreateUpload';
+
 import { CloseButtonWhite } from '@/components/ui/closeButton';
 import { POST_CREATE_STEPS } from '@/constants';
 import { useModal } from '@/context/modalContext';
