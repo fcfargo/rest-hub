@@ -5,9 +5,9 @@ import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 
 import FileUploadField from '@/components/forms/FileUploadField';
-import { MEDIA_TYPES } from '@/constants';
 import styles from '@/styles/post/postCreate.module.css';
 import { PostDataProps } from '@/types';
+import { processMediaFile } from '@/utils/fileProcessor';
 
 interface PostCreateUploadProps {
   nextStep: () => void;
@@ -19,24 +19,21 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const handleFile = (file: File | null) => {
-    if (!file) {
+    const result = processMediaFile(file, ['image']); // image만 허용
+
+    if (!result.success) {
+      setMessage(result.errorMessage);
       return;
     }
 
-    const fileUrl = URL.createObjectURL(file);
-    const fileExt = file.type.split('/')[0];
-
-    if (![MEDIA_TYPES.IMAGE].includes(fileExt)) {
-      setMessage('지원되지 않는 파일 형식입니다.');
-      return;
-    }
+    const { file: validFile, fileUrl, fileType } = result;
 
     setMessage(null);
 
     setPostData((prev: PostDataProps) => ({
       ...prev,
-      media: file,
-      mediaType: fileExt,
+      media: validFile,
+      mediaType: fileType,
       fileUrl,
     }));
 

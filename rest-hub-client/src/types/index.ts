@@ -62,3 +62,5 @@ export interface PostDataProps {
 }
 
 export type MediaTypes = (typeof MEDIA_TYPES)[keyof typeof MEDIA_TYPES];
+
+export type TextValueUpdater = string | ((prev: string) => string);

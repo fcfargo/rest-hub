@@ -13,23 +13,23 @@
   margin-bottom: 12px;
 }
 
+.container.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .profileWrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
   flex-shrink: 0;
-  height: 100%;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
   align-items: center;
 }
 
-.container.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 .profileIcon {
-  width: 80px;
-  height: auto;
   object-fit: cover;
 }
 
@@ -109,6 +109,9 @@
   display: -webkit-box;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
+  white-space: pre-line;
+  word-break: break-word;
+  overflow-wrap: break-word;
   overflow: hidden;
   margin-top: 4px;
   font-family: 'Inter-Medium', sans-serif;
@@ -116,7 +119,4 @@
   font-weight: 300;
   color: #6b7280;
   line-height: 1.5;
-  white-space: pre-line;
-  word-break: break-word;
-  overflow-wrap: break-word;
 }

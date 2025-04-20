@@ -6,9 +6,10 @@ import Image from 'next/image';
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
 import styles from '@/styles/utils/emojiButton.module.css';
+import { TextValueUpdater } from '@/types';
 
 interface EmojiButtonProps {
-  setTextContent: Dispatch<SetStateAction<string>>;
+  setTextContent: Dispatch<SetStateAction<string>> | ((next: TextValueUpdater) => void);
   className?: string;
   iconSize?: number;
 }

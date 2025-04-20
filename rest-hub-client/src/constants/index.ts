@@ -8,6 +8,7 @@ export const ROUTES = {
   SETTINGS: {
     HOME: '/settings',
     SECURITY: '/settings/security',
+    PROFILE: '/settings/profile',
   },
   USERS: '/users',
 };

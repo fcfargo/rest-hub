@@ -13,12 +13,14 @@ interface UploadMediaToS3Props {
   file: File;
   logout: () => void;
   objectType: UploadObjectType;
+  fileName?: string; // 사용자 정의 파일명
 }
 
 export async function uploadMediaToS3({
   file,
   logout,
   objectType,
+  fileName,
 }: UploadMediaToS3Props): Promise<string> {
   const accessToken = getAccessToken();
   if (!accessToken) {
@@ -30,7 +32,7 @@ export async function uploadMediaToS3({
     const { data } = await apiRequest(async (accessToken: string) => {
       return api.get(API_ENDPOINTS.PRESIGNED_URL, {
         headers: { Authorization: `Bearer ${accessToken}` },
-        params: { fileName: file.name, fileType: file.type, objectType },
+        params: { fileName: fileName || file.name, fileType: file.type, objectType },
       });
     }, logout);
 

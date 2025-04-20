@@ -1,0 +1,215 @@
+.container {
+  flex-grow: 1;
+  background: #ffffff;
+  position: relative;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
+
+.container.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 56px;
+  margin-left: 40px;
+  margin-right: 32px;
+  gap: 24px;
+}
+
+.header {
+  border-style: solid;
+  border-color: #d8dee4;
+  border-width: 0px 0px 1px 0px;
+  height: 45px;
+}
+
+.content {
+  display: flex;
+}
+
+.leftColumn {
+  flex-basis: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.rightColumn {
+  flex-basis: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.errorContainer {
+  display: flex;
+  align-items: center;
+  margin-top: -16px;
+}
+
+.imageSectionErrorContainer {
+  display: flex;
+  align-items: center;
+  margin-left: 24px;
+}
+
+.headerTitle {
+  color: #24292f;
+  text-align: left;
+  font-family: 'NotoSans-DisplayRegular', sans-serif;
+  font-size: 23px;
+  line-height: 36px;
+  font-weight: 400;
+  width: 160px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.section {
+  position: relative;
+  max-width: 550px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.sectionTitle {
+  color: #24292f;
+  text-align: left;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.profileButton {
+  width: 120px;
+  height: 120px;
+}
+
+.profileWrapper {
+  position: relative;
+  flex-shrink: 0;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.profileIcon {
+  object-fit: cover;
+}
+
+.profileIcon.defaultProfileIcon {
+  opacity: 0.2;
+}
+
+.editOverlay {
+  position: absolute;
+  top: 112px;
+  left: -8px;
+  background-color: rgba(0, 0, 0, 0.56);
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.editOverlay:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.editText {
+  pointer-events: none;
+}
+
+.clearButtonContainer {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.clearButton {
+  margin-left: 24px;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.clearButton:hover {
+  color: #ef4444;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.limitMessage {
+  padding-left: 4px;
+  color: #808187;
+  line-height: 16px;
+  font-weight: 400;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+.sectionMessageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  margin-left: 0px;
+}
+
+.saveButton {
+  margin-top: -12px;
+  padding: 6px 10px;
+  line-height: 18px;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  opacity: 0.9;
+  transition: background-color 0.2s ease;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #2da44e;
+  box-shadow:
+    inset 0px 1px 0px 0px rgba(255, 255, 255, 0.03),
+    0px 1px 0px 0px rgba(27, 31, 36, 0.1);
+}
+
+.saveButton:hover {
+  background-color: #218739; /* 더 진한 녹색 */
+  border-radius: 8px;
+}
