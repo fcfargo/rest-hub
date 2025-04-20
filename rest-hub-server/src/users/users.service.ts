@@ -1,7 +1,11 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { EntityManager, UpdateResult } from 'typeorm';
 
-import { CreateUserRequest, UpdateUserDataRequest } from './interfaces/users.interface';
+import {
+  CreateUserRequest,
+  UpdateUserPasswordDataRequest,
+  UpdateUserProfileDataRequest,
+} from './interfaces/users.interface';
 import { UsersRepository } from './users.repository';
 
 import { User } from '@/model/user.entity';
@@ -10,8 +14,29 @@ import { User } from '@/model/user.entity';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async updateUser(userId: number, updateData: UpdateUserDataRequest): Promise<UpdateResult> {
-    const result = await this.usersRepository.updateUser(userId, updateData);
+  async updateUserProfile(
+    currentUserId: number,
+    targetUserId: number,
+    updateData: UpdateUserProfileDataRequest,
+  ): Promise<UpdateResult> {
+    if (currentUserId !== targetUserId) {
+      throw new ForbiddenException('You are not allowed to update this profile.');
+    }
+
+    const result = await this.usersRepository.updateUserProfile(targetUserId, updateData);
+
+    if (result.affected === 0) {
+      throw new InternalServerErrorException(`Failed to update user with ID ${targetUserId}`);
+    }
+
+    return result;
+  }
+
+  async updateUserPassword(
+    userId: number,
+    updateData: UpdateUserPasswordDataRequest,
+  ): Promise<UpdateResult> {
+    const result = await this.usersRepository.updateUserPassword(userId, updateData);
 
     if (result.affected === 0) {
       throw new InternalServerErrorException(`Failed to update user with ID ${userId}`);

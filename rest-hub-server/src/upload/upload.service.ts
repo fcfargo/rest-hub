@@ -18,11 +18,16 @@ export class UploadService {
     }
   }
 
-  async getPresignedUrl({ fileName, fileType }: GetPresignedUrlRequestDto): Promise<string> {
+  async getPresignedUrl(
+    userId: number,
+    { fileName, fileType, objectType }: GetPresignedUrlRequestDto,
+  ): Promise<string> {
     try {
+      const key = this.getUploadKey(objectType, fileName, userId);
+
       const command = new PutObjectCommand({
         Bucket: processEnv.AWS_BUCKET,
-        Key: `uploads/posts/${fileName}`,
+        Key: key,
         ContentType: fileType,
       });
 
@@ -33,5 +38,15 @@ export class UploadService {
       this.logger.error('getPresignedUrl', error);
       throw new InternalServerErrorException(`Failed to generate Presigned URL: ${error} `);
     }
+  }
+
+  private getUploadKey(objectType: string, fileName: string, userId?: number): string {
+    const env = processEnv.UPLOAD_ENV || 'dev';
+
+    if (userId && objectType.startsWith('users')) {
+      return `uploads/${env}/${objectType}/${userId}/${fileName}`;
+    }
+
+    return `uploads/${env}/${objectType}/${fileName}`;
   }
 }
