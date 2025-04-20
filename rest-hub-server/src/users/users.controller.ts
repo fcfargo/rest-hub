@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import {
@@ -7,6 +7,7 @@ import {
   RefreshAccesTokenRequestDto,
   ResetPasswordRequestDto,
   SignInUserRequestDto,
+  UpdateUserProfileRequestDto,
   VerifyGoogleOAuthRequestDto,
 } from './dtos/users.dto';
 import { AuthResponseDto, TokenResponseDto, UserResponseDto } from './dtos/users.response.dto';
@@ -74,5 +75,18 @@ export class UsersController {
     @Body() body: ChangePasswordRequestDto,
   ) {
     return this.authService.changePassword(currentUser.sub, body);
+  }
+
+  @Serialize(UserResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Patch(':userId/profile')
+  async updateUserProfile(
+    @CurrentUser() currentUser: jwtPayLoad,
+    @Param('userId') userId: number,
+    @Body() body: UpdateUserProfileRequestDto,
+  ) {
+    const currentUserId = currentUser.sub;
+    const targetUserId = Number(userId);
+    return this.usersService.updateUserProfile(currentUserId, targetUserId, body);
   }
 }

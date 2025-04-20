@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, IsNull, Repository, UpdateResult } from 'typeorm';
 
-import { CreateUserRequest, UpdateUserDataRequest } from './interfaces/users.interface';
+import {
+  CreateUserRequest,
+  UpdateUserPasswordDataRequest,
+  UpdateUserProfileDataRequest,
+} from './interfaces/users.interface';
 
 import { User } from '@/model/user.entity';
 
@@ -15,7 +19,17 @@ export class UsersRepository {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async updateUser(userId: number, updateData: UpdateUserDataRequest): Promise<UpdateResult> {
+  async updateUserProfile(
+    userId: number,
+    updateData: UpdateUserProfileDataRequest,
+  ): Promise<UpdateResult> {
+    return this.usersRepository.update({ id: userId }, updateData);
+  }
+
+  async updateUserPassword(
+    userId: number,
+    updateData: UpdateUserPasswordDataRequest,
+  ): Promise<UpdateResult> {
     return this.usersRepository.update({ id: userId }, updateData);
   }
 

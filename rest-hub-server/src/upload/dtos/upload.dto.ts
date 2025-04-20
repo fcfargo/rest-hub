@@ -1,4 +1,6 @@
-import { IsString } from 'class-validator';
+import { IsIn, IsString } from 'class-validator';
+
+import { UploadObjectType } from '../interfaces/upload.interface';
 
 export class GetPresignedUrlRequestDto {
   @IsString()
@@ -6,4 +8,7 @@ export class GetPresignedUrlRequestDto {
 
   @IsString()
   fileType: string;
+
+  @IsIn(['users/posts', 'users/profile'])
+  objectType: UploadObjectType;
 }

@@ -190,7 +190,7 @@ export class AuthService {
 
     const tempPassword = uuidv4().slice(0, 8);
     const hashedPassword = await this._hashPassword(tempPassword);
-    await this.usersService.updateUser(id, { password: hashedPassword });
+    await this.usersService.updateUserPassword(id, { password: hashedPassword });
 
     const subject = `비밀번호 재설정 안내`;
     const text = `임시 비밀번호: ${tempPassword}\n로그인 후 반드시 비밀번호를 변경해주세요.`;
@@ -231,7 +231,7 @@ export class AuthService {
     }
 
     const hashedPassword = await this._hashPassword(newPassword);
-    await this.usersService.updateUser(userId, { password: hashedPassword });
+    await this.usersService.updateUserPassword(userId, { password: hashedPassword });
 
     return 'Password changed successfully';
   }

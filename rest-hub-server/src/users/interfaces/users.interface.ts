@@ -1,7 +1,13 @@
 import { User } from '@/model/user.entity';
 
-export interface UpdateUserDataRequest {
+export interface UpdateUserPasswordDataRequest {
   password?: string;
+}
+
+export interface UpdateUserProfileDataRequest {
+  username: string;
+  description: string;
+  profileImage?: string;
 }
 
 export interface CreateUserRequest {
