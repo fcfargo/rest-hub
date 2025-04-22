@@ -74,14 +74,14 @@ export default function PostCreateDetails({
          * mediaData 변수에 [{url: '', mediaType: ''}] 형태로 api 요청 보내는 방식으로 수정 예정
          */
       }
-      const formData = {
+      const payload = {
         imageUrl,
         content: postContent.trim(),
         location: location.trim() ? location : null,
       };
 
       const { data } = await apiRequest(async (accessToken: string) => {
-        return api.post(API_ENDPOINTS.POST, formData, {
+        return api.post(API_ENDPOINTS.POST, payload, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
       }, logout);
@@ -146,11 +146,7 @@ export default function PostCreateDetails({
       </div>
       {/* 메시지 출력 */}
       {message &&
-        (isSuccess ? (
-          <SuccessMessage message={message} />
-        ) : (
-          <ErrorMessage message={message} />
-        ))}{' '}
+        (isSuccess ? <SuccessMessage message={message} /> : <ErrorMessage message={message} />)}
     </div>
   );
 }

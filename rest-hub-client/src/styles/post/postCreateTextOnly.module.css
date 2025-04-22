@@ -1,0 +1,153 @@
+.wrapper {
+  width: 500px;
+  min-height: 460px;
+  max-height: 90vh;
+  height: 100%;
+  margin-top: -40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 12px;
+  box-shadow: 0px 9px 24px 0px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+}
+
+.header {
+  width: 100%;
+  height: 47px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: solid;
+  border-color: #dbdbdb;
+  border-width: 0px 0px 1px 0px;
+  padding: 9px 0px 9px 0px;
+}
+
+.backButton {
+  flex-shrink: 0;
+  margin-left: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0px 0px 6px rgba(255, 255, 255, 1),
+    0px 0px 12px rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+}
+
+.backButtonIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.title {
+  flex-grow: 1;
+  align-self: center;
+  color: #262626;
+  text-align: center;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.doneButton {
+  position: absolute;
+  right: 16px;
+  z-index: 10;
+  color: #0095f6;
+  text-align: center;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.doneButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.postContainer {
+  flex-grow: 1;
+  width: 100%;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.extraOptions {
+  width: 95%;
+  height: 37px;
+  display: flex;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.extraOptionsText {
+  flex-shrink: 0;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.extraLocationButton {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.extraLocationButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.locationIcon {
+  width: 18px;
+  height: 20px;
+  filter: brightness(0) saturate(100%) invert(41%) sepia(100%) saturate(518%) hue-rotate(-13deg)
+    brightness(100%) contrast(94%);
+}
+
+.postLocation {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.postExtrasLabel {
+  flex-shrink: 0;
+  font-weight: 300;
+  color: #808187;
+  font-family: 'Inter-Regular', sans-serif;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 400;
+  margin-left: 4px;
+  margin-bottom: 4px;
+  padding-left: 4px;
+  border-left: 2px solid #0095f6; /* 포인트 컬러로 구분감 */
+  letter-spacing: 0.2px;
+}
