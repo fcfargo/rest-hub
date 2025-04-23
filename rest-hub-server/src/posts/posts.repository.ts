@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as dayjs from 'dayjs';
 import { EntityManager, In, Repository, UpdateResult } from 'typeorm';
 
 import { CreatePostRequest, PostWithUser } from './interfaces/posts.interface';
@@ -47,6 +48,88 @@ export class PostsRepository {
     });
 
     return { posts, totalCount };
+  }
+
+  async getPostsByUserOrFollowings(
+    userId: number,
+    limit: number,
+    offset: number,
+    order: OrderTypes,
+  ): Promise<Post[]> {
+    const sevenDaysAgo = dayjs().subtract(7, 'day').toDate();
+
+    return this.postsRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoin(
+        'user_follows',
+        'follow',
+        'follow.followingId = post.userId AND follow.followerId = :userId',
+        { userId },
+      )
+      .where('(post.userId = :userId OR follow.followerId IS NOT NULL)', { userId })
+      .andWhere('post.createdAt >= :sevenDaysAgo', {
+        sevenDaysAgo,
+      })
+      .orderBy('post.createdAt', order)
+      .take(limit)
+      .skip(offset)
+      .getMany();
+  }
+
+  async countPostsByUserOrFollowings(userId: number): Promise<number> {
+    const sevenDaysAgo = dayjs().subtract(7, 'day').toDate();
+
+    return this.postsRepository
+      .createQueryBuilder('post')
+      .leftJoin(
+        'user_follows',
+        'follow',
+        'follow.followingId = post.userId AND follow.followerId = :userId',
+        { userId },
+      )
+      .where('(post.userId = :userId OR follow.followerId IS NOT NULL)', { userId })
+      .andWhere('post.createdAt >= :sevenDaysAgo', {
+        sevenDaysAgo,
+      })
+      .getCount();
+  }
+
+  async getAllPostsExcludingUserAndFollowings(
+    userId: number,
+    limit: number,
+    offset: number,
+    order: OrderTypes,
+  ): Promise<Post[]> {
+    return this.postsRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoin(
+        'user_follows',
+        'follow',
+        'follow.followingId = post.userId AND follow.followerId = :userId',
+        { userId },
+      )
+      .where('post.userId != :userId', { userId })
+      .andWhere('follow.followerId IS NULL')
+      .orderBy('post.createdAt', order)
+      .take(limit)
+      .skip(offset)
+      .getMany();
+  }
+
+  async countAllPostsExcludingUserAndFollowings(userId: number): Promise<number> {
+    return this.postsRepository
+      .createQueryBuilder('post')
+      .leftJoin(
+        'user_follows',
+        'follow',
+        'follow.followingId = post.userId AND follow.followerId = :userId',
+        { userId },
+      )
+      .where('post.userId != :userId', { userId })
+      .andWhere('follow.followerId IS NULL')
+      .getCount();
   }
 
   async getPostWithUserById(postId: string): Promise<PostWithUser | null> {

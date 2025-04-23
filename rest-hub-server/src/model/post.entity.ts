@@ -47,10 +47,10 @@ export class Post {
   @Check(`"commentsCount" >= 0`)
   commentsCount: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
   @OneToMany(() => PostLike, (like) => like.post)
