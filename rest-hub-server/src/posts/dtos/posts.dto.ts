@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreatePostRequestDto {
   @IsNotEmpty()
@@ -26,6 +26,16 @@ export class GetPostsRequestDto {
   @Transform(({ value }) => (value ? parseInt(value, 10) : 10))
   @IsNumber()
   limit: number;
+
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value === 'true';
+    }
+    return Boolean(value);
+  })
+  @IsBoolean()
+  isPriorityPhase: boolean;
 }
 
 export class UpdatePostRequestDto {

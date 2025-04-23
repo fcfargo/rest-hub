@@ -78,30 +78,33 @@ export class PostsService {
   }
 
   /**
-   * [TODO: 고도화 예정]
-   * 향후 팔로우 기능이 도입되면,
-   * - 현재 로그인한 유저의 게시물
-   * - + 팔로우한 유저의 게시물
-   * 을 우선적으로 정렬해서 먼저 보여주고,
-   * 그 외의 게시물은 그 이후에 표시할 예정.
-   *
    * 정렬 우선순위:
    * 1. 나 + 팔로우 유저들의 최신 게시물
-   * 2. 전체 게시물 (기존 로직)
+   * 2. 나머지 전체 게시물
    */
   async getPaginatedPosts(
     userId: number,
     query: GetPostsRequestDto,
   ): Promise<GetPaginatedPostsResponse> {
-    const { page, limit } = query;
+    const { page, limit, isPriorityPhase } = query;
     const offset = (page - 1) * limit;
     const order = ORDER_TYPES.DESC;
 
-    const { posts, totalCount } = await this.postsRepository.getPaginatedPosts(
-      limit,
-      offset,
-      order,
-    );
+    let posts: PostWithUser[];
+    let totalCount: number;
+
+    if (isPriorityPhase) {
+      posts = await this.postsRepository.getPostsByUserOrFollowings(userId, limit, offset, order);
+      totalCount = await this.postsRepository.countPostsByUserOrFollowings(userId);
+    } else {
+      posts = await this.postsRepository.getAllPostsExcludingUserAndFollowings(
+        userId,
+        limit,
+        offset,
+        order,
+      );
+      totalCount = await this.postsRepository.countAllPostsExcludingUserAndFollowings(userId);
+    }
 
     const totalPages = Math.ceil(totalCount / limit);
 

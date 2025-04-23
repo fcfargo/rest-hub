@@ -79,6 +79,6 @@ export class UsersService {
   }
 
   async decrementFollowersCount(userId: number, manager?: EntityManager): Promise<UpdateResult> {
-    return this.usersRepository.decrementFollowingsCount(userId, manager);
+    return this.usersRepository.decrementFollowersCount(userId, manager);
   }
 }
