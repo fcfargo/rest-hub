@@ -59,10 +59,10 @@ export class PostComment {
   @Check(`"repliesCount" >= 0`)
   repliesCount: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
   @OneToMany(() => PostCommentLike, (like) => like.comment)

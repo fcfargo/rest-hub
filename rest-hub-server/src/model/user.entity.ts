@@ -41,13 +41,13 @@ export class User {
   @Column({ nullable: true })
   description?: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
-  @DeleteDateColumn({ nullable: true })
+  @DeleteDateColumn({ type: 'timestamptz', nullable: true })
   deletedAt?: Date;
 
   @Column({ type: 'enum', enum: SOCIAL_PROVIDERS, nullable: true })

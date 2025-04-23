@@ -34,6 +34,6 @@ export class PostCommentLike {
   @JoinColumn({ name: 'commentId' })
   comment: PostComment;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 }
