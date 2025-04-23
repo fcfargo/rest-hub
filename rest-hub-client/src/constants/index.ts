@@ -55,9 +55,10 @@ export const ERROR_CODES = {
 } as const;
 
 export const POST_CREATE_STEPS = {
-  ONE: 1,
-  TWO: 2,
-  THREE: 3,
+  SELECT_TYPE: 0, // 추가
+  ONE: 1, // Upload
+  TWO: 2, // Crop
+  THREE: 3, // Details
 } as const;
 
 export const MEDIA_TYPES = {

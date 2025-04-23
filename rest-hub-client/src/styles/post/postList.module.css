@@ -26,3 +26,21 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+.phaseTag {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin-bottom: 12px;
+  background-color: #e0f2fe; /* 연한 파랑 */
+  color: #0369a1; /* 딥블루 */
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  text-align: center;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}

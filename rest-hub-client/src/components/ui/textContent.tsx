@@ -12,10 +12,16 @@ interface TextContentProps {
 }
 
 export default function TextContent({ textContent, setTextContent }: TextContentProps) {
+  const placeHolder = 'Write a post...';
+  const maxLength = 2200;
+
   /** 게시글 작성 */
-  const handleTextWrite = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTextContent(e.target.value);
-  }, []);
+  const handleTextWrite = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setTextContent(e.target.value);
+    },
+    [setTextContent],
+  );
 
   return (
     <div className={styles.postContent}>
@@ -23,8 +29,8 @@ export default function TextContent({ textContent, setTextContent }: TextContent
         className={styles.postContentText}
         value={textContent}
         onChange={handleTextWrite}
-        placeholder="Write a post..."
-        maxLength={2200}
+        placeholder={placeHolder}
+        maxLength={maxLength}
       />
       <div className={styles.postContentFooter}>
         <EmojiButton setTextContent={setTextContent} className="top-[-48px] left-[-12px]" />

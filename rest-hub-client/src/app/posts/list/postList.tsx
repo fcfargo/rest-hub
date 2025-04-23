@@ -22,10 +22,14 @@ import { apiRequest } from '@/utils/apiRequest';
 import { mergeUniqueById } from '@/utils/array';
 
 export default function PostList() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [latestTotalPages, setLatestTotalPages] = useState<number | null>(null);
+  const [isPriorityPhase, setIsPriorityPhase] = useState(true);
+  const [priorityPage, setPriorityPage] = useState(1);
+  const [fallbackPage, setFallbackPage] = useState(1);
+  const [priorityTotalPages, setPriorityTotalPages] = useState<number | null>(null);
+  const [fallbackTotalPages, setFallbackTotalPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [phaseMessage, setPhaseMessage] = useState<string | null>(null);
 
   const { posts, setPosts } = usePost();
   const isMounted = useMounted();
@@ -36,8 +40,14 @@ export default function PostList() {
   const scrollPositionRef = useRef(0);
   const isFetchingRef = useRef(false);
 
-  const hasMore = !!latestTotalPages && currentPage < latestTotalPages;
+  // ✅ hasMore: 현재 phase의 다음 페이지가 존재하는지를 나타냄
+  // - 우선 피드 phase일 땐: priorityPage < priorityTotalPages
+  // - fallback phase일 땐: fallbackPage < fallbackTotalPages
+  // - totalPages가 null이면 아직 로딩 전이므로 true
+  const isPriorityHasMore = priorityTotalPages === null || priorityPage < priorityTotalPages;
+  const isFallbackHasMore = fallbackTotalPages === null || fallbackPage < fallbackTotalPages;
 
+  const hasMore = isPriorityPhase ? isPriorityHasMore : isFallbackHasMore;
   /** 현재 스크롤 위치 저장 */
   const saveScrollPosition = () => {
     if (scrollContainerRef.current) {
@@ -66,7 +76,7 @@ export default function PostList() {
 
   /** 게시글 리스트 API로부터 가져오기 */
   const fetchPosts = async (page: number) => {
-    if (loading || (latestTotalPages !== null && page > latestTotalPages)) {
+    if (loading) {
       return;
     }
 
@@ -78,13 +88,22 @@ export default function PostList() {
       const { data } = await apiRequest(async (accessToken: string) => {
         return api.get(API_ENDPOINTS.POST, {
           headers: { Authorization: `Bearer ${accessToken}` },
-          params: { page, limit: 10 },
+          params: {
+            page,
+            limit: 10,
+            isPriorityPhase,
+          },
         });
       }, logout);
 
-      setPosts((prevPosts) => mergeUniqueById<Post>(prevPosts, data.body.posts));
+      const { posts: newPosts, meta } = data.body;
+      setPosts((prevPosts) => mergeUniqueById<Post>(prevPosts, newPosts));
 
-      setLatestTotalPages(data.body.meta.totalPages);
+      if (isPriorityPhase && priorityPage >= meta.totalPages) {
+        setPriorityTotalPages(meta.totalPages);
+      } else {
+        setFallbackTotalPages(meta.totalPages);
+      }
     } catch (err) {
       console.error('Failed to fetch posts:', err);
       setMessage('게시글을 불러오는 중 오류가 발생했습니다.');
@@ -101,8 +120,9 @@ export default function PostList() {
       return;
     }
 
-    fetchPosts(currentPage);
-  }, [currentPage]);
+    const page = isPriorityPhase ? priorityPage : fallbackPage;
+    fetchPosts(page);
+  }, [priorityPage, fallbackPage, isPriorityPhase]);
 
   /** 스크롤링 시 페이지의 마지막 게시물 감지 (Intersection Observer 등록) */
   useEffect(() => {
@@ -112,13 +132,21 @@ export default function PostList() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (
-          entries[0].isIntersecting &&
-          latestTotalPages !== null &&
-          currentPage < latestTotalPages &&
-          !isFetchingRef.current
-        ) {
-          setCurrentPage((prevPage) => prevPage + 1);
+        if (!entries[0].isIntersecting || isFetchingRef.current) {
+          return;
+        }
+
+        if (isPriorityPhase) {
+          if (priorityTotalPages !== null && priorityPage < priorityTotalPages) {
+            setPriorityPage((prevPage) => prevPage + 1);
+          } else {
+            setIsPriorityPhase(false);
+            setPhaseMessage('우선 피드를 모두 확인했어요. 전체 피드로 전환합니다.');
+          }
+        } else {
+          if (fallbackTotalPages !== null && fallbackPage < fallbackTotalPages) {
+            setFallbackPage((prevPage) => prevPage + 1);
+          }
         }
       },
       { threshold: 0.5 },
@@ -127,7 +155,7 @@ export default function PostList() {
     observer.observe(observerRef.current);
 
     return () => observer.disconnect();
-  }, [currentPage, latestTotalPages]);
+  }, [isPriorityPhase, priorityPage, fallbackPage, priorityTotalPages, fallbackTotalPages]);
 
   /** 스크롤 이벤트 리스너 등록 (스크롤 위치 저장) */
   useEffect(() => {
@@ -149,9 +177,18 @@ export default function PostList() {
     };
   }, []);
 
+  /** phase 전환 메시지 제거 */
+  useEffect(() => {
+    if (!phaseMessage) return;
+
+    const timer = setTimeout(() => setPhaseMessage(null), 3000);
+    return () => clearTimeout(timer);
+  }, [phaseMessage]);
+
   return (
     <div ref={scrollContainerRef} className={styles.scrollContainer}>
       <div className={classNames(styles.container, isMounted ? styles.active : '')}>
+        {phaseMessage && <div className={styles.phaseTag}>{phaseMessage}</div>}
         {message && <ErrorMessage message={message} />}
 
         {posts.length === 0 && !loading && !message && (

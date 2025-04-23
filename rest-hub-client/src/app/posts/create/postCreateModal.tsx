@@ -4,6 +4,8 @@ import { useState } from 'react';
 
 import PostCreateCrop from './steps/PostCreateCrop';
 import PostCreateDetails from './steps/PostCreateDetails';
+import PostCreateTextOnly from './steps/PostCreateTextOnly';
+import PostCreateTypeSelect from './steps/PostCreateTypeSelect';
 import PostCreateUpload from './steps/PostCreateUpload';
 
 import { CloseButtonWhite } from '@/components/ui/closeButton';
@@ -16,7 +18,7 @@ import { PostDataProps } from '@/types';
 
 export default function PostCreateModal() {
   const { closeModal } = useModal();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [postData, setPostData] = useState<PostDataProps>({
     media: null, // 원본 미디어 파일
     mediaType: '', // image(video)
@@ -42,7 +44,18 @@ export default function PostCreateModal() {
       {/* stage 별 게시글 생성 영역 */}
       <div className={styles.container}>
         <div
-          className={`${styles.stepContainer} ${isMounted && step === POST_CREATE_STEPS.ONE ? styles.active : ''}`}
+          className={`${styles.stepContainer} ${isMounted && step === POST_CREATE_STEPS.SELECT_TYPE ? styles.active : ''}`}
+        >
+          {step === POST_CREATE_STEPS.SELECT_TYPE && (
+            <PostCreateTypeSelect
+              nextStepToUpload={() => changeStep(POST_CREATE_STEPS.ONE)}
+              nextStepToDetails={() => changeStep(POST_CREATE_STEPS.THREE)}
+            />
+          )}
+        </div>
+
+        <div
+          className={`${styles.stepContainer} ${step === POST_CREATE_STEPS.ONE ? styles.active : ''}`}
         >
           {step === POST_CREATE_STEPS.ONE && (
             <PostCreateUpload
@@ -70,7 +83,7 @@ export default function PostCreateModal() {
         <div
           className={`${styles.stepContainer} ${step === POST_CREATE_STEPS.THREE ? styles.active : ''}`}
         >
-          {step === POST_CREATE_STEPS.THREE && postData.croppedFile && (
+          {step === POST_CREATE_STEPS.THREE && postData.croppedFile ? (
             <PostCreateDetails
               prevStep={() => changeStep(POST_CREATE_STEPS.TWO)}
               croppedFile={postData.croppedFile}
@@ -78,7 +91,9 @@ export default function PostCreateModal() {
               mediaType={postData.mediaType}
               closeModal={closeModal}
             />
-          )}
+          ) : step === POST_CREATE_STEPS.THREE && !postData.croppedFile ? (
+            <PostCreateTextOnly closeModal={closeModal} />
+          ) : null}
         </div>
       </div>
     </div>
