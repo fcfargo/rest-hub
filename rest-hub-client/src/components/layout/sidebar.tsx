@@ -47,6 +47,9 @@ export default function Sidebar() {
       src: '/layout/sidebar/notification.svg',
       alt: 'Notification',
       label: 'Notification',
+      onClick: () => {
+        setExpanded(false);
+      },
     },
     // {
     //   src: '/layout/sidebar/communities.svg',
