@@ -35,7 +35,10 @@ import { ORDER_TYPES } from '@/common/constants';
 import { CommonMessageResponseDto } from '@/common/dtos/common.response.dto';
 import { FollowService } from '@/follow/follow.service';
 import { PostComment } from '@/model/postComment.entity';
+import { NOTIFICATION_TYPES } from '@/notifications/interfaces/notification.interface';
+import { NotificationsService } from '@/notifications/notifications.service';
 import { PostCommentsService } from '@/post-comments/post-comments.service';
+import { UsersService } from '@/users/users.service';
 
 @Injectable()
 export class PostsService {
@@ -44,6 +47,9 @@ export class PostsService {
     private readonly postsRepository: PostsRepository,
     private readonly postCommentsService: PostCommentsService,
     private readonly followService: FollowService,
+    private readonly usersService: UsersService,
+    private readonly notificationsService: NotificationsService,
+
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
@@ -225,6 +231,27 @@ export class PostsService {
       const updated = await this.postsRepository.getPostById(postId, manager);
       if (!updated) {
         throw new NotFoundException(`Post with ID ${postId} not found after like`);
+      }
+
+      const { userId: authorId } = post;
+
+      const isDuplicate = await this.notificationsService.isDuplicateLikeNotification(
+        authorId,
+        userId,
+        postId,
+        manager,
+      );
+
+      if (!isDuplicate) {
+        await this.notificationsService.createLikeNotification(
+          {
+            userId: authorId,
+            actorId: userId,
+            type: NOTIFICATION_TYPES.LIKE,
+            postId,
+          },
+          manager,
+        );
       }
 
       await queryRunner.commitTransaction();

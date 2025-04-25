@@ -25,7 +25,7 @@ export class IsFollowingResponseDto {
 export class GetPaginatedFollowersResponseDto {
   @Expose()
   @Type(() => UserSummaryResponseDto)
-  followers: UserSummaryResponseDto;
+  followers: UserSummaryResponseDto[];
 
   @Expose()
   meta: MetaDataResponseDto;
@@ -34,7 +34,7 @@ export class GetPaginatedFollowersResponseDto {
 export class GetPaginatedFollowingsResponseDto {
   @Expose()
   @Type(() => UserSummaryResponseDto)
-  followings: UserSummaryResponseDto;
+  followings: UserSummaryResponseDto[];
 
   @Expose()
   meta: MetaDataResponseDto;

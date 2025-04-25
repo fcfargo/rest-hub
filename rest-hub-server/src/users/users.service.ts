@@ -58,8 +58,8 @@ export class UsersService {
     return user;
   }
 
-  async findOneUserById(userId: number): Promise<User | null> {
-    return this.usersRepository.findOneUserById(userId);
+  async findOneUserById(userId: number, manager?: EntityManager): Promise<User | null> {
+    return this.usersRepository.findOneUserById(userId, manager);
   }
 
   async findOneUserByEmail(email: string): Promise<User | null> {

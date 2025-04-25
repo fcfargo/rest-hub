@@ -19,3 +19,8 @@ export const ORDER_TYPES = {
   DESC: 'DESC',
   ASC: 'ASC',
 } as const;
+
+export const NOTIFICATION_MESSAGES_KO = {
+  FOLLOW: '회원님을 팔로우하기 시작했습니다.',
+  LIKE: '회원님의 게시물을 좋아합니다.',
+};

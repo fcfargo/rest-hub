@@ -26,6 +26,8 @@ import {
 
 import { ORDER_TYPES } from '@/common/constants';
 import { Follow } from '@/model/follow.entity';
+import { NOTIFICATION_TYPES } from '@/notifications/interfaces/notification.interface';
+import { NotificationsService } from '@/notifications/notifications.service';
 import { UsersService } from '@/users/users.service';
 
 @Injectable()
@@ -34,6 +36,7 @@ export class FollowService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     private readonly followRepository: FollowRepository,
     private readonly usersService: UsersService,
+    private readonly notificationsService: NotificationsService,
 
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
@@ -43,6 +46,11 @@ export class FollowService {
 
     if (followerId === followingId) {
       throw new BadRequestException('You cannot follow yourself');
+    }
+
+    const followingUser = await this.usersService.findOneUserById(followingId);
+    if (!followingUser) {
+      throw new NotFoundException('Invalid followingId');
     }
 
     const isExist = await this.followRepository.getFollowRelation(followerId, followingId);
@@ -61,6 +69,23 @@ export class FollowService {
 
       await this.usersService.incrementFollowingsCount(followerId, manager);
       await this.usersService.incrementFollowersCount(followingId, manager);
+
+      const isDuplicate = await this.notificationsService.isDuplicateFollowNotification(
+        followingId,
+        followerId,
+        manager,
+      );
+
+      if (!isDuplicate) {
+        await this.notificationsService.createFollowNotification(
+          {
+            userId: followingId,
+            actorId: followerId,
+            type: NOTIFICATION_TYPES.FOLLOW,
+          },
+          manager,
+        );
+      }
 
       await queryRunner.commitTransaction();
       return follow;

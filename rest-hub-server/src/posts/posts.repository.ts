@@ -56,7 +56,7 @@ export class PostsRepository {
     offset: number,
     order: OrderTypes,
   ): Promise<Post[]> {
-    const sevenDaysAgo = dayjs().subtract(7, 'day').toDate();
+    const sevenDaysAgo = dayjs().subtract(30, 'day').toDate();
 
     return this.postsRepository
       .createQueryBuilder('post')

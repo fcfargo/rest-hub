@@ -39,10 +39,11 @@ export class UsersRepository {
     return this.usersRepository.save(user);
   }
 
-  async findOneUserById(userId: number): Promise<User | null> {
-    return this.usersRepository.findOne({
+  async findOneUserById(userId: number, manager?: EntityManager): Promise<User | null> {
+    const options = {
       where: { id: userId, deletedAt: IsNull() },
-    });
+    };
+    return manager ? manager.findOne(this.user, options) : this.usersRepository.findOne(options);
   }
 
   async findOneUserByEmail(email: string): Promise<User | null> {
