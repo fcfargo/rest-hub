@@ -10,6 +10,7 @@ import {
   Check,
 } from 'typeorm';
 
+import { Notification } from './notification.entity';
 import { Post } from './post.entity';
 import { PostComment } from './postComment.entity';
 import { PostCommentLike } from './postCommentLike.entity';
@@ -72,4 +73,10 @@ export class User {
   @Column({ default: 0 })
   @Check(`"followersCount" >= 0`)
   followersCount: number;
+
+  @OneToMany(() => Notification, (alarm) => alarm.user)
+  receivedNotifications: Notification[];
+
+  @OneToMany(() => Notification, (alarm) => alarm.user)
+  sentNotifications: Notification[];
 }

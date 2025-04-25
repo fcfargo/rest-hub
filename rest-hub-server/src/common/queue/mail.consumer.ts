@@ -28,11 +28,12 @@ export class MailConsumer extends WorkerHost {
   }
 
   async process(job: Job<{ email: string; subject: string; text: string }>): Promise<void> {
-    const { email, subject, text } = job.data;
     const { name } = job;
 
     const jobHandlers: Record<string, () => Promise<void>> = {
       [QUEUE_JOB_NAMES.SEND_MAIL]: async () => {
+        const { email, subject, text } = job.data;
+
         try {
           await this.transporter.sendMail({
             from: `"rest-hub Support Team" <${processEnv.MAIL_PROCESSOR_USER}>`,

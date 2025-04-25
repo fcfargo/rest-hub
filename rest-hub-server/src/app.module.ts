@@ -12,6 +12,7 @@ import { AppService } from './app.service';
 import { processEnv } from './common/constants';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { FollowModule } from './follow/follow.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { PlacesModule } from './places/places.module';
 import { PostCommentsModule } from './post-comments/post-comments.module';
 import { PostsModule } from './posts/posts.module';
@@ -59,6 +60,7 @@ import { UsersModule } from './users/users.module';
     PostsModule,
     PostCommentsModule,
     FollowModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: 'APP_INTERCEPTOR', useClass: LoggingInterceptor }],
