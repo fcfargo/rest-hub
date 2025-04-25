@@ -41,6 +41,7 @@ export default function UserProfile({ userId }: UserProfileProps) {
       <div className={styles.profileWrapper}>
         <Image
           src={profileImage}
+          sizes="80px"
           alt="User Profile"
           fill
           priority

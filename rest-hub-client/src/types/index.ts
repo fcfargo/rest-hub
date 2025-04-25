@@ -1,4 +1,4 @@
-import { MEDIA_TYPES } from '@/constants';
+import { MEDIA_TYPES, NOTIFICATION_TYPES } from '@/constants';
 
 export type Post = {
   id: string;
@@ -64,3 +64,21 @@ export interface PostDataProps {
 export type MediaTypes = (typeof MEDIA_TYPES)[keyof typeof MEDIA_TYPES];
 
 export type TextValueUpdater = string | ((prev: string) => string);
+
+export type NotificationType = (typeof NOTIFICATION_TYPES)[keyof typeof NOTIFICATION_TYPES];
+
+export type Notification = {
+  id: number;
+  userId: number;
+  type: NotificationType;
+  actor?: {
+    id: number;
+    username: string;
+    profileImage: string | null;
+  };
+  postId: string | null;
+  message: string;
+  isRead: boolean;
+  isFollowing: boolean;
+  createdAt: string;
+};

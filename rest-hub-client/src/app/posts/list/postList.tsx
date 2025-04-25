@@ -76,7 +76,7 @@ export default function PostList() {
 
   /** 게시글 리스트 API로부터 가져오기 */
   const fetchPosts = async (page: number) => {
-    if (loading) {
+    if (loading || isFetchingRef.current) {
       return;
     }
 

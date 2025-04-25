@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import NotificationPanel from './notificationPanel';
+
 import { MODAL_TYPES, PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
@@ -23,6 +25,8 @@ interface MenuItemProps {
 
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
   const { user, logout } = useAuth();
   const { openModal } = useModal();
   const router = useRouter();
@@ -47,6 +51,13 @@ export default function Sidebar() {
       src: '/layout/sidebar/notification.svg',
       alt: 'Notification',
       label: 'Notification',
+      onClick: () => {
+        if (!isNotificationOpen) {
+          setExpanded(false);
+        }
+
+        setIsNotificationOpen((prev) => !prev);
+      },
     },
     // {
     //   src: '/layout/sidebar/communities.svg',
@@ -78,83 +89,92 @@ export default function Sidebar() {
   const profileImage = user.profileImage || PROFILE_IMAGE_DEFAULT;
 
   return (
-    <aside
-      className={classNames(
-        styles.sidebar,
-        isMounted && styles.active,
-        expanded ? styles.expanded : styles.collapsed,
-      )}
-    >
-      <Link
-        href={ROUTES.HOME}
-        className={classNames(styles.titleWrapper, {
-          [globalStyles.hidden]: !expanded,
-        })}
+    <div className={styles.sidebarWrapper}>
+      <aside
+        className={classNames(
+          styles.sidebar,
+          isMounted && styles.active,
+          expanded ? styles.expanded : styles.collapsed,
+        )}
       >
-        Rest Hub
-      </Link>
+        <Link
+          href={ROUTES.HOME}
+          className={classNames(styles.titleWrapper, {
+            [globalStyles.hidden]: !expanded,
+          })}
+        >
+          Rest Hub
+        </Link>
 
-      <nav className={classNames(styles.menu, !expanded ? styles.menuCollapsed : '')}>
-        {MENU_ITEMS.map((item: MenuItemProps, index: number) => (
-          <button
-            key={index}
-            className={styles.menuItem}
-            onClick={item.onClick}
-            disabled={!item.onClick}
-          >
-            <Image src={item.src} width={0} height={0} alt={item.alt} className={styles.menuIcon} />
-            {expanded && <span className={styles.textWrapper}>{item.label}</span>}{' '}
-          </button>
-        ))}
-      </nav>
-
-      <div className={styles.footerContainer}>
-        <div className={styles.user}>
-          <button
-            className={styles.userButton}
-            onClick={() => router.push(`${ROUTES.USERS}/${user.id}`)}
-          >
-            <div className={styles.profileWrapper}>
+        <nav className={classNames(styles.menu, !expanded ? styles.menuCollapsed : '')}>
+          {MENU_ITEMS.map((item: MenuItemProps, index: number) => (
+            <button
+              key={index}
+              className={styles.menuItem}
+              onClick={item.onClick}
+              disabled={!item.onClick}
+            >
               <Image
-                src={profileImage}
-                sizes="48px"
-                fill
-                alt="ProfileImage"
-                className={classNames(
-                  styles.profileIcon,
-                  !user.profileImage && styles.defaultProfile,
-                )}
+                src={item.src}
+                width={0}
+                height={0}
+                alt={item.alt}
+                className={styles.menuIcon}
               />
-            </div>
+              {expanded && <span className={styles.textWrapper}>{item.label}</span>}{' '}
+            </button>
+          ))}
+        </nav>
 
-            {expanded && <span className={styles.profileTextWrapper}>{username}</span>}
+        <div className={styles.footerContainer}>
+          <div className={styles.user}>
+            <button
+              className={styles.userButton}
+              onClick={() => router.push(`${ROUTES.USERS}/${user.id}`)}
+            >
+              <div className={styles.profileWrapper}>
+                <Image
+                  src={profileImage}
+                  sizes="48px"
+                  fill
+                  alt="ProfileImage"
+                  className={classNames(
+                    styles.profileIcon,
+                    !user.profileImage && styles.defaultProfile,
+                  )}
+                />
+              </div>
+
+              {expanded && <span className={styles.profileTextWrapper}>{username}</span>}
+            </button>
+          </div>
+
+          <button
+            className={classNames(styles.logoutButton, { [globalStyles.hidden]: !expanded })}
+            onClick={() => logout()}
+          >
+            <Image src="/layout/sidebar/logout.svg" width={24} height={24} alt="Logout" />
+            <span className={styles.textWrapper}>Logout</span>
           </button>
         </div>
 
         <button
-          className={classNames(styles.logoutButton, { [globalStyles.hidden]: !expanded })}
-          onClick={() => logout()}
+          className={`${styles.chevronsButton} ${
+            expanded ? styles.expandedChevrons : styles.collapsedChevrons
+          }`}
+          onClick={() => setExpanded(!expanded)}
         >
-          <Image src="/layout/sidebar/logout.svg" width={24} height={24} alt="Logout" />
-          <span className={styles.textWrapper}>Logout</span>
+          <Image
+            src={
+              expanded ? '/layout/sidebar/chevrons-left.svg' : '/layout/sidebar/chevrons-right.svg'
+            }
+            width={25}
+            height={25}
+            alt="Toggle Sidebar"
+          />
         </button>
-      </div>
-
-      <button
-        className={`${styles.chevronsButton} ${
-          expanded ? styles.expandedChevrons : styles.collapsedChevrons
-        }`}
-        onClick={() => setExpanded(!expanded)}
-      >
-        <Image
-          src={
-            expanded ? '/layout/sidebar/chevrons-left.svg' : '/layout/sidebar/chevrons-right.svg'
-          }
-          width={25}
-          height={25}
-          alt="Toggle Sidebar"
-        />
-      </button>
-    </aside>
+      </aside>
+      {isNotificationOpen && <NotificationPanel onClose={() => setIsNotificationOpen(false)} />}
+    </div>
   );
 }
