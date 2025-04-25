@@ -68,10 +68,10 @@ export type TextValueUpdater = string | ((prev: string) => string);
 export type NotificationType = (typeof NOTIFICATION_TYPES)[keyof typeof NOTIFICATION_TYPES];
 
 export type Notification = {
-  id: string;
+  id: number;
   userId: number;
   type: NotificationType;
-  actor: {
+  actor?: {
     id: number;
     username: string;
     profileImage: string | null;
@@ -80,5 +80,5 @@ export type Notification = {
   message: string;
   isRead: boolean;
   isFollowing: boolean;
-  createdAt: Date;
+  createdAt: string;
 };
