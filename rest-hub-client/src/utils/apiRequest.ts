@@ -1,3 +1,5 @@
+import { isAxiosError } from './errorGuards';
+
 import { HTTP_STATUS_CODES } from '@/constants';
 import { getAccessToken, refreshAccessToken } from '@/utils/authUtils';
 
@@ -22,7 +24,7 @@ export async function apiRequest<T>(
   try {
     return await requestFn(accessToken);
   } catch (error) {
-    if (error.response?.status === HTTP_STATUS_CODES.UNAUTHORIZED) {
+    if (isAxiosError(error) && error.response?.status === HTTP_STATUS_CODES.UNAUTHORIZED) {
       try {
         console.warn('AccessToken이 만료됨, RefreshToken으로 갱신 시도...');
         const newAccessToken = await refreshAccessToken();

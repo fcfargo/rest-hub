@@ -1,4 +1,5 @@
 'use client';
+import { isAxiosError } from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -9,6 +10,7 @@ import api from '@/libs/axiosInstance';
 import { User } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
 import { removeTokens, saveTokens } from '@/utils/authUtils';
+import { getErrorMessage } from '@/utils/errorGuards';
 
 interface LogInUserRequest {
   email: string;
@@ -33,6 +35,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const router = useRouter();
   const pathname = usePathname();
+
+  if (!pathname) {
+    return false;
+  }
 
   const shouldSkipEffect = AUTH_EFFECT_EXCLUDED_ROUTES.includes(pathname);
 
@@ -75,14 +81,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return true;
     } catch (error) {
-      const status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+      let status: number = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
 
-      if ([HTTP_STATUS_CODES.UNAUTHORIZED, HTTP_STATUS_CODES.BAD_REQUEST].includes(status)) {
+      if (isAxiosError(error)) {
+        status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+      }
+
+      const errorStatuses: number[] = [
+        HTTP_STATUS_CODES.UNAUTHORIZED,
+        HTTP_STATUS_CODES.BAD_REQUEST,
+      ];
+
+      if (errorStatuses.includes(status)) {
         console.error('Login failed: Unauthorized', error);
         return false;
       }
 
-      throw new Error(error.message);
+      throw new Error(getErrorMessage(error));
     }
   };
 
@@ -97,14 +112,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return true;
     } catch (error) {
-      const status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+      let status: number = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
 
-      if ([HTTP_STATUS_CODES.BAD_REQUEST].includes(status)) {
+      if (isAxiosError(error)) {
+        status = error.response?.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+      }
+
+      const errorStatuses: number[] = [
+        HTTP_STATUS_CODES.UNAUTHORIZED,
+        HTTP_STATUS_CODES.BAD_REQUEST,
+      ];
+
+      if (errorStatuses.includes(status)) {
         console.error('Signup failed: Email already in use', error);
         return false;
       }
 
-      throw new Error(error.message);
+      throw new Error(getErrorMessage(error));
     }
   };
 

@@ -20,6 +20,7 @@ type ModalType = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES];
 
 type ModalInstance = {
   type: ModalType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 };
 
