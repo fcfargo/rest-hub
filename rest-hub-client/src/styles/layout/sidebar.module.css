@@ -1,3 +1,9 @@
+.sidebarWrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
 .sidebar {
   overflow: auto;
   flex-grow: 0;

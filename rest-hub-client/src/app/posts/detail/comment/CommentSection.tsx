@@ -71,7 +71,7 @@ export default function CommentSection({ post, children }: CommentSectionProps) 
 
   /** 댓글 가져오기 */
   const fetchComments = async (page: number) => {
-    if (isLoading || (latestTotalPages !== null && page > latestTotalPages)) {
+    if (isLoading || isFetchingRef.current) {
       return;
     }
 

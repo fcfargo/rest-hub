@@ -11,4 +11,5 @@ export const API_ENDPOINTS = {
   PRESIGNED_URL: '/upload/presigned-url',
   FOLLOW: '/follow',
   USER: '/users',
+  NOTIFICATION: '/notifications',
 };

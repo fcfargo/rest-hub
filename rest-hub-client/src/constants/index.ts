@@ -112,3 +112,12 @@ export const UPLOAD_OBJECT_TYPES = {
   POST: 'users/posts',
   PROFILE: 'users/profile',
 } as const;
+
+export const NOTIFICATION_TYPES = {
+  LIKE: 'LIKE',
+  FOLLOW: 'FOLLOW',
+} as const;
+
+export const NOTIFICATION_MENU_ITEM_TYPES = {
+  DELETE: 0,
+} as const;
