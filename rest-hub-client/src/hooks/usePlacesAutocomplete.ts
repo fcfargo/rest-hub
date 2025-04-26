@@ -30,6 +30,7 @@ export const usePlacesAutocomplete = (input: string) => {
         }, logout);
 
         setSuggestions(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           data.body.map((place: any) => ({
             placeId: place.placeId,
             description: place.description,

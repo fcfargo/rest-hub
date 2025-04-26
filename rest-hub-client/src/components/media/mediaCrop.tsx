@@ -4,6 +4,13 @@ import Cropper from 'react-easy-crop';
 import { Crop, CroppedAreaPixels } from '@/app/posts/create/steps/PostCreateCrop';
 import styles from '@/styles/media/mediaCrop.module.css';
 
+export type Area = {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+};
+
 interface MediaCropProps {
   fileUrl: string;
   crop: Crop;
@@ -11,7 +18,7 @@ interface MediaCropProps {
   aspect: number;
   setCrop: Dispatch<SetStateAction<Crop>>;
   setZoom: Dispatch<SetStateAction<number>>;
-  onCropComplete: (_: any, croppedAreaPixels: CroppedAreaPixels) => void;
+  onCropComplete: (_: Area, croppedAreaPixels: CroppedAreaPixels) => void;
 }
 
 export default function MediaCrop({

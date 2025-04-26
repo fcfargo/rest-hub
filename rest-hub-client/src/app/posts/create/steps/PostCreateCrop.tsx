@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
-import MediaCrop from '@/components/media/mediaCrop';
+import MediaCrop, { Area } from '@/components/media/mediaCrop';
 import { ErrorMessage } from '@/components/ui/message';
 import { ASPECT_RATIO_VALUES, INPUT_TYPES } from '@/constants';
 import cropStyles from '@/styles/post/postCreateCrop.module.css';
@@ -67,7 +67,7 @@ export default function PostCreateCrop({
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
 
   const onCropComplete = useCallback(
-    (_: any, croppedAreaPixels: CroppedAreaPixels) => setCroppedAreaPixels(croppedAreaPixels),
+    (_: Area, croppedAreaPixels: CroppedAreaPixels) => setCroppedAreaPixels(croppedAreaPixels),
     [],
   );
 

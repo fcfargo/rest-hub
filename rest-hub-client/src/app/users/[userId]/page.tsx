@@ -19,7 +19,7 @@ export default function UserPage({ params }: UserPageProps) {
           <UserProfile userId={Number(userId)} />
         </div>
         <div className="flex-grow overflow-y-auto">
-          <UserPostList userId={Number(userId)} />
+          <UserPostList />
         </div>
       </ProtectedRoute>
     </div>

@@ -29,6 +29,7 @@ export function useUserProfile(userId: number) {
           setUser(data.body);
         }
       } catch (err) {
+        console.error('Failed to fetch user:', err);
         if (isMounted) {
           setError('유저 정보를 불러오지 못했습니다.');
         }

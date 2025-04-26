@@ -6,7 +6,7 @@ import { ROUTES } from '@/constants';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? '';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET ?? '';
 
-const handler = NextAuth({
+export default NextAuth({
   providers: [
     GoogleProvider({
       clientId: GOOGLE_CLIENT_ID,
@@ -18,7 +18,11 @@ const handler = NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
-      session.user.id_token = token.id_token;
+      if (typeof token.id_token === 'string') {
+        session.user.id_token = token.id_token;
+      } else {
+        session.user.id_token = undefined;
+      }
       return session;
     },
     async jwt({ token, account }) {
@@ -27,11 +31,9 @@ const handler = NextAuth({
       }
       return token;
     },
-    async redirect({ url, baseUrl }) {
+    async redirect({ baseUrl }) {
       return `${baseUrl}${ROUTES.AUTH.LOGIN}`;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
 });
-
-export { handler as GET, handler as POST };
