@@ -13,3 +13,36 @@ export const getErrorMessage = (error: unknown): string => {
   }
   return 'Unexpected error';
 };
+
+export interface ExtractedErrorInfo {
+  status: number;
+  code: string;
+}
+
+export const extractErrorInfo = (error: unknown): ExtractedErrorInfo => {
+  const defaultStatus = 500;
+  const defaultCode = 'INTERNAL_SERVER_ERROR';
+
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const responseError = error as {
+      response: {
+        status?: number;
+        data?: {
+          error?: {
+            code?: string;
+          };
+        };
+      };
+    };
+
+    return {
+      status: responseError.response.status ?? defaultStatus,
+      code: responseError.response.data?.error?.code ?? defaultCode,
+    };
+  }
+
+  return {
+    status: defaultStatus,
+    code: defaultCode,
+  };
+};

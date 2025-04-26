@@ -18,6 +18,7 @@ import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import styles from '@/styles/settings/passwordChangeModal.module.css';
 import { apiRequest } from '@/utils/apiRequest';
+import { extractErrorInfo } from '@/utils/errorGuards';
 
 const passwordChangeSchema = z
   .object({
@@ -85,16 +86,7 @@ export default function PasswordChangeModal() {
   const handleApiError = (error: unknown) => {
     console.error('Password change failed:', error);
 
-    let status: number = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
-    let code: string = ERROR_CODES.INTERNAL_SERVER_ERROR;
-
-    if (typeof error === 'object' && error !== null && 'response' in error) {
-      const responseError = error as {
-        response: { status?: number; data?: { error: { code: string } } };
-      };
-      status = responseError.response.status ?? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
-      code = responseError.response.data?.error.code ?? ERROR_CODES.INTERNAL_SERVER_ERROR;
-    }
+    const { status, code } = extractErrorInfo(error);
 
     let errorMessage = '비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.';
 
