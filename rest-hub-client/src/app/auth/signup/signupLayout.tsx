@@ -17,12 +17,16 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.signupContainer}>
-        <Brand />
+        <div className={styles.brandContainer}>
+          <Brand />
+        </div>
         <div className={styles.signupFrame}>
           <div className={styles.signup}>
             <div className={styles.signupText}>Sign Up</div>
             {children}
-            <Divider />
+            <div className={styles.dividerContainer}>
+              <Divider />
+            </div>
             <SessionProvider>
               <GoogleOAuthHandler />
               <AuthButton

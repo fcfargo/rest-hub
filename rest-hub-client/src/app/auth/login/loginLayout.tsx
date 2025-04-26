@@ -17,7 +17,9 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.loginContainer}>
-        <Brand />
+        <div className={styles.brandContainer}>
+          <Brand />
+        </div>
         <div className={styles.loginFrame}>
           <div className={styles.login}>
             <div className={styles.loginText}>Log in</div>
@@ -25,7 +27,9 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
             <Link href={ROUTES.AUTH.RESET_PASSWORD} className={styles.forgotPassword}>
               Forgot password?
             </Link>
-            <Divider />
+            <div className={styles.dividerContainer}>
+              <Divider />
+            </div>
             <GoogleOAuthHandler />
             <AuthButton
               text="Google"
