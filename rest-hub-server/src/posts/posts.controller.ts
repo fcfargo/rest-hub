@@ -48,6 +48,14 @@ export class PostsController {
     return this.postsService.createPost(userId, body);
   }
 
+  @Serialize(PostResponseDto)
+  @UseGuards(JwtAuthGuard)
+  @Get(':postId')
+  async getPost(@CurrentUser() currentUser: jwtPayLoad, @Param('postId') postId: string) {
+    const userId = currentUser.sub;
+    return this.postsService.getPost(userId, postId);
+  }
+
   @Serialize(GetPostsResponseDto)
   @UseGuards(JwtAuthGuard)
   @Get()
