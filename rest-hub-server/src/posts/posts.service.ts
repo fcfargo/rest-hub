@@ -28,6 +28,7 @@ import {
   PostCommentLikeStatusResponse,
   PostLikeStatusResponse,
   PostWithUser,
+  PostWithViewerState,
 } from './interfaces/posts.interface';
 import { PostsRepository } from './posts.repository';
 
@@ -81,6 +82,29 @@ export class PostsService {
   private async _getFollowingUserIds(userIds: number[], userId: number): Promise<Set<number>> {
     const followings = await this.followService.getFollowsByUserAndFollowingIds(userIds, userId);
     return new Set(followings.map((follow) => follow.followingId));
+  }
+
+  async getPost(userId: number, postId: string): Promise<PostWithViewerState> {
+    const post = await this.postsRepository.getPostWithUserById(postId);
+
+    if (!post) {
+      throw new NotFoundException(`Post (id: ${postId}) not found`);
+    }
+
+    const authorId = post.user.id;
+
+    const [likedPostIdSet, followingAuthorIdSet] = await Promise.all([
+      this._getUserLikedPostIds([postId], userId),
+      this._getFollowingUserIds([authorId], userId),
+    ]);
+
+    const postWithFlags = {
+      ...post,
+      isLiked: likedPostIdSet.has(post.id),
+      isFollowing: followingAuthorIdSet.has(post.user.id),
+    };
+
+    return postWithFlags;
   }
 
   /**
