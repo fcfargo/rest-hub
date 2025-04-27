@@ -1,6 +1,7 @@
 'use client';
 
 import classNames from 'classnames';
+import { useEffect, useState } from 'react';
 
 import CommentSection from './\bcomment/CommentSection';
 import PostContentSection from './sections/PostContentSection';
@@ -9,10 +10,15 @@ import PostProfileSection from './sections/PostProfileSection';
 
 import { CloseButtonWhite } from '@/components/ui/closeButton';
 import { MEDIA_TYPES } from '@/constants';
+import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
 import { usePost } from '@/context/postContext';
 import { useMounted } from '@/hooks/useMounted';
+import { API_ENDPOINTS } from '@/libs/api';
+import api from '@/libs/axiosInstance';
 import styles from '@/styles/post/postDetail.module.css';
+import { Post } from '@/types';
+import { apiRequest } from '@/utils/apiRequest';
 
 interface PostDetailModalProps {
   postId: string;
@@ -22,17 +28,39 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
   const isMounted = useMounted();
   const { closeModal } = useModal();
   const { posts } = usePost();
+  const { logout } = useAuth();
 
-  const post = posts.find((p) => p.id === postId);
-  console.log(post);
+  const [post, setPost] = useState<Post | null>(null);
 
-  if (!post || !postId) {
+  useEffect(() => {
+    async function fetchPost() {
+      try {
+        const existingPost = posts.find((p) => p.id === postId);
+
+        if (existingPost) {
+          setPost(existingPost);
+        } else {
+          const { data } = await apiRequest(async (accessToken: string) => {
+            return api.get(`${API_ENDPOINTS.POST}/${postId}`, {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            });
+          }, logout);
+          setPost(data.body);
+        }
+      } catch (error) {
+        console.error('Failed to get post:', error);
+        closeModal();
+      }
+    }
+
+    fetchPost();
+  }, [postId, posts, closeModal]);
+
+  if (!post) {
     return null;
   }
 
   const { imageUrl, content } = post;
-
-  // 게시글에 미디어 데이터 포함 여부
   const hasMediaData = Boolean(imageUrl?.trim());
 
   return (
