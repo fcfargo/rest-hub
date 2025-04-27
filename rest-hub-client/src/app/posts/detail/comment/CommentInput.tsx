@@ -88,7 +88,7 @@ export default function CommentInput({ postId, parentId, onAddComment }: Comment
 
       {/* 이모지 + 등록 버튼 */}
       <div className={styles.commentFooter}>
-        <EmojiButton setTextContent={setComment} className="bottom-[-8px] left-[-244px]" />
+        <EmojiButton setTextContent={setComment} className="bottom-[34px] left-[-48px]" />
         <button
           className={styles.button}
           onClick={handleCommentCreate}

@@ -8,11 +8,12 @@ import PostContentSection from './sections/PostContentSection';
 import PostDetailMediaSection from './sections/PostDetailMediaSection';
 import PostProfileSection from './sections/PostProfileSection';
 
-import { CloseButtonWhite } from '@/components/ui/closeButton';
+import { CloseButtonBlack, CloseButtonWhite } from '@/components/ui/closeButton';
 import { MEDIA_TYPES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
 import { usePost } from '@/context/postContext';
+import { useIsTabletOrMobile } from '@/hooks/useIsDesktop';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
@@ -29,6 +30,7 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
   const { closeModal } = useModal();
   const { posts } = usePost();
   const { logout } = useAuth();
+  const isTabletOrMobile = useIsTabletOrMobile();
 
   const [post, setPost] = useState<Post | null>(null);
 
@@ -65,7 +67,9 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
 
   return (
     <div className={styles.overlay}>
-      <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
+      {!isTabletOrMobile && (
+        <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
+      )}
 
       <div className={styles.container}>
         <div
@@ -78,6 +82,9 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
           {/* 헤더 */}
           <div className={styles.header}>
             <h2 className={styles.title}>게시물 상세보기</h2>
+            <div className={styles.mobileCloseButtonContainer}>
+              <CloseButtonBlack onClick={() => closeModal()} />
+            </div>
           </div>
 
           <div className={styles.body}>
