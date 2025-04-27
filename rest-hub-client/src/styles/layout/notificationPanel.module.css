@@ -1,23 +1,48 @@
 .notificationPanel {
-  position: sticky;
   display: flex;
   flex-direction: column;
-  width: 320px;
   height: 100vh;
   background-color: white;
   border-right: 1px solid #ddd;
   padding: 20px 18px;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  transform: translateX(-20px);
-  opacity: 0;
-  transition:
-    opacity 0.2s ease-in-out,
-    transform 0.2s ease-in-out;
 }
 
-.notificationPanel.active {
-  transform: translateY(0);
-  opacity: 1;
+@media (max-width: 1024px) {
+  .notificationPanel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    z-index: 30;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .notificationPanel.open {
+    transform: translateX(0);
+  }
+
+  .notificationPanel.closed {
+    transform: translateX(-100%);
+  }
+}
+
+@media (min-width: 1024px) {
+  .notificationPanel {
+    position: sticky;
+    width: 320px;
+    transform: translateX(-20px);
+    opacity: 0;
+    transition:
+      opacity 0.2s ease-in-out,
+      transform 0.2s ease-in-out;
+  }
+
+  .notificationPanel.active {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .header {

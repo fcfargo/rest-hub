@@ -6,9 +6,6 @@
 
 .sidebar {
   overflow: auto;
-  flex-grow: 0;
-  position: relative;
-  width: 260px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -17,17 +14,45 @@
   gap: 36px;
   background-color: #ffffff;
   border-right: 1px solid #ddd;
-  transform: translateX(-20px);
-  opacity: 0;
   transition:
-    transform 0.3s ease-in-out,
-    opacity 0.3s ease-in-out,
-    width 0.5s ease-in-out;
+    width 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
 }
 
-.sidebar.active {
-  transform: translateY(0);
-  opacity: 1;
+/* 모바일 (1024px 이하) */
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    transform: translateX(-100%);
+    z-index: 30;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar.closed {
+    transform: translateX(-100%);
+  }
+
+  .sidebarOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4); /* 배경 어둡게 */
+    z-index: 20;
+  }
+}
+
+/* PC (1024px 이상) */
+@media (min-width: 1024px) {
+  .sidebar {
+    position: relative;
+    width: 260px;
+    transform: none;
+  }
 }
 
 .sidebar.expanded {
@@ -174,4 +199,11 @@
 .collapsedChevrons {
   left: 30.5px;
   transform: translateX(0);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 20;
 }

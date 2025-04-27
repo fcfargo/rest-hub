@@ -24,6 +24,7 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
   const { posts } = usePost();
 
   const post = posts.find((p) => p.id === postId);
+  console.log(post);
 
   if (!post || !postId) {
     return null;
