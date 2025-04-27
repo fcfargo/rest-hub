@@ -17,10 +17,11 @@ import { apiRequest } from '@/utils/apiRequest';
 import { mergeUniqueById } from '@/utils/array';
 
 interface NotificationPanelProps {
+  isNotificationOpen: boolean;
   onClose: () => void;
 }
 
-export default function NotificationPanel({ onClose }: NotificationPanelProps) {
+export default function NotificationPanel({ isNotificationOpen, onClose }: NotificationPanelProps) {
   const isMounted = useMounted();
   const { logout } = useAuth();
 
@@ -140,7 +141,13 @@ export default function NotificationPanel({ onClose }: NotificationPanelProps) {
   }, [isMounted]);
 
   return (
-    <aside className={classNames(styles.notificationPanel, isMounted && styles.active)}>
+    <aside
+      className={classNames(
+        styles.notificationPanel,
+        isMounted && styles.active,
+        isMounted && isNotificationOpen ? styles.open : styles.closed,
+      )}
+    >
       <div className={styles.header}>
         <h2>알림</h2>
         <button className={styles.closeButton} onClick={onClose}>

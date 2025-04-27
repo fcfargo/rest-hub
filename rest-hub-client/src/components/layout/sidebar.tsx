@@ -4,13 +4,14 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 import NotificationPanel from './notificationPanel';
 
 import { MODAL_TYPES, PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { useIsTabletOrMobile } from '@/hooks/useIsDesktop';
 import { useMounted } from '@/hooks/useMounted';
 import { useRouteEffect } from '@/hooks/useRouteEffect';
 import styles from '@/styles/layout/sidebar.module.css';
@@ -23,14 +24,20 @@ interface MenuItemProps {
   onClick?: () => void;
 }
 
-export default function Sidebar() {
+interface SidebarProps {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-
   const { user, logout } = useAuth();
   const { openModal } = useModal();
   const router = useRouter();
   const pathname = usePathname();
+
+  const isTabletOrMobile = useIsTabletOrMobile();
 
   const isMounted = useMounted();
   useRouteEffect();
@@ -54,6 +61,10 @@ export default function Sidebar() {
       onClick: () => {
         if (!isNotificationOpen) {
           setExpanded(false);
+        }
+
+        if (isTabletOrMobile) {
+          setIsSidebarOpen(false);
         }
 
         setIsNotificationOpen((prev) => !prev);
@@ -95,6 +106,7 @@ export default function Sidebar() {
           styles.sidebar,
           isMounted && styles.active,
           expanded ? styles.expanded : styles.collapsed,
+          isSidebarOpen ? styles.open : styles.closed,
         )}
       >
         <Link
@@ -174,7 +186,18 @@ export default function Sidebar() {
           />
         </button>
       </aside>
-      {isNotificationOpen && <NotificationPanel onClose={() => setIsNotificationOpen(false)} />}
+      {isNotificationOpen && (
+        <>
+          {isTabletOrMobile && (
+            <div className={styles.overlay} onClick={() => setIsNotificationOpen(false)}></div>
+          )}
+
+          <NotificationPanel
+            isNotificationOpen={isNotificationOpen}
+            onClose={() => setIsNotificationOpen(false)}
+          />
+        </>
+      )}
     </div>
   );
 }
