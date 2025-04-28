@@ -1,10 +1,10 @@
 'use client';
 
 import '@/styles/globals.css';
-import Image from 'next/image';
 import { SessionProvider } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
+import HamburgerButton from '@/components/layout/hamburgerButton';
 import Sidebar from '@/components/layout/sidebar';
 import { AuthProvider } from '@/context/authContext';
 import { ModalProvider } from '@/context/modalContext';
@@ -41,13 +41,7 @@ export default function RootLayout({
           <body className={`antialiased flex h-screen`}>
             <PostProvider>
               <ModalProvider>
-                {/* 햄버거 버튼 - 모바일용 */}
-                <button
-                  onClick={() => setIsSidebarOpen((prev) => !prev)}
-                  className="absolute flex items-center justify-center top-4 left-4 z-20 p-2 w-12 h-12 bg-gray-100, bg-gray-200 rounded-full shadow-md block lg:hidden"
-                >
-                  <Image src="/icons/hamburger.svg" alt="Open Sidebar" width={24} height={24} />
-                </button>
+                <HamburgerButton onClick={setIsSidebarOpen} />
 
                 {/* 사이드바 */}
                 <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />

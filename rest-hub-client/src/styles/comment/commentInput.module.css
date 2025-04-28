@@ -67,6 +67,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0.8;
   filter: invert(50%) sepia(90%) saturate(500%) hue-rotate(175deg) brightness(110%) contrast(100%);
 }
 
