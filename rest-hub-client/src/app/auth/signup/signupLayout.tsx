@@ -41,7 +41,7 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
         <p className={styles.loginText}>
           Already have an account?{' '}
           <Link href={ROUTES.AUTH.LOGIN} className={styles.loginLink}>
-            Log in
+            로그인
           </Link>
         </p>
       </div>

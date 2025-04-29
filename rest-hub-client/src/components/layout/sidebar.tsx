@@ -48,14 +48,14 @@ export default function Sidebar() {
     {
       src: '/layout/sidebar/home.svg',
       alt: 'Home',
-      label: 'Home',
+      label: '홈',
       onClick: () => router.push(ROUTES.HOME),
     },
     // { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search' },
     {
       src: '/layout/sidebar/notification.svg',
       alt: 'Notification',
-      label: 'Notification',
+      label: '알림',
       onClick: () => {
         if (!isNotificationOpen) {
           setExpanded(false);
@@ -76,7 +76,7 @@ export default function Sidebar() {
     {
       src: '/layout/sidebar/post.svg',
       alt: 'Post',
-      label: 'Post',
+      label: '글쓰기',
       onClick: () => {
         if (isTabletOrMobile) {
           setIsSidebarOpen(false);
@@ -88,7 +88,7 @@ export default function Sidebar() {
     {
       src: '/layout/sidebar/settings.svg',
       alt: 'Settings',
-      label: 'Settings',
+      label: '설정',
       onClick: () => {
         if (isTabletOrMobile) {
           setIsSidebarOpen(false);
@@ -100,7 +100,7 @@ export default function Sidebar() {
     {
       src: '/layout/sidebar/profile.svg',
       alt: 'Me',
-      label: 'Me',
+      label: '프로필',
       onClick: () => router.push(`${ROUTES.USERS}/${user.id}`),
     },
   ];
@@ -175,7 +175,7 @@ export default function Sidebar() {
             onClick={() => logout()}
           >
             <Image src="/layout/sidebar/logout.svg" width={24} height={24} alt="Logout" />
-            <span className={styles.textWrapper}>Logout</span>
+            <span className={styles.textWrapper}>로그아웃</span>
           </button>
         </div>
 

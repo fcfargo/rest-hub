@@ -104,7 +104,7 @@ export default function SignUpForm() {
 
       {/* 로그인 버튼 */}
       <button className={styles.button} type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Signing up...' : 'Sign Up'}
+        {isSubmitting ? '요청 중...' : '회원 가입'}
       </button>
     </form>
   );

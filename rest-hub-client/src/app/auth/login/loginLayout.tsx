@@ -25,7 +25,7 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
             <div className={styles.loginText}>Log in</div>
             {children}
             <Link href={ROUTES.AUTH.RESET_PASSWORD} className={styles.forgotPassword}>
-              Forgot password?
+              비밀번호 찾기
             </Link>
             <div className={styles.dividerContainer}>
               <Divider />
@@ -42,7 +42,7 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
         <p className={styles.signupText}>
           Don’t have an account?{' '}
           <Link href={ROUTES.AUTH.SIGNUP} className={styles.signupLink}>
-            Sign Up
+            회원 가입
           </Link>
         </p>
       </div>

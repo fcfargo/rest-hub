@@ -84,7 +84,7 @@ export default function ResetPasswordForm() {
       />
 
       <button className={styles.button} type="submit" disabled={isSubmitting || isSuccess}>
-        {isSubmitting ? '요청 중...' : isSuccess ? '요청 완료' : 'Continue'}
+        {isSubmitting ? '요청 중...' : isSuccess ? '요청 완료' : '비밀번호 찾기'}
       </button>
 
       {message &&
