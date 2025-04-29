@@ -8,6 +8,7 @@ import { InfiniteScrollLoader } from '../ui/ScrollBoundaryIndicators';
 
 import { SCROLLTO_BEHAVIOR } from '@/constants';
 import { useAuth } from '@/context/authContext';
+import { useIsTabletOrMobile } from '@/hooks/useIsDesktop';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
@@ -17,10 +18,11 @@ import { apiRequest } from '@/utils/apiRequest';
 import { mergeUniqueById } from '@/utils/array';
 
 interface NotificationPanelProps {
+  isNotificationOpen: boolean;
   onClose: () => void;
 }
 
-export default function NotificationPanel({ onClose }: NotificationPanelProps) {
+export default function NotificationPanel({ isNotificationOpen, onClose }: NotificationPanelProps) {
   const isMounted = useMounted();
   const { logout } = useAuth();
 
@@ -34,6 +36,7 @@ export default function NotificationPanel({ onClose }: NotificationPanelProps) {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const scrollPositionRef = useRef(0);
   const isFetchingRef = useRef(false);
+  const isMobileOrTablet = useIsTabletOrMobile();
 
   const onDelete = (id: number) => {
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
@@ -140,7 +143,13 @@ export default function NotificationPanel({ onClose }: NotificationPanelProps) {
   }, [isMounted]);
 
   return (
-    <aside className={classNames(styles.notificationPanel, isMounted && styles.active)}>
+    <aside
+      className={classNames(
+        styles.notificationPanel,
+        isMounted && styles.active,
+        isMounted && isNotificationOpen ? styles.open : styles.closed,
+      )}
+    >
       <div className={styles.header}>
         <h2>알림</h2>
         <button className={styles.closeButton} onClick={onClose}>
@@ -166,6 +175,7 @@ export default function NotificationPanel({ onClose }: NotificationPanelProps) {
               key={notification.id}
               notification={notification}
               onDelete={onDelete}
+              onClose={isMobileOrTablet ? onClose : undefined}
             />
           ))}
         </div>

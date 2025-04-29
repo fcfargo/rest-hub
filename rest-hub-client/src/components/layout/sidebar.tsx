@@ -7,10 +7,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import NotificationPanel from './notificationPanel';
+import Overlay from './overlay';
 
 import { MODAL_TYPES, PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { useSidebar } from '@/context/sidebarContext';
+import { useIsTabletOrMobile } from '@/hooks/useIsDesktop';
 import { useMounted } from '@/hooks/useMounted';
 import { useRouteEffect } from '@/hooks/useRouteEffect';
 import styles from '@/styles/layout/sidebar.module.css';
@@ -26,11 +29,13 @@ interface MenuItemProps {
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-
   const { user, logout } = useAuth();
   const { openModal } = useModal();
   const router = useRouter();
   const pathname = usePathname();
+
+  const isTabletOrMobile = useIsTabletOrMobile();
+  const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
 
   const isMounted = useMounted();
   useRouteEffect();
@@ -43,17 +48,21 @@ export default function Sidebar() {
     {
       src: '/layout/sidebar/home.svg',
       alt: 'Home',
-      label: 'Home',
+      label: '홈',
       onClick: () => router.push(ROUTES.HOME),
     },
     // { src: '/layout/sidebar/search.svg', alt: 'Search', label: 'Search' },
     {
       src: '/layout/sidebar/notification.svg',
       alt: 'Notification',
-      label: 'Notification',
+      label: '알림',
       onClick: () => {
         if (!isNotificationOpen) {
           setExpanded(false);
+        }
+
+        if (isTabletOrMobile) {
+          setIsSidebarOpen(false);
         }
 
         setIsNotificationOpen((prev) => !prev);
@@ -67,20 +76,31 @@ export default function Sidebar() {
     {
       src: '/layout/sidebar/post.svg',
       alt: 'Post',
-      label: 'Post',
-      onClick: () => openModal(MODAL_TYPES.POST_CREATE),
+      label: '글쓰기',
+      onClick: () => {
+        if (isTabletOrMobile) {
+          setIsSidebarOpen(false);
+        }
+
+        openModal(MODAL_TYPES.POST_CREATE);
+      },
     },
     {
       src: '/layout/sidebar/settings.svg',
       alt: 'Settings',
-      label: 'Settings',
-      onClick: () =>
-        router.push(pathname === ROUTES.SETTINGS.HOME ? ROUTES.HOME : ROUTES.SETTINGS.HOME),
+      label: '설정',
+      onClick: () => {
+        if (isTabletOrMobile) {
+          setIsSidebarOpen(false);
+        }
+
+        router.push(pathname === ROUTES.SETTINGS.HOME ? ROUTES.HOME : ROUTES.SETTINGS.HOME);
+      },
     },
     {
       src: '/layout/sidebar/profile.svg',
       alt: 'Me',
-      label: 'Me',
+      label: '프로필',
       onClick: () => router.push(`${ROUTES.USERS}/${user.id}`),
     },
   ];
@@ -95,6 +115,7 @@ export default function Sidebar() {
           styles.sidebar,
           isMounted && styles.active,
           expanded ? styles.expanded : styles.collapsed,
+          isSidebarOpen ? styles.open : styles.closed,
         )}
       >
         <Link
@@ -127,7 +148,7 @@ export default function Sidebar() {
         </nav>
 
         <div className={styles.footerContainer}>
-          <div className={styles.user}>
+          <div className={classNames(styles.user, !expanded ? styles.collapsed : '')}>
             <button
               className={styles.userButton}
               onClick={() => router.push(`${ROUTES.USERS}/${user.id}`)}
@@ -154,7 +175,7 @@ export default function Sidebar() {
             onClick={() => logout()}
           >
             <Image src="/layout/sidebar/logout.svg" width={24} height={24} alt="Logout" />
-            <span className={styles.textWrapper}>Logout</span>
+            <span className={styles.textWrapper}>로그아웃</span>
           </button>
         </div>
 
@@ -174,7 +195,16 @@ export default function Sidebar() {
           />
         </button>
       </aside>
-      {isNotificationOpen && <NotificationPanel onClose={() => setIsNotificationOpen(false)} />}
+      {isNotificationOpen && (
+        <>
+          {isTabletOrMobile && <Overlay onClick={() => setIsNotificationOpen(false)} />}
+
+          <NotificationPanel
+            isNotificationOpen={isNotificationOpen}
+            onClose={() => setIsNotificationOpen(false)}
+          />
+        </>
+      )}
     </div>
   );
 }

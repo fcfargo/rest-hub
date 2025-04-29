@@ -71,7 +71,7 @@ export default function EmojiButton({
         ref={pickerRef}
         className={classNames(styles.emojiPickerContainer, className, showPicker && styles.active)}
       >
-        <EmojiPicker searchDisabled={true} width={320} height={320} onEmojiClick={addEmoji} />
+        <EmojiPicker searchDisabled={false} width={320} height={320} onEmojiClick={addEmoji} />
       </div>
     </div>
   );

@@ -17,15 +17,19 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.loginContainer}>
-        <Brand />
+        <div className={styles.brandContainer}>
+          <Brand />
+        </div>
         <div className={styles.loginFrame}>
           <div className={styles.login}>
             <div className={styles.loginText}>Log in</div>
             {children}
             <Link href={ROUTES.AUTH.RESET_PASSWORD} className={styles.forgotPassword}>
-              Forgot password?
+              비밀번호 찾기
             </Link>
-            <Divider />
+            <div className={styles.dividerContainer}>
+              <Divider />
+            </div>
             <GoogleOAuthHandler />
             <AuthButton
               text="Google"
@@ -38,7 +42,7 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
         <p className={styles.signupText}>
           Don’t have an account?{' '}
           <Link href={ROUTES.AUTH.SIGNUP} className={styles.signupLink}>
-            Sign Up
+            회원 가입
           </Link>
         </p>
       </div>

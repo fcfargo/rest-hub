@@ -1,4 +1,5 @@
 .container {
+  height: 100vh;
   flex-grow: 1;
   background: #ffffff;
   position: relative;
@@ -18,10 +19,15 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 56px;
-  margin-left: 40px;
-  margin-right: 32px;
+  margin: 56px 32px 0 40px; /* 상단, 오른쪽, 하단, 왼쪽 */
   gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .wrapper {
+    margin: 40px 16px 0 16px;
+    gap: 16px;
+  }
 }
 
 .header {
@@ -29,6 +35,13 @@
   border-color: #d8dee4;
   border-width: 0px 0px 1px 0px;
   height: 45px;
+}
+
+@media (max-width: 1024px) {
+  .header {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .content {
@@ -43,11 +56,17 @@
   font-size: 23px;
   line-height: 36px;
   font-weight: 400;
-  width: 160px;
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .headerTitle {
+    font-size: 20px;
+    line-height: 32px;
+  }
 }
 
 .section {
@@ -57,6 +76,12 @@
   flex-direction: column;
   justify-content: flex-start;
   gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .section {
+    max-width: 100%;
+  }
 }
 
 .sectionTitle {
@@ -83,6 +108,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  .button {
+    width: 100%;
+  }
 }
 
 .buttonText {

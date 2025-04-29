@@ -35,7 +35,7 @@ export default function ResetPasswordLayout({ children }: ResetPasswordLayoutPro
       <p className={styles.linkText}>
         <span>Got your temporary password? </span>
         <Link href={ROUTES.AUTH.LOGIN} className={styles.link}>
-          Log in
+          로그인
         </Link>
       </p>
     </div>

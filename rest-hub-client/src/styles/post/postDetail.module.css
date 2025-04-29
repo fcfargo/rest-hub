@@ -1,11 +1,22 @@
 .overlay {
   position: fixed;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
+  z-index: 10;
   flex-direction: column;
   align-items: center;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .overlay {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    align-items: stretch;
+  }
 }
 
 .container {
@@ -16,6 +27,14 @@
   align-items: center;
   justify-content: center;
   margin-top: -40px;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    margin-top: 0;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
 }
 
 .wrapper {
@@ -38,6 +57,19 @@
     transform 0.3s ease-in-out;
 }
 
+@media (max-width: 1024px) {
+  .wrapper {
+    max-width: 100%;
+    min-width: 100%;
+    min-height: 100vh;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+
 .wrapper.active {
   opacity: 1;
   transform: translateX(0);
@@ -50,7 +82,20 @@
   height: auto;
   max-height: 90vh;
   min-height: 80vh;
-  overflow: auto;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .wrapper.withMedia {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    min-height: 100vh;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-y: auto;
+  }
 }
 
 .header {
@@ -78,10 +123,32 @@
   line-height: 24px;
 }
 
+.mobileCloseButtonContainer {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .mobileCloseButtonContainer {
+    display: block;
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+}
+
 .body {
   width: 100%;
   height: 100%;
   display: flex;
+}
+
+@media (max-width: 1024px) {
+  .body {
+    flex-direction: column;
+  }
 }
 
 .mediaContentsSection {
@@ -92,6 +159,13 @@
   justify-content: center;
   align-items: center;
   border-bottom-left-radius: 12px;
+}
+
+@media (max-width: 1024px) {
+  .mediaContentsSection {
+    flex-shrink: 0;
+    border-bottom-left-radius: 0;
+  }
 }
 
 .extraContentsSectionWithMedia {

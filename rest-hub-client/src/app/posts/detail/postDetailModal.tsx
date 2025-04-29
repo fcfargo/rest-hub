@@ -1,18 +1,25 @@
 'use client';
 
 import classNames from 'classnames';
+import { useEffect, useState } from 'react';
 
 import CommentSection from './\bcomment/CommentSection';
 import PostContentSection from './sections/PostContentSection';
 import PostDetailMediaSection from './sections/PostDetailMediaSection';
 import PostProfileSection from './sections/PostProfileSection';
 
-import { CloseButtonWhite } from '@/components/ui/closeButton';
+import { CloseButtonBlack, CloseButtonWhite } from '@/components/ui/closeButton';
 import { MEDIA_TYPES } from '@/constants';
+import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
 import { usePost } from '@/context/postContext';
+import { useIsTabletOrMobile } from '@/hooks/useIsDesktop';
 import { useMounted } from '@/hooks/useMounted';
+import { API_ENDPOINTS } from '@/libs/api';
+import api from '@/libs/axiosInstance';
 import styles from '@/styles/post/postDetail.module.css';
+import { Post } from '@/types';
+import { apiRequest } from '@/utils/apiRequest';
 
 interface PostDetailModalProps {
   postId: string;
@@ -22,21 +29,47 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
   const isMounted = useMounted();
   const { closeModal } = useModal();
   const { posts } = usePost();
+  const { logout } = useAuth();
+  const isTabletOrMobile = useIsTabletOrMobile();
 
-  const post = posts.find((p) => p.id === postId);
+  const [post, setPost] = useState<Post | null>(null);
 
-  if (!post || !postId) {
+  useEffect(() => {
+    async function fetchPost() {
+      try {
+        const existingPost = posts.find((p) => p.id === postId);
+
+        if (existingPost) {
+          setPost(existingPost);
+        } else {
+          const { data } = await apiRequest(async (accessToken: string) => {
+            return api.get(`${API_ENDPOINTS.POST}/${postId}`, {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            });
+          }, logout);
+          setPost(data.body);
+        }
+      } catch (error) {
+        console.error('Failed to get post:', error);
+        closeModal();
+      }
+    }
+
+    fetchPost();
+  }, [postId, posts, closeModal]);
+
+  if (!post) {
     return null;
   }
 
   const { imageUrl, content } = post;
-
-  // 게시글에 미디어 데이터 포함 여부
   const hasMediaData = Boolean(imageUrl?.trim());
 
   return (
     <div className={styles.overlay}>
-      <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
+      {!isTabletOrMobile && (
+        <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
+      )}
 
       <div className={styles.container}>
         <div
@@ -49,6 +82,9 @@ export default function PostDetailModal({ postId }: PostDetailModalProps) {
           {/* 헤더 */}
           <div className={styles.header}>
             <h2 className={styles.title}>게시물 상세보기</h2>
+            <div className={styles.mobileCloseButtonContainer}>
+              <CloseButtonBlack onClick={() => closeModal()} />
+            </div>
           </div>
 
           <div className={styles.body}>

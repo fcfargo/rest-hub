@@ -70,7 +70,7 @@ export default function LoginForm() {
       {loginError && <InputErrorMessage message={loginError} />}
 
       <button className={styles.button} type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Logging in...' : 'Log in'}
+        {isSubmitting ? '요청 중...' : '로그인'}
       </button>
     </form>
   );

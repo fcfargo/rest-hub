@@ -112,8 +112,9 @@ export default function PasswordChangeModal() {
       <div className={classNames(styles.container, isMounted ? styles.active : '')}>
         <div className={styles.wrapper}>
           {/* 모달 창 닫기 버튼 */}
-          <CloseButtonBlack onClick={() => closeModal()} className={'mt-[16px] -mr-[32px]'} />
-
+          <div className={styles.closeButtonContainer}>
+            <CloseButtonBlack onClick={() => closeModal()} className={'mt-[16px] -mr-[32px]'} />
+          </div>
           {/* 제목 */}
           <h2 className={styles.title}>비밀번호 변경</h2>
 

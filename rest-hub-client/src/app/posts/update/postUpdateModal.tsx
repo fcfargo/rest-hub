@@ -5,12 +5,13 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 import LocationField from '@/components/forms/locationField';
-import { CloseButtonWhite } from '@/components/ui/closeButton';
+import { CloseButtonBlack, CloseButtonWhite } from '@/components/ui/closeButton';
 import { ErrorMessage } from '@/components/ui/message';
 import TextContent from '@/components/ui/textContent';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
 import { usePost } from '@/context/postContext';
+import { useIsTabletOrMobile } from '@/hooks/useIsDesktop';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
@@ -33,6 +34,7 @@ export default function PostUpdateModal({ post }: PostUpdateModalProps) {
   const { patchPost } = usePost();
   const isMounted = useMounted();
   const { logout } = useAuth();
+  const isTabletOrMobile = useIsTabletOrMobile();
 
   /**
    * 게시글 수정 요청 처리
@@ -72,12 +74,17 @@ export default function PostUpdateModal({ post }: PostUpdateModalProps) {
 
   return (
     <div className={styles.overlay}>
-      <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
+      {!isTabletOrMobile && (
+        <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
+      )}
 
       <div className={styles.container}>
         <div className={classNames(styles.wrapper, isMounted && styles.active)}>
           {/* 헤더 */}
           <div className={styles.header}>
+            <div className={styles.mobileCloseButtonContainer}>
+              <CloseButtonBlack onClick={() => closeModal()} />
+            </div>
             <h2 className={styles.title}>게시물 수정하기</h2>
             <button onClick={handlePostUpdate} className={styles.doneButton} disabled={isLoading}>
               수정 완료

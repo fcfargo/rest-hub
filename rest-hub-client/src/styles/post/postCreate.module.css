@@ -1,11 +1,23 @@
 .overlay {
   position: fixed;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
+  z-index: 10;
   flex-direction: column;
   align-items: center;
+}
+
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  z-index: 10;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  height: 100vh;
 }
 
 .closeButton {
@@ -27,9 +39,23 @@
   align-items: center;
   justify-content: center;
   margin-top: -40px;
+  width: 100%;
+}
+
+.mobileContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .stepContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
   transform: translateX(-10px);
   transition:
@@ -51,6 +77,18 @@
   border-radius: 12px;
   box-shadow: 0px 9px 24px 0px rgba(0, 0, 0, 0.25);
   background: #ffffff;
+  overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .wrapper {
+    margin-top: 0;
+    border-radius: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    box-shadow: none;
+  }
 }
 
 .header {
@@ -64,6 +102,23 @@
   border-color: #dbdbdb;
   border-width: 0px 0px 1px 0px;
   padding: 9px 0px 9px 0px;
+}
+
+.mobileCloseButtonContainer {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .mobileCloseButtonContainer {
+    display: block;
+    position: absolute;
+    top: 11px;
+    left: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 20;
+  }
 }
 
 .title {
@@ -84,6 +139,14 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .uploadContainer {
+    padding-top: 32px;
+    padding-bottom: 32px;
+    gap: 24px;
+  }
 }
 
 .uploadContainer.dragging {
@@ -116,6 +179,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .description {
+    font-size: 18px;
+  }
 }
 
 .backButton {

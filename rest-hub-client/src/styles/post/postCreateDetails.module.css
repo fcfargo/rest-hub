@@ -9,6 +9,17 @@
   background: #ffffff;
 }
 
+@media (max-width: 1024px) {
+  .wrapper {
+    border-radius: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 100vw;
+    min-height: 100vh;
+    box-shadow: none;
+  }
+}
+
 .header {
   width: 100%;
   height: 47px;
@@ -87,14 +98,49 @@
   align-items: center;
 }
 
+@media (max-width: 1024px) {
+  .postDetailsContainer {
+    flex-direction: column;
+  }
+}
+
+.postMedia {
+  position: relative;
+  flex-basis: 62.5%;
+  height: 100%;
+  background: #000;
+}
+
+@media (max-width: 1024px) {
+  .postMedia {
+    position: relative;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    background: #000;
+  }
+}
+
 .postInfo {
   flex-basis: 37.5%;
   height: 100%;
   border-left: 1px solid #dbdbdb;
+  overflow-y: auto;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .postInfo {
+    border-top: 1px solid #dbdbdb;
+    flex-basis: auto;
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+  }
 }
 
 .postContentContainer {

@@ -74,12 +74,16 @@ interface ModalContextType {
     ...args: ModalDataMap[T] extends undefined ? [] : [ModalDataMap[T]]
   ) => void;
   closeModal: () => void;
+  closeAllModals: () => void;
+  isModalOpen: boolean;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [modalStack, setModalStack] = useState<ModalInstance[]>([]);
+
+  const isModalOpen = modalStack.length > 0;
 
   /**
    * 모달 열기 함수
@@ -102,8 +106,15 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const closeModal = () => {
     setModalStack((prev) => prev.slice(0, -1));
   };
+
+  /**
+   * 모든 모달 닫기 함수
+   */
+  const closeAllModals = () => {
+    setModalStack([]);
+  };
   return (
-    <ModalContext.Provider value={{ openModal, closeModal }}>
+    <ModalContext.Provider value={{ openModal, closeModal, isModalOpen, closeAllModals }}>
       {children}
 
       {modalStack.map((modal, index) => {

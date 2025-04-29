@@ -1,9 +1,10 @@
 .wrapper {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 
 .signupContainer {
+  width: 100%;
   height: 100vh;
   background: #ffffff;
   display: flex;
@@ -12,9 +13,20 @@
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.brandContainer {
+  margin-top: 32px;
+}
+
 .signupFrame {
-  width: 400px;
-  padding: 40px 40px 30px 40px;
+  width: 100%;
+  padding: 32px 20px;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -24,7 +36,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 16px;
 }
 
 .signupText {
@@ -33,12 +45,13 @@
   font-size: 30px;
   font-weight: 600;
   height: 41.49px;
+  margin-bottom: 16px;
 }
 
 .signupWindow {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
 .button {
@@ -50,17 +63,21 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .button:hover {
   background-color: rgba(0, 149, 246, 1);
 }
 
+.dividerContainer {
+  margin-bottom: 4px;
+}
+
 .loginText {
   text-align: center;
   font-size: 14px;
-  margin-top: 40px;
+  margin-top: 36px;
 }
 
 .loginLink {
