@@ -1,5 +1,6 @@
 'use client';
 
+import classNames from 'classnames';
 import { useState } from 'react';
 
 import PostCreateCrop from './steps/PostCreateCrop';
@@ -11,6 +12,7 @@ import PostCreateUpload from './steps/PostCreateUpload';
 import { CloseButtonWhite } from '@/components/ui/closeButton';
 import { POST_CREATE_STEPS } from '@/constants';
 import { useModal } from '@/context/modalContext';
+import { useIsTabletOrMobile } from '@/hooks/useIsDesktop';
 import { useMounted } from '@/hooks/useMounted';
 import { useProtectedUser } from '@/hooks/useProtectedUser';
 import styles from '@/styles/post/postCreate.module.css';
@@ -29,6 +31,7 @@ export default function PostCreateModal() {
   });
 
   const isMounted = useMounted();
+  const isMobileOrTablet = useIsTabletOrMobile();
 
   const user = useProtectedUser();
 
@@ -36,13 +39,21 @@ export default function PostCreateModal() {
     setStep(Math.max(POST_CREATE_STEPS.ONE, Math.min(newStep, POST_CREATE_STEPS.THREE)));
   };
 
+  // ✅ 오버레이 스타일 결정
+  const isMobileStyleActive = isMobileOrTablet && step !== POST_CREATE_STEPS.SELECT_TYPE;
+
+  // ✅ 닫기 버튼을 보여줄지 결정
+  const shouldShowCloseButton = !isMobileOrTablet || step === POST_CREATE_STEPS.SELECT_TYPE;
+
   return (
-    <div className={styles.overlay}>
+    <div className={classNames(isMobileStyleActive ? styles.mobileOverlay : styles.overlay)}>
       {/* 모달 창 닫기 버튼 */}
-      <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
+      {shouldShowCloseButton && (
+        <CloseButtonWhite onClick={() => closeModal()} className="mt-[16px] mr-[16px]" />
+      )}
 
       {/* stage 별 게시글 생성 영역 */}
-      <div className={styles.container}>
+      <div className={classNames(isMobileStyleActive ? styles.mobileContainer : styles.container)}>
         <div
           className={`${styles.stepContainer} ${isMounted && step === POST_CREATE_STEPS.SELECT_TYPE ? styles.active : ''}`}
         >

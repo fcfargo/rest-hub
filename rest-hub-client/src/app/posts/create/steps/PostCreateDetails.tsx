@@ -127,7 +127,9 @@ export default function PostCreateDetails({
       </div>
       {/* 미디어 미리보기 & 게시글 작성  */}
       <div className={styles.postDetailsContainer}>
-        <PostCreateMediaPreview url={croppedUrl} mediaType={mediaType} />
+        <div className={styles.postMedia}>
+          <PostCreateMediaPreview url={croppedUrl} mediaType={mediaType} />
+        </div>
 
         <div className={styles.postInfo}>
           {/* 게시물 입력 */}

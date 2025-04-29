@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 
 import FileUploadField from '@/components/forms/FileUploadField';
+import { CloseButtonBlack } from '@/components/ui/closeButton';
+import { useModal } from '@/context/modalContext';
 import styles from '@/styles/post/postCreate.module.css';
 import { PostDataProps } from '@/types';
 import { processMediaFile } from '@/utils/fileProcessor';
@@ -17,6 +19,8 @@ interface PostCreateUploadProps {
 export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUploadProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  const { closeModal } = useModal();
 
   const handleFile = (file: File | null) => {
     const result = processMediaFile(file, ['image']); // image만 허용
@@ -66,6 +70,9 @@ export default function PostCreateUpload({ nextStep, setPostData }: PostCreateUp
     <div className={styles.wrapper}>
       {/* 헤더 */}
       <div className={styles.header}>
+        <div className={styles.mobileCloseButtonContainer}>
+          <CloseButtonBlack onClick={() => closeModal()} />
+        </div>
         <h2 className={styles.title}>새 게시물 업로드</h2>
       </div>
 

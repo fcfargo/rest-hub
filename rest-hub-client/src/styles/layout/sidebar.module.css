@@ -131,6 +131,10 @@
   gap: 16px;
 }
 
+.user.collapsed {
+  justify-content: center;
+}
+
 .userButton {
   display: flex;
   gap: 16px;
@@ -205,5 +209,5 @@
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
-  z-index: 20;
+  z-index: 10;
 }

@@ -8,6 +8,7 @@ import { InfiniteScrollLoader } from '../ui/ScrollBoundaryIndicators';
 
 import { SCROLLTO_BEHAVIOR } from '@/constants';
 import { useAuth } from '@/context/authContext';
+import { useIsTabletOrMobile } from '@/hooks/useIsDesktop';
 import { useMounted } from '@/hooks/useMounted';
 import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
@@ -35,6 +36,7 @@ export default function NotificationPanel({ isNotificationOpen, onClose }: Notif
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const scrollPositionRef = useRef(0);
   const isFetchingRef = useRef(false);
+  const isMobileOrTablet = useIsTabletOrMobile();
 
   const onDelete = (id: number) => {
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
@@ -173,6 +175,7 @@ export default function NotificationPanel({ isNotificationOpen, onClose }: Notif
               key={notification.id}
               notification={notification}
               onDelete={onDelete}
+              onClose={isMobileOrTablet ? onClose : undefined}
             />
           ))}
         </div>

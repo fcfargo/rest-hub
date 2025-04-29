@@ -26,12 +26,17 @@ import { formatTimeAgo } from '@/utils/format';
 interface NotificationItemProps {
   notification: Notification;
   onDelete: (id: number) => void;
+  onClose?: () => void;
 }
 
-export default function NotificationItem({ notification, onDelete }: NotificationItemProps) {
+export default function NotificationItem({
+  notification,
+  onDelete,
+  onClose,
+}: NotificationItemProps) {
   const { id, type, actor, message, isRead, createdAt, postId } = notification;
 
-  const { openModal } = useModal();
+  const { openModal, closeAllModals } = useModal();
   const router = useRouter();
   const { logout } = useAuth();
 
@@ -56,11 +61,13 @@ export default function NotificationItem({ notification, onDelete }: Notificatio
 
   const navigateToTarget = () => {
     if (type === NOTIFICATION_TYPES.FOLLOW && actor?.id) {
+      closeAllModals();
       router.push(`${ROUTES.USERS}/${actor.id}`);
       return;
     }
 
     if (type === NOTIFICATION_TYPES.LIKE && postId) {
+      closeAllModals();
       openModal(MODAL_TYPES.POST_DETAIL, { postId });
       return;
     }
@@ -71,6 +78,10 @@ export default function NotificationItem({ notification, onDelete }: Notificatio
     try {
       await markNotificationAsRead();
       navigateToTarget();
+
+      if (onClose) {
+        onClose();
+      }
     } catch (err) {
       console.error('Failed to handle notification click:', err);
     }

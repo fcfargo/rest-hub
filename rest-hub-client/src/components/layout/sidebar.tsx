@@ -77,7 +77,13 @@ export default function Sidebar() {
       src: '/layout/sidebar/post.svg',
       alt: 'Post',
       label: 'Post',
-      onClick: () => openModal(MODAL_TYPES.POST_CREATE),
+      onClick: () => {
+        if (isTabletOrMobile) {
+          setIsSidebarOpen(false);
+        }
+
+        openModal(MODAL_TYPES.POST_CREATE);
+      },
     },
     {
       src: '/layout/sidebar/settings.svg',
@@ -142,7 +148,7 @@ export default function Sidebar() {
         </nav>
 
         <div className={styles.footerContainer}>
-          <div className={styles.user}>
+          <div className={classNames(styles.user, !expanded ? styles.collapsed : '')}>
             <button
               className={styles.userButton}
               onClick={() => router.push(`${ROUTES.USERS}/${user.id}`)}

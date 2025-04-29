@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import LocationField from '@/components/forms/locationField';
+import { CloseButtonBlack } from '@/components/ui/closeButton';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/message';
 import TextContent from '@/components/ui/textContent';
 import { useAuth } from '@/context/authContext';
@@ -86,6 +87,9 @@ export default function PostCreateTextOnly({ closeModal }: PostCreateTextOnlyPro
     <div className={styles.wrapper}>
       {/* 헤더 */}
       <div className={styles.header}>
+        <div className={styles.mobileCloseButtonContainer}>
+          <CloseButtonBlack onClick={() => closeModal()} />
+        </div>
         <h2 className={styles.title}>게시물 내용 작성</h2>
         <button onClick={handlePostCreate} className={styles.doneButton} disabled={isLoading}>
           공유하기
