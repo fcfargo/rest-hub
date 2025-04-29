@@ -16,6 +16,14 @@
   transform: translateX(0);
 }
 
+@media (max-width: 1024px) {
+  .container {
+    width: 75%;
+    height: 100vh;
+    z-index: 20;
+  }
+}
+
 .sidebarEnter {
   transform: translateX(-100%);
   opacity: 0;

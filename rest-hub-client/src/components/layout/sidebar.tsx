@@ -4,13 +4,15 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 
 import NotificationPanel from './notificationPanel';
+import Overlay from './overlay';
 
 import { MODAL_TYPES, PROFILE_IMAGE_DEFAULT, ROUTES } from '@/constants';
 import { useAuth } from '@/context/authContext';
 import { useModal } from '@/context/modalContext';
+import { useSidebar } from '@/context/sidebarContext';
 import { useIsTabletOrMobile } from '@/hooks/useIsDesktop';
 import { useMounted } from '@/hooks/useMounted';
 import { useRouteEffect } from '@/hooks/useRouteEffect';
@@ -24,12 +26,7 @@ interface MenuItemProps {
   onClick?: () => void;
 }
 
-interface SidebarProps {
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
-}
-
-export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
+export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -38,6 +35,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
   const pathname = usePathname();
 
   const isTabletOrMobile = useIsTabletOrMobile();
+  const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
 
   const isMounted = useMounted();
   useRouteEffect();
@@ -85,8 +83,13 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
       src: '/layout/sidebar/settings.svg',
       alt: 'Settings',
       label: 'Settings',
-      onClick: () =>
-        router.push(pathname === ROUTES.SETTINGS.HOME ? ROUTES.HOME : ROUTES.SETTINGS.HOME),
+      onClick: () => {
+        if (isTabletOrMobile) {
+          setIsSidebarOpen(false);
+        }
+
+        router.push(pathname === ROUTES.SETTINGS.HOME ? ROUTES.HOME : ROUTES.SETTINGS.HOME);
+      },
     },
     {
       src: '/layout/sidebar/profile.svg',
@@ -188,9 +191,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
       </aside>
       {isNotificationOpen && (
         <>
-          {isTabletOrMobile && (
-            <div className={styles.overlay} onClick={() => setIsNotificationOpen(false)}></div>
-          )}
+          {isTabletOrMobile && <Overlay onClick={() => setIsNotificationOpen(false)} />}
 
           <NotificationPanel
             isNotificationOpen={isNotificationOpen}

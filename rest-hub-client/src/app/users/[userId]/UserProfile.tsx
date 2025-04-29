@@ -38,18 +38,20 @@ export default function UserProfile({ userId }: UserProfileProps) {
   const profileImage = currentUser.profileImage || PROFILE_IMAGE_DEFAULT;
   return (
     <div className={classNames(styles.container, isMounted ? styles.active : '')}>
-      <div className={styles.profileWrapper}>
-        <Image
-          src={profileImage}
-          sizes="80px"
-          alt="User Profile"
-          fill
-          priority
-          className={classNames(
-            styles.profileIcon,
-            !currentUser.profileImage && styles.defaultProfileIcon,
-          )}
-        />
+      <div className={styles.profileContainer}>
+        <div className={styles.profileWrapper}>
+          <Image
+            src={profileImage}
+            sizes="80px"
+            alt="User Profile"
+            fill
+            priority
+            className={classNames(
+              styles.profileIcon,
+              !currentUser.profileImage && styles.defaultProfileIcon,
+            )}
+          />
+        </div>
       </div>
 
       <div className={styles.info}>

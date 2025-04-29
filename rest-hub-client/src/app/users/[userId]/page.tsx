@@ -4,6 +4,7 @@ import UserPostList from './UserPostList';
 
 import UserProfile from '@/app/users/[userId]/UserProfile';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import styles from '@/styles/user/userPage.module.css';
 
 interface UserPageProps {
   params: Promise<{ userId: number }>;
@@ -13,12 +14,12 @@ export default function UserPage({ params }: UserPageProps) {
   const { userId } = use(params);
 
   return (
-    <div className="h-screen flex flex-col flex-grow items-center ">
+    <div className={styles.userPage}>
       <ProtectedRoute>
-        <div className="flex-shrink-0 sticky top-0 z-5 w-[500px] border-b border-[#e0e2e9] px-4 py-2">
+        <div className={styles.userProfileWrapper}>
           <UserProfile userId={Number(userId)} />
         </div>
-        <div className="flex-grow overflow-y-auto">
+        <div className={styles.userPostListWrapper}>
           <UserPostList />
         </div>
       </ProtectedRoute>

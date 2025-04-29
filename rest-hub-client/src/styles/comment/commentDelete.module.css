@@ -41,6 +41,30 @@
   transform: translateX(0);
 }
 
+@media (max-width: 1024px) {
+  .wrapper {
+    width: 90%;
+    min-width: 280px;
+    max-width: 90%;
+    height: auto;
+    min-height: 200px;
+    max-height: 80vh;
+    margin: 20px;
+    padding: 24px 20px;
+    box-sizing: border-box;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .deleteButton,
+  .cancelButton {
+    flex-basis: auto;
+    width: 100%;
+  }
+}
+
 .title {
   font-family: 'Inter-SemiBold', sans-serif;
   font-size: 20px;

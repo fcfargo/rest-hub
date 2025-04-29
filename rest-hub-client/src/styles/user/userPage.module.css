@@ -1,0 +1,38 @@
+.userPage {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.userProfileWrapper {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  width: 500px;
+  border-bottom: 1px solid #e0e2e9;
+  padding: 8px 16px;
+  background-color: #fff;
+}
+
+@media (max-width: 1024px) {
+  .userProfileWrapper {
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .userProfileWrapper {
+    padding: 6px 12px;
+  }
+}
+
+.userPostListWrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+  width: 100%;
+}

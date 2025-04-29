@@ -1,28 +1,26 @@
 'use client';
 
 import Image from 'next/image';
-import { Dispatch, SetStateAction } from 'react';
 
 import { useModal } from '@/context/modalContext';
+import { useSidebar } from '@/context/sidebarContext';
 import styles from '@/styles/layout/hamburgerButton.module.css';
 
-interface HamburgerButtonProps {
-  onClick: Dispatch<SetStateAction<boolean>>;
-}
-
-export default function HamburgerButton({ onClick }: HamburgerButtonProps) {
+export default function HamburgerButton() {
   const { isModalOpen } = useModal();
+  const { setIsSidebarOpen } = useSidebar();
 
   if (isModalOpen) {
     return null;
   }
 
   return (
-    <button onClick={() => onClick((prev) => !prev)} className={styles.hamburgerButton}>
+    <button onClick={() => setIsSidebarOpen((prev) => !prev)} className={styles.hamburgerButton}>
       <Image
         className={styles.icon}
         src="/icons/hamburger.svg"
         alt="Open Sidebar"
+        priority
         width={24}
         height={24}
       />

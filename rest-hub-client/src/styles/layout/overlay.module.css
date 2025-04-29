@@ -1,0 +1,13 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .overlay {
+    display: none; /* PC에서는 숨긴다 (lg:hidden 효과) */
+  }
+}
