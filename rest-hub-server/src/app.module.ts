@@ -19,6 +19,8 @@ import { PostsModule } from './posts/posts.module';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
 
+const isProd = processEnv.NODE_ENV === 'production';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -40,12 +42,20 @@ import { UsersModule } from './users/users.module';
       ],
     }),
     BullModule.forRootAsync({
-      useFactory: () => ({
-        connection: {
-          host: processEnv.REDIS_HOST,
-          port: Number(processEnv.REDIS_PORT),
-        },
-      }),
+      useFactory: () => {
+        return isProd
+          ? {
+              connection: {
+                url: processEnv.REDIS_URL,
+              },
+            }
+          : {
+              connection: {
+                host: process.env.REDIS_HOST,
+                port: Number(process.env.REDIS_PORT),
+              },
+            };
+      },
     }),
     JwtModule.register({
       global: true,
