@@ -20,6 +20,11 @@
   background-color: #e5e7eb; /* gray-200 */
 }
 
+.hamburgerButton.rightPosition {
+  left: auto;
+  right: 1rem;
+}
+
 @media (min-width: 1024px) {
   .hamburgerButton {
     display: none;

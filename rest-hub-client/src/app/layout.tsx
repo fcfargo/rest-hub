@@ -31,12 +31,6 @@ export default function RootLayout({
       <AuthProvider>
         <SidebarProvider>
           <html lang="en">
-            <head>
-              <link rel="manifest" href="/manifest.json" />
-              <meta name="theme-color" content="#000000" />
-              <link rel="icon" href="/icons/icon-192x192.png" />
-              <meta name="mobile-web-app-capable" content="yes" />
-            </head>
             <body className={`antialiased flex h-screen`}>
               <PostProvider>
                 <ModalProvider>
