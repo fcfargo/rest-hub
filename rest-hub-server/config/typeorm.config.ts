@@ -12,13 +12,22 @@ import { User } from '@/model/user.entity';
 
 dotenv.config({ path: 'config/.env' });
 
-export const typeOrmConfig: TypeOrmModuleOptions = {
-  type: 'postgres',
-  host: processEnv.DB_HOST,
-  database: processEnv.DB_NAME,
-  port: Number(processEnv.DB_PORT),
-  username: processEnv.DB_USERNAME,
-  password: processEnv.DB_PASSWORD,
-  entities: [User, Post, PostLike, PostComment, PostCommentLike, Follow, Notification],
-  synchronize: true,
-};
+const isProd = processEnv.NODE_ENV === 'production';
+
+export const typeOrmConfig: TypeOrmModuleOptions = isProd
+  ? {
+      type: 'postgres',
+      url: processEnv.DB_URL,
+      entities: [User, Post, PostLike, PostComment, PostCommentLike, Follow, Notification],
+      synchronize: true,
+    }
+  : {
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      entities: [User, Post, PostLike, PostComment, PostCommentLike, Follow, Notification],
+      synchronize: true,
+    };
