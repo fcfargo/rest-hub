@@ -2,17 +2,18 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - 'server/**'
   pull_request:
-    branches: [main, develop]
+    branches: [develop]
     paths:
       - 'server/**'
-
+    types: [opened, labeled]
 
 jobs:
   build-and-push:
+    if: contains(github.event.pull_request.labels.*.name, 'deploy') || github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
