@@ -8,7 +8,7 @@ on:
   pull_request:
     branches: [develop]
     paths:
-      - 'server/**'
+      - 'rest-hub-server/**'
     types: [opened, labeled]
 
 jobs:
