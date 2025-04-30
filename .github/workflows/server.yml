@@ -34,12 +34,12 @@ jobs:
 
       - name: Fetch .env from AWS Parameter Store
         run: |
-          mkdir -p config
+          mkdir -p rest-hub-server/config
           aws ssm get-parameter \
             --with-decryption \
             --name PROD_REST_HUB_CONFIG \
             --region ap-northeast-2 \
-            | jq -r '.Parameter.Value' > config/.env
+            | jq -r '.Parameter.Value' > rest-hub-server/config/.env
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -59,6 +59,7 @@ jobs:
       - name: Build and push Docker image (with baked .env)
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./rest-hub-server
+          file: ./rest-hub-server/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
