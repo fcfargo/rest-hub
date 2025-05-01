@@ -109,6 +109,9 @@ export default function PasswordChangeModal() {
 
   return (
     <div className={styles.overlay}>
+      <div className={styles.mediaCloseButtonContainer}>
+        <CloseButtonBlack onClick={() => closeModal()} />
+      </div>
       <div className={classNames(styles.container, isMounted ? styles.active : '')}>
         <div className={styles.wrapper}>
           {/* 모달 창 닫기 버튼 */}

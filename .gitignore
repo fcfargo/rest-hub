@@ -21,3 +21,4 @@ rest-hub-client/build
 rest-hub-client/coverage
 rest-hub-client/.vercel
 rest-hub-client/next-env.d.ts
+.vercel

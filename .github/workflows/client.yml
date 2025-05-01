@@ -1,0 +1,55 @@
+name: Deploy Client to Vercel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'rest-hub-client/**'
+  pull_request:
+    branches: [develop]
+    paths:
+      - 'rest-hub-client/**'
+    types: [labeled]
+
+jobs:
+  deploy:
+    if: contains(github.event.pull_request.labels.*.name, 'deploy') || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rest-hub-client
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Fetch .env from AWS Parameter Store
+        run: |
+          aws ssm get-parameter \
+            --with-decryption \
+            --name PROD_REST_HUB_CLIENT_CONFIG \
+            --region ap-northeast-2 \
+            | jq -r '.Parameter.Value' > .env.production
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.6.3
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build app
+        run: pnpm build
+
+      - name: Deploy to Vercel
+        run: |
+          npx vercel --token ${{ secrets.VERCEL_TOKEN }} \
+            --prod --yes
