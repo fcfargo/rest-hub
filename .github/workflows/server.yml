@@ -65,8 +65,11 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
 
-      - name: Trigger Railway Deployment
-        uses: bervProject/railway-deploy@main
-        with:
-          railway_token: ${{ secrets.RAILWAY_PROJECT_TOKEN }}
-          service: ${{ secrets.RAILWAY_SERVICE_ID }}
+      - name: Trigger Railway Redeploy (GraphQL via curl)
+        run: |
+          curl -X POST https://backboard.railway.app/graphql/v2 \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_API_TOKEN }}" \
+            -d '{
+              "query": "mutation { serviceInstanceRedeploy(environmentId: \"${{ secrets.RAILWAY_ENV_ID }}\", serviceId: \"${{ secrets.RAILWAY_SERVICE_ID }}\") }"
+            }'
