@@ -47,12 +47,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build app
-        run: yarn build
+        run: pnpm build
 
       - name: Deploy to Vercel
         run: |
           npx vercel --token ${{ secrets.VERCEL_TOKEN }} \
-            --prod \
-            --confirm \
-            --scope ${{ secrets.VERCEL_ORG_ID }} \
-            --project-name ${{ secrets.VERCEL_PROJECT_ID }}
+            --prod --yes
