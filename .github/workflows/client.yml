@@ -52,4 +52,5 @@ jobs:
       - name: Deploy to Vercel
         run: |
           npx vercel --token ${{ secrets.VERCEL_TOKEN }} \
-            --prod --yes
+            --prod --yes \
+            --name rest-hub
