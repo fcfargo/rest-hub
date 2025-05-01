@@ -64,3 +64,12 @@ jobs:
           file: ./rest-hub-server/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
+
+      - name: Trigger Railway Deployment
+        run: |
+          curl -X POST https://backboard.railway.app/graphql \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_API_TOKEN }}" \
+            -d '{
+              "query": "mutation { deploymentCreate(input: { serviceId: \"${{ secrets.RAILWAY_SERVICE_ID }}\", environmentId: \"${{ secrets.RAILWAY_ENV_ID }}\" }) { id } }"
+            }'
