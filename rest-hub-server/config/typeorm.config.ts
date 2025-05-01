@@ -23,11 +23,11 @@ export const typeOrmConfig: TypeOrmModuleOptions = isProd
     }
   : {
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      host: processEnv.DB_HOST,
+      port: Number(processEnv.DB_PORT),
+      username: processEnv.DB_USERNAME,
+      password: processEnv.DB_PASSWORD,
+      database: processEnv.DB_NAME,
       entities: [User, Post, PostLike, PostComment, PostCommentLike, Follow, Notification],
       synchronize: true,
     };

@@ -51,8 +51,8 @@ const isProd = processEnv.NODE_ENV === 'production';
             }
           : {
               connection: {
-                host: process.env.REDIS_HOST,
-                port: Number(process.env.REDIS_PORT),
+                host: processEnv.REDIS_HOST,
+                port: Number(processEnv.REDIS_PORT),
               },
             };
       },
