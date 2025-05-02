@@ -24,6 +24,10 @@
 }
 
 @media (max-width: 1024px) {
+  .container {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+
   .wrapper {
     margin: 40px 16px 0 16px;
     gap: 16px;
