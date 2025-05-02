@@ -35,7 +35,7 @@ export default function UserProfile({ userId }: UserProfileProps) {
   }
 
   const profile = isMyPage ? currentUser : user!;
-  const profileImage = currentUser.profileImage || PROFILE_IMAGE_DEFAULT;
+  const profileImage = profile.profileImage || PROFILE_IMAGE_DEFAULT;
   return (
     <div className={classNames(styles.container, isMounted ? styles.active : '')}>
       <div className={styles.profileContainer}>
