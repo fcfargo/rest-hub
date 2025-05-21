@@ -2,6 +2,7 @@ export const API_ENDPOINTS = {
   ME: '/users/auth/me',
   LOGIN: '/users/auth/signin',
   SIGNUP: '/users/auth/signup',
+  LOGOUT: '/users/auth/signout',
   OAUTH_GOOGLE: '/users/auth/google',
   REFRESH_TOKEN: '/users/auth/refresh',
   RESET_PASSWORD: '/users/auth/reset-password',

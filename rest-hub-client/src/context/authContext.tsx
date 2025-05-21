@@ -9,7 +9,7 @@ import { API_ENDPOINTS } from '@/libs/api';
 import api from '@/libs/axiosInstance';
 import { User } from '@/types';
 import { apiRequest } from '@/utils/apiRequest';
-import { removeTokens, saveTokens } from '@/utils/authUtils';
+import { getRefreshToken, removeTokens, saveTokens } from '@/utils/authUtils';
 import { getErrorMessage } from '@/utils/errorGuards';
 
 interface LogInUserRequest {
@@ -133,11 +133,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async (): Promise<void> => {
+    const refreshToken = getRefreshToken();
+
+    if (refreshToken) {
+      try {
+        await api.post(API_ENDPOINTS.LOGOUT, { refreshToken });
+      } catch (error) {
+        console.warn('서버 로그아웃 실패:', error);
+      }
+    }
+
+    setUser(null);
+    removeTokens();
+
     if (user?.socialProvider) {
       await signOut({ callbackUrl: ROUTES.AUTH.LOGIN });
     } else {
-      setUser(null);
-      removeTokens();
       router.push(ROUTES.AUTH.LOGIN);
     }
   };

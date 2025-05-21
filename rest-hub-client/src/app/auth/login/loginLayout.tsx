@@ -35,7 +35,11 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
               text="Google"
               iconSrc="/auth/google.svg"
               altText="Google Icon"
-              onClick={() => signIn('google')}
+              onClick={() =>
+                signIn('google', {
+                  callbackUrl: `${window.location.origin}${ROUTES.AUTH.LOGIN}?fromOAuth=true`,
+                })
+              }
             />
           </div>
         </div>

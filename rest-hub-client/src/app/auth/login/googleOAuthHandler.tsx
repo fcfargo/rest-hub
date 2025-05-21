@@ -1,8 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { ROUTES, SESSION_STATUS } from '@/constants';
 import { useAuth } from '@/context/authContext';
@@ -14,11 +14,22 @@ export default function GoogleOAuthHandler() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { setUser } = useAuth();
+  const searchParams = useSearchParams();
+  const hasRun = useRef(false);
+
+  const fromOAuth = searchParams?.get('fromOAuth') === 'true'; // ✅ 핵심 분기 조건
 
   useEffect(() => {
-    if (status !== SESSION_STATUS.AUTHENTICATED || !session?.user?.id_token) {
+    if (
+      hasRun.current ||
+      !fromOAuth || // ❗ 쿼리 없으면 실행 안 함
+      status !== SESSION_STATUS.AUTHENTICATED ||
+      !session?.user?.id_token
+    ) {
       return;
     }
+
+    hasRun.current = true;
 
     const authenticateWithBackend = async () => {
       try {

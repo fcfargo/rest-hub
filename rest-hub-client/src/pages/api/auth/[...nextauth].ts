@@ -31,8 +31,8 @@ export default NextAuth({
       }
       return token;
     },
-    async redirect({ baseUrl }) {
-      return `${baseUrl}${ROUTES.AUTH.LOGIN}`;
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

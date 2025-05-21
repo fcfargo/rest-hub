@@ -75,6 +75,22 @@
   margin-bottom: 4px;
 }
 
+.OAuthContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40%;
+}
+
+@media (max-width: 768px) {
+  .OAuthContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+}
+
 .loginText {
   text-align: center;
   font-size: 14px;
