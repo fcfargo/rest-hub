@@ -42,6 +42,9 @@ export class User {
   @Column({ nullable: true })
   description?: string;
 
+  @Column({ type: 'text', nullable: true })
+  refreshToken?: string | null;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 

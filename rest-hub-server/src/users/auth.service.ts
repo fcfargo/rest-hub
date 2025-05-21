@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -18,6 +19,7 @@ import {
   RefreshAccesTokenRequestDto,
   ResetPasswordRequestDto,
   SignInUserRequestDto,
+  SignOutRequestDto,
   VerifyGoogleOAuthRequestDto,
 } from './dtos/users.dto';
 import { TokenResponseDto } from './dtos/users.response.dto';
@@ -51,15 +53,26 @@ export class AuthService {
     return hashedPassword;
   }
 
+  private async _hashRefreshToken(token: string): Promise<string> {
+    return bcrypt.hash(token, 10);
+  }
+
   private async _checkPassword(checkPassword: string, password: string): Promise<boolean> {
     return bcrypt.compare(checkPassword, password);
+  }
+
+  private async _checkRefreshToken(
+    checkRefreshToken: string,
+    refreshToken: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(checkRefreshToken, refreshToken);
   }
 
   private async _generateTokens(payload: jwtPayLoad): Promise<TokenResponseDto> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload),
       this.jwtService.signAsync(payload, {
-        secret: processEnv.JWT_SECRET,
+        secret: processEnv.JWT_REFRESH_TOKEN_SECRET,
         expiresIn: processEnv.REFRESH_TOKEN_EXPIRES_IN,
       }),
     ]);
@@ -67,10 +80,29 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  private async verifyToken(token: string): Promise<jwtPayLoad> {
+  private async _verifyRefreshToken(token: string): Promise<jwtPayLoad> {
     return this.jwtService.verifyAsync(token, {
-      secret: processEnv.JWT_SECRET,
+      secret: processEnv.JWT_REFRESH_TOKEN_SECRET,
     });
+  }
+
+  private async _saveHashedRefreshToken(userId: number, refreshToken: string): Promise<void> {
+    const hashedRefresh = await this._hashRefreshToken(refreshToken);
+    await this.usersService.updateUserRefreshToken(userId, { refreshToken: hashedRefresh });
+  }
+
+  async signout(requestBody: SignOutRequestDto) {
+    const { refreshToken } = requestBody;
+
+    try {
+      const payload = await this._verifyRefreshToken(refreshToken);
+
+      await this.usersService.updateUserRefreshToken(payload.sub, { refreshToken: null });
+    } catch (error) {
+      this.logger.warn(`Invalid or expired refresh token during logout : ${error}`);
+    }
+
+    return { message: 'Logged out (regardless of token validity)' };
   }
 
   async signup(requestBody: CreateUserRequestDto): Promise<SignupResponse> {
@@ -87,8 +119,9 @@ export class AuthService {
     const newUser = await this.usersService.createUser(requestData);
 
     const payload: jwtPayLoad = { sub: newUser.id, email: newUser.email };
-
     const tokens = await this._generateTokens(payload);
+
+    await this._saveHashedRefreshToken(newUser.id, tokens.refreshToken);
 
     return { user: newUser, tokens };
   }
@@ -116,8 +149,9 @@ export class AuthService {
     }
 
     const payload: jwtPayLoad = { sub: user.id, email: user.email };
-
     const tokens = await this._generateTokens(payload);
+
+    await this._saveHashedRefreshToken(user.id, tokens.refreshToken);
 
     return { user, tokens };
   }
@@ -125,11 +159,23 @@ export class AuthService {
   async refreshAccessToken(requestBody: RefreshAccesTokenRequestDto): Promise<TokenResponseDto> {
     const { refreshToken } = requestBody;
 
-    const { sub, email } = await this.verifyToken(refreshToken);
+    const { sub, email } = await this._verifyRefreshToken(refreshToken);
+
+    const user = await this.usersService.findOneUserById(sub);
+    if (!user || !user.refreshToken) {
+      throw new ForbiddenException('User not found or refresh token missing');
+    }
+
+    const isValid = await this._checkRefreshToken(refreshToken, user.refreshToken);
+    if (!isValid) {
+      await this.usersService.updateUserRefreshToken(user.id, { refreshToken: null });
+      throw new ForbiddenException('Refresh token does not match stored token (possible reuse)');
+    }
 
     const payload: jwtPayLoad = { sub, email };
-
     const tokens = await this._generateTokens(payload);
+
+    await this._saveHashedRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
   }
@@ -171,6 +217,8 @@ export class AuthService {
 
     const jwtPayload: jwtPayLoad = { sub: user.id, email: user.email };
     const tokens = await this._generateTokens(jwtPayload);
+
+    await this._saveHashedRefreshToken(user.id, tokens.refreshToken);
 
     return { user, tokens };
   }

@@ -1,5 +1,9 @@
 import { User } from '@/model/user.entity';
 
+export interface UpdateUserRefreshTokenDataRequest {
+  refreshToken: string | null;
+}
+
 export interface UpdateUserPasswordDataRequest {
   password?: string;
 }

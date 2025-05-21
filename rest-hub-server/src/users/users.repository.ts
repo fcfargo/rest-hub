@@ -6,6 +6,7 @@ import {
   CreateUserRequest,
   UpdateUserPasswordDataRequest,
   UpdateUserProfileDataRequest,
+  UpdateUserRefreshTokenDataRequest,
 } from './interfaces/users.interface';
 
 import { User } from '@/model/user.entity';
@@ -29,6 +30,13 @@ export class UsersRepository {
   async updateUserPassword(
     userId: number,
     updateData: UpdateUserPasswordDataRequest,
+  ): Promise<UpdateResult> {
+    return this.usersRepository.update({ id: userId }, updateData);
+  }
+
+  async updateUserRefreshToken(
+    userId: number,
+    updateData: UpdateUserRefreshTokenDataRequest,
   ): Promise<UpdateResult> {
     return this.usersRepository.update({ id: userId }, updateData);
   }

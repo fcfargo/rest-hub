@@ -7,6 +7,7 @@ import {
   RefreshAccesTokenRequestDto,
   ResetPasswordRequestDto,
   SignInUserRequestDto,
+  SignOutRequestDto,
   UpdateUserProfileRequestDto,
   VerifyGoogleOAuthRequestDto,
 } from './dtos/users.dto';
@@ -17,6 +18,7 @@ import { UsersService } from './users.service';
 
 import { Serialize } from '@/common/decorators/serialize.decorator';
 import { CurrentUser } from '@/common/decorators/user.decorator';
+import { CommonMessageResponseDto } from '@/common/dtos/common.response.dto';
 
 @Controller('users')
 export class UsersController {
@@ -35,6 +37,12 @@ export class UsersController {
   @Post('auth/signin')
   async signin(@Body() body: SignInUserRequestDto) {
     return this.authService.signin(body);
+  }
+
+  @Serialize(CommonMessageResponseDto)
+  @Post('auth/signout')
+  async signout(@Body() body: SignOutRequestDto) {
+    return this.authService.signout(body);
   }
 
   @Serialize(AuthResponseDto)
