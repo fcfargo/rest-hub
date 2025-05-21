@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
+import { Suspense } from 'react';
 
 import GoogleOAuthHandler from './googleOAuthHandler';
 
@@ -30,7 +31,9 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
             <div className={styles.dividerContainer}>
               <Divider />
             </div>
-            <GoogleOAuthHandler />
+            <Suspense fallback={null}>
+              <GoogleOAuthHandler />
+            </Suspense>
             <AuthButton
               text="Google"
               iconSrc="/auth/google.svg"
