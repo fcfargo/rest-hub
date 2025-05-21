@@ -7,6 +7,12 @@
   align-items: center;
 }
 
+@media (max-width: 1024px) {
+  .scrollContainer {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+}
+
 .container {
   flex-grow: 1;
   display: flex;

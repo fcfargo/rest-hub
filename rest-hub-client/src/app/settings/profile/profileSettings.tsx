@@ -62,7 +62,7 @@ export default function ProfileSettings() {
     profileImage,
   } = currentUser;
 
-  const fileName = `profile_${userId}_${Date.now()}`;
+  const fileName = `profile_${userId}`;
 
   const [username, setUsername] = useState<string>(currentUsername);
   const {
@@ -86,6 +86,16 @@ export default function ProfileSettings() {
     try {
       setIsSaving(true);
       setFeedback({ message: null, success: false });
+
+      if (!username.trim()) {
+        setFeedback({ message: '유저네임을 입력해주세요.', success: false });
+        return;
+      }
+
+      if (!description.trim()) {
+        setFeedback({ message: '자기소개를 입력해주세요.', success: false });
+        return;
+      }
 
       let profileImageUrl: string | null = previewUrl;
       if (selectedFile) {
@@ -184,8 +194,8 @@ const ProfileImageSection = ({ previewUrl, onSelectFile }: ProfileImageSectionPr
 
   const triggerFileSelect = () => fileInputRef.current?.click();
 
-  const handleFile = (file: File | null) => {
-    const result = processImageFile(file);
+  const handleFile = async (file: File | null) => {
+    const result = await processImageFile(file);
 
     if (!result.success) {
       setLocalMessage(result.errorMessage);
@@ -198,9 +208,9 @@ const ProfileImageSection = ({ previewUrl, onSelectFile }: ProfileImageSectionPr
     setLocalMessage(null);
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
-    handleFile(file);
+    await handleFile(file);
   };
 
   const handleClearImage = () => {

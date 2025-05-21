@@ -18,6 +18,10 @@
 }
 
 @media (max-width: 1024px) {
+  .userPage {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+
   .userProfileWrapper {
     width: 100%;
     max-width: 500px;

@@ -14,6 +14,7 @@
     top: 0;
     left: 0;
     width: 320px;
+    height: calc(var(--vh, 1vh) * 100);
     z-index: 20;
     transform: translateX(-100%);
     transition: transform 0.2s ease-in-out;
@@ -103,4 +104,12 @@
   display: flex;
   flex-direction: column;
   gap: 1.5px;
+}
+
+.empty {
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Inter-Medium', sans-serif;
+  color: #333;
+  text-align: center;
 }

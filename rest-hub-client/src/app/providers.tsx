@@ -8,6 +8,7 @@ import { AuthProvider } from '@/context/authContext';
 import { ModalProvider } from '@/context/modalContext';
 import { PostProvider } from '@/context/postContext';
 import { SidebarProvider } from '@/context/sidebarContext';
+import { useViewportHeightVar } from '@/hooks/useViewportHeightVar';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -21,15 +22,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  useEffect(() => {
-    const setVh = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-    setVh();
-    window.addEventListener('resize', setVh);
-    return () => window.removeEventListener('resize', setVh);
-  }, []);
+  useViewportHeightVar();
 
   return (
     <SessionProvider>

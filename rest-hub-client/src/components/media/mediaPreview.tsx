@@ -36,14 +36,13 @@ export function PostItemMediaViewer({ url, mediaType, className }: PostMediaView
           src={url}
           alt="Post Image"
           priority
-          width={0}
-          height={0}
-          sizes="100vw"
+          width={800}
+          height={600}
+          sizes="(max-width: 768px) 100vw, 400px"
           style={{
             objectFit: 'contain',
             width: '100%',
             height: 'auto',
-            display: 'flex',
           }}
         />
       ) : (

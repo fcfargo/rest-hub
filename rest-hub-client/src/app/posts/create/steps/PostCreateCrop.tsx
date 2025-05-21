@@ -83,6 +83,7 @@ export default function PostCreateCrop({
         pixelCrop: croppedAreaPixels,
         userId,
         username,
+        resizeWidth: 1200,
       });
 
       const croppedUrl = URL.createObjectURL(croppedFile);
