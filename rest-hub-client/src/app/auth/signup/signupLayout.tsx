@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { SessionProvider, signIn } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
+import { Suspense } from 'react';
 
 import GoogleOAuthHandler from '../login/googleOAuthHandler';
 
@@ -27,15 +28,21 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
             <div className={styles.dividerContainer}>
               <Divider />
             </div>
-            <SessionProvider>
-              <GoogleOAuthHandler />
+            <div className={styles.OAuthContainer}>
+              <Suspense fallback={null}>
+                <GoogleOAuthHandler />
+              </Suspense>
               <AuthButton
                 text="Google"
                 iconSrc="/auth/google.svg"
                 altText="Google Icon"
-                onClick={() => signIn('google')}
+                onClick={() =>
+                  signIn('google', {
+                    callbackUrl: `${window.location.origin}${ROUTES.AUTH.LOGIN}?fromOAuth=true`,
+                  })
+                }
               />
-            </SessionProvider>
+            </div>
           </div>
         </div>
         <p className={styles.loginText}>
