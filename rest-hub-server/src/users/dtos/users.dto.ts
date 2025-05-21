@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsJWT, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class SignInUserRequestDto {
   @IsNotEmpty()
@@ -11,6 +11,12 @@ export class SignInUserRequestDto {
   password: string;
 }
 
+export class SignOutRequestDto {
+  @IsNotEmpty()
+  @IsJWT()
+  refreshToken: string;
+}
+
 export class CreateUserRequestDto extends SignInUserRequestDto {
   @IsNotEmpty()
   @IsString()
@@ -19,7 +25,7 @@ export class CreateUserRequestDto extends SignInUserRequestDto {
 
 export class RefreshAccesTokenRequestDto {
   @IsNotEmpty()
-  @IsString()
+  @IsJWT()
   refreshToken: string;
 }
 

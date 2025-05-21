@@ -5,6 +5,7 @@ import {
   CreateUserRequest,
   UpdateUserPasswordDataRequest,
   UpdateUserProfileDataRequest,
+  UpdateUserRefreshTokenDataRequest,
 } from './interfaces/users.interface';
 import { UsersRepository } from './users.repository';
 
@@ -37,6 +38,19 @@ export class UsersService {
     updateData: UpdateUserPasswordDataRequest,
   ): Promise<UpdateResult> {
     const result = await this.usersRepository.updateUserPassword(userId, updateData);
+
+    if (result.affected === 0) {
+      throw new InternalServerErrorException(`Failed to update user with ID ${userId}`);
+    }
+
+    return result;
+  }
+
+  async updateUserRefreshToken(
+    userId: number,
+    updateData: UpdateUserRefreshTokenDataRequest,
+  ): Promise<UpdateResult> {
+    const result = await this.usersRepository.updateUserRefreshToken(userId, updateData);
 
     if (result.affected === 0) {
       throw new InternalServerErrorException(`Failed to update user with ID ${userId}`);
